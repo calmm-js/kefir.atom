@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom)
+[![npm version](https://badge.fury.io/js/kefir-atom.svg)](http://badge.fury.io/js/kefir-atom)
 
 Modifiable models for [Kefir](http://rpominov.github.io/kefir/).
 
