@@ -35,7 +35,7 @@ versa.
 The lens can be any Ramda compatible
 [lens](http://ramdajs.com/0.19.0/docs/#lens), but the lenses on the given path
 are implicitly composed and lifted as
-[partial lenses](https://github.com/polytypic/partial.lenses/).
+[partial lenses](https://github.com/dirty-js/partial.lenses/).
 
 ### atom.modify(currentValue => newValue)
 
