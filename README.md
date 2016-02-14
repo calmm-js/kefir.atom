@@ -2,10 +2,10 @@
 
 Modifiable models for [Kefir](http://rpominov.github.io/kefir/).
 
-Note: This implementation is optimized for space at a fairly low level.  The
-good news is that you can use atoms and lenses with impunity.  The bad news is
-that the implementation is tightly bound to the internals of Kefir.  Should the
-internals change, this library will need to be updated as well.
+Note: This implementation is **optimized for space** at a fairly low level.  The
+good news is that you can **use atoms and lenses with impunity**.  The bad news
+is that the implementation is tightly bound to the internals of Kefir.  Should
+the internals change, this library will need to be updated as well.
 
 ## Reference
 
