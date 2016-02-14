@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/polytypic/kefir-atom.git"
+    "url": "git+https://github.com/dirty-js/kefir-atom.git"
   },
   "keywords": [
     "kefir",
@@ -22,9 +22,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/polytypic/kefir-atom/issues"
+    "url": "https://github.com/dirty-js/kefir-atom/issues"
   },
-  "homepage": "https://github.com/polytypic/kefir-atom#readme",
+  "homepage": "https://github.com/dirty-js/kefir-atom#readme",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.5.1",
