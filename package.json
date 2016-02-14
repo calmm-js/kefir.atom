@@ -1,8 +1,8 @@
 {
-  "name": "kefir.atom",
+  "name": "kefir-atom",
   "version": "1.0.0",
   "description": "Modifiable models with Kefir",
-  "main": "lib/kefir.atom.js",
+  "main": "lib/kefir-atom.js",
   "scripts": {
     "dist": "babel src --source-maps inline --out-dir lib",
     "lint": "eslint src test",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/polytypic/kefir.atom.git"
+    "url": "git+https://github.com/polytypic/kefir-atom.git"
   },
   "keywords": [
     "kefir",
@@ -22,9 +22,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/polytypic/kefir.atom/issues"
+    "url": "https://github.com/polytypic/kefir-atom/issues"
   },
-  "homepage": "https://github.com/polytypic/kefir.atom#readme",
+  "homepage": "https://github.com/polytypic/kefir-atom#readme",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.5.1",
