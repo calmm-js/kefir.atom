@@ -9,7 +9,7 @@ export class AbstractMutable extends Kefir.Property {
     this.modify(() => value)
   }
   lens(l, ...ls) {
-    return new Lens(this, ls.length === 0 ? l : L(l, ...ls))
+    return new LensedAtom(this, ls.length === 0 ? l : L(l, ...ls))
   }
   view(l, ...ls) {
     return this.lens(l, ...ls)
@@ -23,7 +23,7 @@ export class AbstractMutable extends Kefir.Property {
 
 //
 
-export class Lens extends AbstractMutable {
+export class LensedAtom extends AbstractMutable {
   constructor(source, lens) {
     super()
     this._source = source
