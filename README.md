@@ -10,7 +10,7 @@ the internals change, this library will need to be updated as well.
 ## Reference
 
 ```js
-import Atom from "kefir.atom"
+import Atom from "kefir-atom"
 ```
 
 ### Atom(initialValue)
