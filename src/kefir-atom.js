@@ -47,6 +47,7 @@ export class Lens extends AbstractMutable {
   _onDeactivation() {
     this._source.offValue(this._$handleValue)
     this._$handleValue = null
+    this._currentEvent = null
   }
 }
 
