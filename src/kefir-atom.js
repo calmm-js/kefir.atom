@@ -14,6 +14,11 @@ export class AbstractMutable extends Kefir.Property {
   view(l, ...ls) {
     return this.lens(l, ...ls)
   }
+  _maybeEmitValue(next) {
+    const prev = this._currentEvent
+    if (!prev || !R.equals(prev.value, next))
+      this._emitValue(next)
+  }
 }
 
 //
@@ -32,10 +37,7 @@ export class Lens extends AbstractMutable {
     this._source.modify(L.over(this._lens, fn))
   }
   _handleValue(context) {
-    const next = L.view(this._lens, context)
-    const prev = this._currentEvent
-    if (!prev || !R.equals(prev.value, next))
-      this._emitValue(next)
+    this._maybeEmitValue(L.view(this._lens, context))
   }
   _onActivation() {
     const handleValue = value => this._handleValue(value)
@@ -59,9 +61,7 @@ export class Atom extends AbstractMutable {
     return this._currentEvent.value
   }
   modify(fn) {
-    const value = fn(this.get())
-    if (!R.equals(value, this.get()))
-      this._emitValue(value)
+    this._maybeEmitValue(fn(this.get()))
   }
 }
 
