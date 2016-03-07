@@ -1,4 +1,4 @@
-import Atom  from "../src/kefir-atom"
+import Atom  from "../src/kefir.atom"
 import R     from "ramda"
 
 function show(x) {
