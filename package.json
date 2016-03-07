@@ -1,6 +1,6 @@
 {
   "name": "kefir.atom",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Modifiable models with Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
