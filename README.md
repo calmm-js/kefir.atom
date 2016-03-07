@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![](https://david-dm.org/dirty-js/kefir.atom.svg)](https://david-dm.org/dirty-js/kefir.atom)
+[![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom)
 
 Modifiable models for [Kefir](http://rpominov.github.io/kefir/).
 
@@ -35,7 +35,7 @@ versa.
 The lens can be any Ramda compatible
 [lens](http://ramdajs.com/0.19.0/docs/#lens), but the lenses on the given path
 are implicitly composed and lifted as
-[partial lenses](https://github.com/dirty-js/partial.lenses/).
+[partial lenses](https://github.com/calmm-js/partial.lenses/).
 
 ### atom.modify(currentValue => newValue)
 
