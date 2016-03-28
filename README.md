@@ -18,7 +18,7 @@ import Atom from "kefir.atom"
 Creates a new atom with the given initial value.  An atom is a modifiable Kefir
 [property](http://rpominov.github.io/kefir/#about-observables).  Atoms (and
 lensed atoms) implicitly skip duplicates using Ramda's
-[equals](http://ramdajs.com/0.19.0/docs/#equals) function.
+[equals](http://ramdajs.com/0.20.0/docs/#equals) function.
 
 ### [`atom.get()`](#atomget "get :: Atom a -> a")
 
@@ -33,7 +33,7 @@ Modifications to the lensed atom are reflected in the original atom and vice
 versa.
 
 The lens can be any Ramda compatible
-[lens](http://ramdajs.com/0.19.0/docs/#lens), but the lenses on the given path
+[lens](http://ramdajs.com/0.20.0/docs/#lens), but the lenses on the given path
 are implicitly composed and lifted as
 [partial lenses](https://github.com/calmm-js/partial.lenses/).
 
