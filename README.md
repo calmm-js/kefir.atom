@@ -47,6 +47,10 @@ There are use cases where you would want to create new subtypes of
 `AbstractMutable`, but it seems unlikely that you should inherit from `Atom` or
 `LensedAtom`.
 
+`AbstractMutable` does not define the `get` and `modify` methods&mdash;they are
+to be defined by subtypes.  Otherwise all of the classes provide the same
+methods with the same semantics.
+
 ### [`Atom(initialValue)`](#atominitialvalue "Atom :: a -> Atom a")
 
 Creates a new atom with the given initial value.  An atom is a modifiable Kefir
