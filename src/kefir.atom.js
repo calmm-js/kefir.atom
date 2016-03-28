@@ -1,6 +1,6 @@
-import Kefir from "kefir"
-import L     from "partial.lenses"
-import R     from "ramda"
+import Kefir     from "kefir"
+import P, * as L from "partial.lenses"
+import R         from "ramda"
 
 //
 
@@ -9,7 +9,7 @@ export class AbstractMutable extends Kefir.Property {
     this.modify(() => value)
   }
   lens(l, ...ls) {
-    return new LensedAtom(this, ls.length === 0 ? l : L(l, ...ls))
+    return new LensedAtom(this, ls.length === 0 ? l : P(l, ...ls))
   }
   view(l, ...ls) {
     return this.lens(l, ...ls)
