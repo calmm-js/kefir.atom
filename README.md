@@ -7,11 +7,45 @@ good news is that you can **use atoms and lenses with impunity**.  The bad news
 is that the implementation is tightly bound to the internals of Kefir.  Should
 the internals change, this library will need to be updated as well.
 
+## Concepts
+
+<p align="center"><img width="40%" height="40%" src="http://calmm-js.github.io/kefir.atom/images/Observables.svg"></p>
+
+The above diagram illustrates the subtype relationships between the basic
+concepts
+
+* **Observable**,
+* **Stream**, and
+* **Property**
+
+of [Kefir](http://rpominov.github.io/kefir/#about-observables) and the concepts
+added by this library
+
+* **AbstractMutable**,
+* **Atom**, and
+* **LensedAtom**.
+
 ## Reference
+
+Typically one only uses the default import
 
 ```js
 import Atom from "kefir.atom"
 ```
+
+of this library.  It provides a convenience function that constructs a `new`
+instance of the `Atom` class.
+
+The classes `AbstractMutable`, `Atom`, and `LensedAtom` are also provided as
+named exports:
+
+```js
+import {AbstractMutable, Atom, LensedAtom} from "kefir.atom"
+```
+
+There are use cases where you would want to create new subtypes of
+`AbstractMutable`, but it seems unlikely that you should inherit from `Atom` or
+`LensedAtom`.
 
 ### [`Atom(initialValue)`](#atominitialvalue "Atom :: a -> Atom a")
 
