@@ -85,7 +85,7 @@ value of the atom with the new value returned by the function.
 `atom.set(value)` is equivalent to `atom.modify(() => value)` and is provided
 for convenience.
 
-### [`atom.view(...ls)`](#atomviewls "view :: Atom a -> (...Plens a b) -> Property b")
+### [`atom.view(...ls)`](#atomviewls "view :: Atom a -> (...PLens a b) -> Property b")
 
 Creates a new view with the given path from the original atom.  Changes to the
 original atom are reflected in the view.
