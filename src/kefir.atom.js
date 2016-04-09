@@ -8,11 +8,11 @@ export class AbstractMutable extends Kefir.Property {
   set(value) {
     this.modify(() => value)
   }
-  lens(l, ...ls) {
-    return new LensedAtom(this, ls.length === 0 ? l : P(l, ...ls))
+  lens(...ls) {
+    return new LensedAtom(this, P(...ls))
   }
-  view(l, ...ls) {
-    return this.lens(l, ...ls)
+  view(...ls) {
+    return new LensedAtom(this, P(...ls))
   }
   _maybeEmitValue(next) {
     const prev = this._currentEvent
@@ -31,13 +31,13 @@ export class LensedAtom extends AbstractMutable {
     this._$handleValue = null
   }
   get() {
-    return L.view(this._lens, this._source.get())
+    return L.get(this._lens, this._source.get())
   }
   modify(fn) {
-    this._source.modify(L.over(this._lens, fn))
+    this._source.modify(L.modify(this._lens, fn))
   }
   _handleValue(context) {
-    this._maybeEmitValue(L.view(this._lens, context))
+    this._maybeEmitValue(L.get(this._lens, context))
   }
   _onActivation() {
     const handleValue = value => this._handleValue(value)

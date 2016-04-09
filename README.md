@@ -64,7 +64,7 @@ A slow operation to synchronously get the current value of the atom.  Use of
 `get` is discouraged: prefer to depend on an atom as you would with ordinary
 Kefir properties.
 
-### [`atom.lens(l, ...ls)`](#atomlensl-ls "lens :: Atom a -> (PLens a a1, ...PLens aN b) -> LensedAtom b")
+### [`atom.lens(...ls)`](#atomlensls "lens :: Atom a -> (...PLens a b) -> LensedAtom b")
 
 Creates a new lensed atom with the given path from the original atom.
 Modifications to the lensed atom are reflected in the original atom and vice
@@ -85,7 +85,7 @@ value of the atom with the new value returned by the function.
 `atom.set(value)` is equivalent to `atom.modify(() => value)` and is provided
 for convenience.
 
-### [`atom.view(l, ...ls)`](#atomviewl-ls "view :: Atom a -> (PLens a a1, ...Plens aN b) -> Property b")
+### [`atom.view(...ls)`](#atomviewls "view :: Atom a -> (...Plens a b) -> Property b")
 
 Creates a new view with the given path from the original atom.  Changes to the
 original atom are reflected in the view.
