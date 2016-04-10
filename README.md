@@ -64,8 +64,7 @@ methods with the same semantics.
 ### `Atom a :> AbstractMutable a`
 
 An `Atom` is a simple implementation of an `AbstractMutable` that actually
-stores the value.  One can create an `Atom` directly by giving the initial
-value.
+stores the value.  One can create an `Atom` directly by giving an initial value.
 
 Note that `Atom` is not the only possible root implementation of
 `AbstractMutable`.  For example, it would be possible to implement an
@@ -97,12 +96,16 @@ Kefir properties.
 
 Creates a new lensed atom with the given path from the original atom.
 Modifications to the lensed atom are reflected in the original atom and vice
-versa.
+verse.
 
 The lens can be any Ramda compatible
 [lens](http://ramdajs.com/0.20.0/docs/#lens), but the lenses on the given path
 are implicitly composed and lifted as
 [partial lenses](https://github.com/calmm-js/partial.lenses/).
+
+Note that, for most intents and purposes, `lens` is a referentially transparent
+function: it does not create *new* mutable state&mdash;it merely creates a
+reference to existing mutable state.
 
 ### [`atom.modify(currentValue => newValue)`](#atommodifycurrentvalue--newvalue "modify :: AbstractMutable a -> (a -> a) -> ()")
 
