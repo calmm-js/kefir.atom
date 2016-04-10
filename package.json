@@ -1,6 +1,6 @@
 {
   "name": "kefir.atom",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Modifiable models with Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "kefir": "^3.2.1",
-    "partial.lenses": "^2.2.1",
+    "partial.lenses": ">=2.2.0 <4.0.0",
     "ramda": ">=0.20.1 <0.22.0"
   }
 }
