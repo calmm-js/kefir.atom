@@ -109,8 +109,11 @@ reference to existing mutable state.
 
 ### [`atom.modify(currentValue => newValue)`](#atommodifycurrentvalue--newvalue "modify :: AbstractMutable a -> (a -> a) -> ()")
 
-Applies the given function to the current value of the atom and replaces the
-value of the atom with the new value returned by the function.
+Conceptually applies the given function to the current value of the atom and
+replaces the value of the atom with the new value returned by the function.
+This is what happens with the basic `Atom` implementation.  What actually
+happens is decided by the implementation of `AbstractMutable` whose `modify`
+method is ultimately called.
 
 ### [`atom.set(value)`](#atomsetvalue "set :: AbstractMutable a -> a -> ()")
 
