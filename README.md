@@ -47,9 +47,38 @@ There are use cases where you would want to create new subtypes of
 `AbstractMutable`, but it seems unlikely that you should inherit from `Atom` or
 `LensedAtom`.
 
-`AbstractMutable` does not define the `get` and `modify` methods&mdash;they are
-to be defined by subtypes.  Otherwise all of the classes provide the same
+### `AbstractMutable a :> Property a`
+
+`AbstractMutable` is the base interface against which most code using atoms is
+actually written.  An `AbstractMutable` is a property that also provides for
+ability to request to `modify` the value of the property.
+
+Note that we often abuse terminology and speak of `Atom`s when we should speak
+of `AbstractMutable`s, because `Atom` is easier to pronounce and is more
+concrete.
+
+`AbstractMutable` does not implement the `get` and `modify` methods&mdash;they
+are to be defined by subtypes.  Otherwise all of the classes provide the same
 methods with the same semantics.
+
+### `Atom a :> AbstractMutable a`
+
+An `Atom` is a simple implementation of an `AbstractMutable` that actually
+stores the value.  One can create an `Atom` directly by giving the initial
+value.
+
+Note that `Atom` is not the only possible root implementation of
+`AbstractMutable`.  For example, it would be possible to implement an
+`AbstractMutable` whose state is actually stored in an external database that
+can be observed and mutated by multiple clients.
+
+### `LensedAtom a :> AbstractMutable a`
+
+A `LensedAtom` is an implementation of an `AbstractMutable` that doesn't
+actually store anything, but instead refers to a part, specified using a
+[lens](https://github.com/calmm-js/partial.lenses/), of another
+`AbstractMutable`.  One creates `LensedAtom`s by calling the `lens` method of an
+`AbstractMutable`.
 
 ### [`Atom(initialValue)`](#atominitialvalue "Atom :: a -> Atom a")
 
