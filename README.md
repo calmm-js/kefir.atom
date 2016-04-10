@@ -98,10 +98,27 @@ Creates a new lensed atom with the given path from the original atom.
 Modifications to the lensed atom are reflected in the original atom and vice
 verse.
 
-The lens can be any Ramda compatible
-[lens](http://ramdajs.com/0.20.0/docs/#lens), but the lenses on the given path
-are implicitly composed and lifted as
-[partial lenses](https://github.com/calmm-js/partial.lenses/).
+The lenses are treated as a path of
+[partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one of
+key ideas that makes lensed atoms possible is the composability properties of
+partial lenses.  See the equations here:
+[`L.compose`](https://github.com/calmm-js/partial.lenses#lcomposels).  Those
+equations make it possible not just to create lenses via composition (left hand
+sides of equations), but also to create paths of lensed atoms (right hand sides
+of equations).  More concretely, both the `c` in
+
+```js
+const b = a.lens(a_to_b_PLens)
+const c = b.lens(b_to_c_PLens)
+```
+
+and in
+
+```js
+const c = a.lens(a_to_b_PLens, b_to_c_PLens)
+```
+
+can be considered equivalent thanks to the compositionality equations of lenses.
 
 Note that, for most intents and purposes, `lens` is a referentially transparent
 function: it does not create *new* mutable state&mdash;it merely creates a
