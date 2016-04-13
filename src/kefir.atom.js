@@ -1,6 +1,6 @@
-import Kefir     from "kefir"
-import P, * as L from "partial.lenses"
-import R         from "ramda"
+import * as Kefir from "kefir"
+import * as R     from "ramda"
+import P, * as L  from "partial.lenses"
 
 //
 
