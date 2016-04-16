@@ -102,7 +102,7 @@ The lenses are treated as a path of
 [partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one of
 key ideas that makes lensed atoms possible is the compositionality of partial
 lenses.  See the equations here:
-[`L.compose`](https://github.com/calmm-js/partial.lenses#lcomposels).  Those
+[`L.compose`](https://github.com/calmm-js/partial.lenses#compose).  Those
 equations make it possible not just to create lenses via composition (left hand
 sides of equations), but also to create paths of lensed atoms (right hand sides
 of equations).  More concretely, both the `c` in
