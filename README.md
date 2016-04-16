@@ -34,18 +34,18 @@ import Atom from "kefir.atom"
 ```
 
 of this library.  It provides a convenience function that constructs a `new`
-instance of the `Atom` class.
+instance of the [`Atom`](#class-Atom) class.
 
-The classes `AbstractMutable`, `Atom`, and `LensedAtom` are also provided as
-named exports:
+The classes [`AbstractMutable`](#class-AbstractMutable), [`Atom`](#class-Atom),
+and [`LensedAtom`](class-LensedAtom) are also provided as named exports:
 
 ```js
 import {AbstractMutable, Atom, LensedAtom} from "kefir.atom"
 ```
 
 There are use cases where you would want to create new subtypes of
-`AbstractMutable`, but it seems unlikely that you should inherit from `Atom` or
-`LensedAtom`.
+[`AbstractMutable`](#class-AbstractMutable), but it seems unlikely that you
+should inherit from [`Atom`](#class-Atom) or [`LensedAtom`](class-LensedAtom).
 
 ### <a name="class-AbstractMutable"></a>[`AbstractMutable a :> Property a`](#class-AbstractMutable)
 
@@ -53,9 +53,9 @@ There are use cases where you would want to create new subtypes of
 actually written.  An `AbstractMutable` is a property that also provides for
 ability to request to `modify` the value of the property.
 
-Note that we often abuse terminology and speak of `Atom`s when we should speak
-of `AbstractMutable`s, because `Atom` is easier to pronounce and is more
-concrete.
+Note that we often abuse terminology and speak of [`Atom`](#class-Atom)s when we
+should speak of `AbstractMutable`s, because [`Atom`](#class-Atom) is easier to
+pronounce and is more concrete.
 
 `AbstractMutable` does not implement the `get` and `modify` methods&mdash;they
 are to be defined by subtypes.  Otherwise all of the classes provide the same
@@ -63,28 +63,31 @@ methods with the same semantics.
 
 ### <a name="class-Atom"></a>[`Atom a :> AbstractMutable a`](#class-Atom)
 
-An `Atom` is a simple implementation of an `AbstractMutable` that actually
-stores the value.  One can create an `Atom` directly by giving an initial value.
+An `Atom` is a simple implementation of an
+[`AbstractMutable`](#class-AbstractMutable) that actually stores the value.  One
+can create an `Atom` directly by giving an initial value.
 
 Note that `Atom` is not the only possible root implementation of
-`AbstractMutable`.  For example, it would be possible to implement an
-`AbstractMutable` whose state is actually stored in an external database that
-can be observed and mutated by multiple clients.
+[`AbstractMutable`](#class-AbstractMutable).  For example, it would be possible
+to implement an [`AbstractMutable`](#class-AbstractMutable) whose state is
+actually stored in an external database that can be observed and mutated by
+multiple clients.
 
 ### <a name="class-LensedAtom"></a>[`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
 
-A `LensedAtom` is an implementation of an `AbstractMutable` that doesn't
-actually store anything, but instead refers to a part, specified using a
+A `LensedAtom` is an implementation of an
+[`AbstractMutable`](#class-AbstractMutable) that doesn't actually store
+anything, but instead refers to a part, specified using a
 [lens](https://github.com/calmm-js/partial.lenses/), of another
-`AbstractMutable`.  One creates `LensedAtom`s by calling the `lens` method of an
-`AbstractMutable`.
+[`AbstractMutable`](#class-AbstractMutable).  One creates `LensedAtom`s by
+calling the `lens` method of an [`AbstractMutable`](#class-AbstractMutable).
 
 ### <a name="Atom"></a>[`Atom(initialValue)`](#Atom "Atom :: a -> Atom a")
 
 Creates a new atom with the given initial value.  An atom is a modifiable Kefir
 [property](http://rpominov.github.io/kefir/#about-observables).  Atoms (and
 lensed atoms) implicitly skip duplicates using Ramda's
-[`equals`](http://ramdajs.com/0.20.0/docs/#equals) function.
+[`equals`](http://ramdajs.com/0.21.0/docs/#equals) function.
 
 ### <a name="get"></a>[`atom.get()`](#get "get :: AbstractMutable a -> a")
 
@@ -128,14 +131,14 @@ reference to existing mutable state.
 
 Conceptually applies the given function to the current value of the atom and
 replaces the value of the atom with the new value returned by the function.
-This is what happens with the basic `Atom` implementation.  What actually
-happens is decided by the implementation of `AbstractMutable` whose `modify`
-method is ultimately called.
+This is what happens with the basic [`Atom`](#class-Atom) implementation.  What
+actually happens is decided by the implementation of [`AbstractMutable`](#class-AbstractMutable) whose
+`modify` method is ultimately called.
 
 ### <a name="set"></a>[`atom.set(value)`](#set "set :: AbstractMutable a -> a -> ()")
 
-`atom.set(value)` is equivalent to `atom.modify(() => value)` and is provided
-for convenience.
+`atom.set(value)` is equivalent to [`atom.modify(() => value)`](#modify) and is
+provided for convenience.
 
 ### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> Property b")
 
