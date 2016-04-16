@@ -37,7 +37,7 @@ of this library.  It provides a convenience function that constructs a `new`
 instance of the [`Atom`](#class-Atom) class.
 
 The classes [`AbstractMutable`](#class-AbstractMutable), [`Atom`](#class-Atom),
-and [`LensedAtom`](class-LensedAtom) are also provided as named exports:
+and [`LensedAtom`](#class-LensedAtom) are also provided as named exports:
 
 ```js
 import {AbstractMutable, Atom, LensedAtom} from "kefir.atom"
@@ -45,7 +45,7 @@ import {AbstractMutable, Atom, LensedAtom} from "kefir.atom"
 
 There are use cases where you would want to create new subtypes of
 [`AbstractMutable`](#class-AbstractMutable), but it seems unlikely that you
-should inherit from [`Atom`](#class-Atom) or [`LensedAtom`](class-LensedAtom).
+should inherit from [`Atom`](#class-Atom) or [`LensedAtom`](#class-LensedAtom).
 
 ### <a name="class-AbstractMutable"></a>[`AbstractMutable a :> Property a`](#class-AbstractMutable)
 
