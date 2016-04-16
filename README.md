@@ -47,7 +47,7 @@ There are use cases where you would want to create new subtypes of
 `AbstractMutable`, but it seems unlikely that you should inherit from `Atom` or
 `LensedAtom`.
 
-### `AbstractMutable a :> Property a`
+### <a name="class-AbstractMutable"></a>[`AbstractMutable a :> Property a`](#class-AbstractMutable)
 
 `AbstractMutable` is the base interface against which most code using atoms is
 actually written.  An `AbstractMutable` is a property that also provides for
@@ -61,7 +61,7 @@ concrete.
 are to be defined by subtypes.  Otherwise all of the classes provide the same
 methods with the same semantics.
 
-### `Atom a :> AbstractMutable a`
+### <a name="class-Atom"></a>[`Atom a :> AbstractMutable a`](#class-Atom)
 
 An `Atom` is a simple implementation of an `AbstractMutable` that actually
 stores the value.  One can create an `Atom` directly by giving an initial value.
@@ -71,7 +71,7 @@ Note that `Atom` is not the only possible root implementation of
 `AbstractMutable` whose state is actually stored in an external database that
 can be observed and mutated by multiple clients.
 
-### `LensedAtom a :> AbstractMutable a`
+### <a name="class-LensedAtom"></a>[`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
 
 A `LensedAtom` is an implementation of an `AbstractMutable` that doesn't
 actually store anything, but instead refers to a part, specified using a
@@ -79,20 +79,20 @@ actually store anything, but instead refers to a part, specified using a
 `AbstractMutable`.  One creates `LensedAtom`s by calling the `lens` method of an
 `AbstractMutable`.
 
-### [`Atom(initialValue)`](#atominitialvalue "Atom :: a -> Atom a")
+### <a name="Atom"></a>[`Atom(initialValue)`](#Atom "Atom :: a -> Atom a")
 
 Creates a new atom with the given initial value.  An atom is a modifiable Kefir
 [property](http://rpominov.github.io/kefir/#about-observables).  Atoms (and
 lensed atoms) implicitly skip duplicates using Ramda's
-[equals](http://ramdajs.com/0.20.0/docs/#equals) function.
+[`equals`](http://ramdajs.com/0.20.0/docs/#equals) function.
 
-### [`atom.get()`](#atomget "get :: AbstractMutable a -> a")
+### <a name="get"></a>[`atom.get()`](#get "get :: AbstractMutable a -> a")
 
 A slow operation to synchronously get the current value of the atom.  Use of
 `get` is discouraged: prefer to depend on an atom as you would with ordinary
 Kefir properties.
 
-### [`atom.lens(...ls)`](#atomlensls "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
+### <a name="lens"></a>[`atom.lens(...ls)`](#lens "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
 Creates a new lensed atom with the given path from the original atom.
 Modifications to the lensed atom are reflected in the original atom and vice
@@ -124,7 +124,7 @@ Note that, for most intents and purposes, `lens` is a referentially transparent
 function: it does not create *new* mutable state&mdash;it merely creates a
 reference to existing mutable state.
 
-### [`atom.modify(currentValue => newValue)`](#atommodifycurrentvalue--newvalue "modify :: AbstractMutable a -> (a -> a) -> ()")
+### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify :: AbstractMutable a -> (a -> a) -> ()")
 
 Conceptually applies the given function to the current value of the atom and
 replaces the value of the atom with the new value returned by the function.
@@ -132,12 +132,12 @@ This is what happens with the basic `Atom` implementation.  What actually
 happens is decided by the implementation of `AbstractMutable` whose `modify`
 method is ultimately called.
 
-### [`atom.set(value)`](#atomsetvalue "set :: AbstractMutable a -> a -> ()")
+### <a name="set"></a>[`atom.set(value)`](#set "set :: AbstractMutable a -> a -> ()")
 
 `atom.set(value)` is equivalent to `atom.modify(() => value)` and is provided
 for convenience.
 
-### [`atom.view(...ls)`](#atomviewls "view :: AbstractMutable a -> (...PLens a b) -> Property b")
+### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> Property b")
 
 Creates a new view with the given path from the original atom.  Changes to the
 original atom are reflected in the view.
