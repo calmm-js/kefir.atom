@@ -1,6 +1,6 @@
 {
   "name": "kefir.atom",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Reactive variables with Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
