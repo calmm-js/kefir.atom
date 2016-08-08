@@ -32,5 +32,5 @@ describe("Atom", () => {
   testEq('{const xy = Atom({x: {y: 1}}); const y = xy.lens("x"); y.set({y: 3}); return y}', {y: 3})
   testEq('{const xy = Atom({x: {y: 2}}); const y = xy.lens("x"); const z = y.lens("y"); return z}', 2)
   testEq('{const xy = Atom({x: {y: 3}}); const z = xy.lens("x", "y"); z.set(2); return z}', 2)
-  testEq('{const xy = Atom({x: {y: 3}}); const z = xy.lens("x", "y"); return z.get()}', 3)
+  testEq('{const xy = Atom({x: {y: 3}}); const z = xy.view("x", "y"); return z.get()}', 3)
 })
