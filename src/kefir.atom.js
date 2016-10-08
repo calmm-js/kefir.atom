@@ -4,6 +4,30 @@ import P, * as L  from "partial.lenses"
 
 //
 
+let lock = 0
+
+const prevs = []
+const atoms = []
+
+export const holding = ef => {
+  ++lock
+  try {
+    return ef()
+  } finally {
+    --lock
+    while (!lock && prevs.length) {
+      const prev = prevs.pop()
+      const atom = atoms.pop()
+      const next = atom._currentEvent.value
+
+      if (!R.equals(prev, next))
+        atom._emitValue(next)
+    }
+  }
+}
+
+//
+
 export class AbstractMutable extends Kefir.Property {
   set(value) {
     this.modify(() => value)
@@ -31,7 +55,7 @@ export class LensedAtom extends AbstractMutable {
     this._$handleValue = null
   }
   get() {
-    if (this._currentEvent)
+    if (this._currentEvent && !lock)
       return this._currentEvent.value
     else
       return this._getFromSource()
@@ -68,7 +92,18 @@ export class Atom extends AbstractMutable {
     return this._currentEvent.value
   }
   modify(fn) {
-    this._maybeEmitValue(fn(this.get()))
+    const current = this._currentEvent
+    const prev = current.value
+    const next = fn(prev)
+    if (lock) {
+      if (!atoms.find(x => x === this)) {
+        prevs.push(prev)
+        atoms.push(this)
+      }
+      current.value = next
+    } else {
+      this._maybeEmitValue(next)
+    }
   }
 }
 

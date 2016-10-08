@@ -144,3 +144,36 @@ provided for convenience.
 
 Creates a new view with the given path from the original atom.  Changes to the
 original atom are reflected in the view.
+
+### <a name="holding"></a>[`holding(() => ...)`](#holding "holding :: (() -> a) -> a")
+
+There is also a named import `holding`
+
+```js
+import {holding} from "kefir.atom"
+```
+
+which is function that is given a thunk to call while holding the propagation of
+events from changes to atoms.  The thunk can `get`, `set` and `modify` any
+number of atoms.  After the thunk returns, persisting changes to atoms are
+propagated.
+
+Consider the following example:
+
+```js
+const xy = Atom({x: 1, y: 2})
+
+const x = xy.lens("x")
+const y = xy.lens("y")
+
+x.log("x")
+y.log("y")
+
+holding(() => {
+  xy.set({x: 2, y: 1})
+  x.set(x.get() - 1)
+})
+```
+
+The example outputs `x 1` and `y 2` before and `y 1` after the call to
+`holding(...)`.
