@@ -31,13 +31,19 @@ export class LensedAtom extends AbstractMutable {
     this._$handleValue = null
   }
   get() {
-    return L.get(this._lens, this._source.get())
+    if (this._currentEvent)
+      return this._currentEvent.value
+    else
+      return this._getFromSource()
   }
   modify(fn) {
     this._source.modify(L.modify(this._lens, fn))
   }
-  _handleValue(context) {
-    this._maybeEmitValue(L.get(this._lens, context))
+  _getFromSource() {
+    return L.get(this._lens, this._source.get())
+  }
+  _handleValue() {
+    this._maybeEmitValue(this._getFromSource())
   }
   _onActivation() {
     const handleValue = value => this._handleValue(value)
