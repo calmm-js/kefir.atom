@@ -91,9 +91,9 @@ lensed atoms) implicitly skip duplicates using Ramda's
 
 ### <a name="get"></a>[`atom.get()`](#get "get :: AbstractMutable a -> a")
 
-A slow operation to synchronously get the current value of the atom.  Use of
-`get` is discouraged: prefer to depend on an atom as you would with ordinary
-Kefir properties.
+Synchronously computes the current value of the atom.  Use of `get` is
+discouraged: prefer to depend on an atom as you would with ordinary Kefir
+properties.
 
 ### <a name="lens"></a>[`atom.lens(...ls)`](#lens "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
