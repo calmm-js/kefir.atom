@@ -9,20 +9,24 @@ let lock = 0
 const prevs = []
 const atoms = []
 
+const release = () => {
+  while (prevs.length) {
+    const prev = prevs.pop()
+    const atom = atoms.pop()
+    const next = atom._currentEvent.value
+
+    if (!R.equals(prev, next))
+      atom._emitValue(next)
+  }
+}
+
 export const holding = ef => {
   ++lock
   try {
     return ef()
   } finally {
-    --lock
-    while (!lock && prevs.length) {
-      const prev = prevs.pop()
-      const atom = atoms.pop()
-      const next = atom._currentEvent.value
-
-      if (!R.equals(prev, next))
-        atom._emitValue(next)
-    }
+    if (!--lock)
+      release()
   }
 }
 
@@ -36,7 +40,7 @@ export class AbstractMutable extends Kefir.Property {
     return new LensedAtom(this, P(...ls))
   }
   view(...ls) {
-    return new LensedAtom(this, P(...ls))
+    return this.lens(...ls)
   }
   _maybeEmitValue(next) {
     const prev = this._currentEvent
@@ -55,8 +59,9 @@ export class LensedAtom extends AbstractMutable {
     this._$handleValue = null
   }
   get() {
-    if (this._currentEvent && !lock)
-      return this._currentEvent.value
+    const current = this._currentEvent
+    if (current && !lock)
+      return current.value
     else
       return this._getFromSource()
   }
