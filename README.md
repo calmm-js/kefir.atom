@@ -196,7 +196,7 @@ const y = Atom(2)
 const xy = new Molecule({x, y})
 ```
 
-When read (either as a property or via `get`) the abstract mutables in the
+When read, either as a property or via `get`, the abstract mutables in the
 template are replaced by their values:
 
 ```js
@@ -217,7 +217,7 @@ y.get()
 
 The writes are performed `holding` event propagation.
 
-It is considered an error (and the effect is unpredictable) if the written value
-does not match the template, (aside from the positions of abstract mutables, of
-course), which means that the write operations, `set` and `modify`, of
-`Molecule` are only *partial*.
+It is considered an error, and the effect is unpredictable, if the written value
+does not match the template, aside from the positions of abstract mutables, of
+course, which means that the write operations, `set` and `modify`, of `Molecule`
+are only *partial*.
