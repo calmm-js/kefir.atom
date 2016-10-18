@@ -177,3 +177,47 @@ holding(() => {
 
 The example outputs `x 1` and `y 2` before and `y 1` after the call to
 `holding(...)`.
+
+### <a name="class-Molecule"></a>[`Molecule template :> AbstractMutable (template where AbstractMutable x -> x)`](#class-Molecule)
+
+A `Molecule`
+
+```js
+import {Molecule} from "kefir.atom"
+```
+
+is a special *partial* implementation of
+an [`AbstractMutable`](#class-AbstractMutable) that is constructed from a
+template of abstract mutables:
+
+```js
+const x = Atom(1)
+const y = Atom(2)
+const xy = new Molecule({x, y})
+```
+
+When read (either as a property or via `get`) the abstract mutables in the
+template are replaced by their values:
+
+```js
+R.equals( xy.get(), {x: x.get(), y: y.get()} )
+// true
+```
+
+When written to, the abstract mutables in the template are written to with
+matching elements from the written value:
+
+```js
+xy.set({x: 3, y: 4})
+x.get()
+// 3
+y.get()
+// 4
+```
+
+The writes are performed `holding` event propagation.
+
+It is considered an error (and the effect is unpredictable) if the written value
+does not match the template, (aside from the positions of abstract mutables, of
+course), which means that the write operations, `set` and `modify`, of
+`Molecule` are only *partial*.

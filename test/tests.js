@@ -1,7 +1,8 @@
 import * as Kefir from "kefir"
 import * as R     from "ramda"
+import * as L     from "partial.lenses"
 
-import Atom, {holding} from "../src/kefir.atom"
+import Atom, {holding, Molecule} from "../src/kefir.atom"
 
 function show(x) {
   switch (typeof x) {
@@ -14,7 +15,7 @@ function show(x) {
 }
 
 const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
-  const actual = eval(`(Atom, holding, Kefir, R) => ${expr}`)(Atom, holding, Kefir, R)
+  const actual = eval(`(Atom, holding, Molecule, Kefir, L, R) => ${expr}`)(Atom, holding, Molecule, Kefir, L, R)
   const check = actual => {
     if (!R.equals(actual, expect))
       throw new Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
@@ -37,4 +38,6 @@ describe("Atom", () => {
   testEq('{const a = Atom({x: 1}), b = a.lens("x"); let n = 0; const inc = () => ++n; a.onValue(inc); b.onValue(inc); holding(() => {a.set({x: 2}); b.set(1)}); return n}', 2)
   testEq('{const a = Atom({x: 1}), b = a.lens("x"); let n = 0; const inc = () => ++n; a.onValue(inc); b.onValue(inc); holding(() => {a.set({x: 2}); b.set(3)}); return n}', 4)
   testEq('{const a = Atom({x: 1}), b = a.lens("x"); return holding(() => {a.set({x: 2}); return b.get()})}', 2)
+  testEq('{const x = new Molecule([{x: Atom(1)}, {y: 2}, Atom(3)]); return x}', [{x: 1}, {y: 2}, 3])
+  testEq('{const x = Atom(1), y = Atom(2), xy = new Molecule({x, z: ["z"], y: [y]}); xy.lens(L.props("x", "y")).set({x: 3, y: [4]}); return Kefir.combine([x, y, xy])}', [3, 4, {x: 3, z: ["z"], y: [4]}])
 })
