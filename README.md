@@ -178,7 +178,7 @@ holding(() => {
 The example outputs `x 1` and `y 2` before and `y 1` after the call to
 `holding(...)`.
 
-### <a name="class-Molecule"></a>[`Molecule t :> AbstractMutable (t where AbstractMutable x -> x)`](#class-Molecule)
+### <a name="class-Molecule"></a>[`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
 
 A `Molecule`
 
