@@ -222,3 +222,7 @@ It is considered an error, and the effect is unpredictable, if the written value
 does not match the template, aside from the positions of abstract mutables, of
 course, which means that the write operations, `set` and `modify`, of `Molecule`
 are only *partial*.
+
+Also, if the template contains multiple abstract mutables that correspond to the
+same underlying state, then writing through the template will give unpredictable
+results.
