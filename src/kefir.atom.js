@@ -51,11 +51,10 @@ export class AbstractMutable extends Kefir.Property {
 
 //
 
-export class LensedAtom extends AbstractMutable {
-  constructor(source, lens) {
+export class MutableWithSource extends AbstractMutable {
+  constructor(source) {
     super()
     this._source = source
-    this._lens = lens
     this._$handleValue = null
   }
   get() {
@@ -64,12 +63,6 @@ export class LensedAtom extends AbstractMutable {
       return current.value
     else
       return this._getFromSource()
-  }
-  modify(fn) {
-    this._source.modify(L.modify(this._lens, fn))
-  }
-  _getFromSource() {
-    return L.get(this._lens, this._source.get())
   }
   _handleValue() {
     this._maybeEmitValue(this._getFromSource())
@@ -83,6 +76,21 @@ export class LensedAtom extends AbstractMutable {
     this._source.offValue(this._$handleValue)
     this._$handleValue = null
     this._currentEvent = null
+  }
+}
+
+//
+
+export class LensedAtom extends MutableWithSource {
+  constructor(source, lens) {
+    super(source)
+    this._lens = lens
+  }
+  modify(fn) {
+    this._source.modify(L.modify(this._lens, fn))
+  }
+  _getFromSource() {
+    return L.get(this._lens, this._source.get())
   }
 }
 
