@@ -191,16 +191,17 @@ an [`AbstractMutable`](#class-AbstractMutable) that is constructed from a
 template of abstract mutables:
 
 ```js
-const x = Atom(1)
-const y = Atom(2)
-const xy = new Molecule({x, y})
+const xyA = Atom({x: 1, y: 2})
+const xL = xyA.lens("x")
+const yL = xyA.lens("y")
+const xyM = new Molecule({x: xL, y: yL})
 ```
 
 When read, either as a property or via `get`, the abstract mutables in the
 template are replaced by their values:
 
 ```js
-R.equals( xy.get(), {x: x.get(), y: y.get()} )
+R.equals( xyM.get(), xyA.get() )
 // true
 ```
 
@@ -208,11 +209,11 @@ When written to, the abstract mutables in the template are written to with
 matching elements from the written value:
 
 ```js
-xy.set({x: 3, y: 4})
-x.get()
+xyM.lens("x").set(3)
+xL.get()
 // 3
-y.get()
-// 4
+yL.get()
+// 2
 ```
 
 The writes are performed `holding` event propagation.
