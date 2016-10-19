@@ -143,7 +143,11 @@ provided for convenience.
 ### <a name="remove"></a>[`atom.remove()`](#remove "remove :: AbstractMutable a -> ()")
 
 `atom.remove()` is equivalent to [`atom.set()`](#set), which is also equivalent
-to [`atom.set(undefined)`](#set), and is provided for convenience.
+to [`atom.set(undefined)`](#set), and is provided for convenience.  Calling
+`remove` on a plain `Atom` doesn't usually make sense, but `remove` can be
+useful with lensed atoms, where the "removal" will then follow from the
+semantics of [remove](https://github.com/calmm-js/partial.lenses#remove) on
+partial lenses.
 
 ### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> Property b")
 
