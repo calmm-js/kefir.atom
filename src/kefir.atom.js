@@ -36,6 +36,9 @@ export class AbstractMutable extends Kefir.Property {
   set(value) {
     this.modify(() => value)
   }
+  remove() {
+    this.set()
+  }
   lens(...ls) {
     return new LensedAtom(this, P(...ls))
   }

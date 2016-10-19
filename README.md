@@ -140,6 +140,11 @@ actually happens is decided by the implementation of [`AbstractMutable`](#class-
 `atom.set(value)` is equivalent to [`atom.modify(() => value)`](#modify) and is
 provided for convenience.
 
+### <a name="remove"></a>[`atom.remove()`](#remove "remove :: AbstractMutable a -> ()")
+
+`atom.remove()` is equivalent to [`atom.set()`](#set), which is also equivalent
+to [`atom.set(undefined)`](#set), and is provided for convenience.
+
 ### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> Property b")
 
 Creates a new view with the given path from the original atom.  Changes to the
@@ -154,8 +159,8 @@ import {holding} from "kefir.atom"
 ```
 
 which is function that is given a thunk to call while holding the propagation of
-events from changes to atoms.  The thunk can `get`, `set` and `modify` any
-number of atoms.  After the thunk returns, persisting changes to atoms are
+events from changes to atoms.  The thunk can `get`, `set`, `remove` and `modify`
+any number of atoms.  After the thunk returns, persisting changes to atoms are
 propagated.
 
 Consider the following example:
@@ -220,8 +225,8 @@ The writes are performed `holding` event propagation.
 
 It is considered an error, and the effect is unpredictable, if the written value
 does not match the template, aside from the positions of abstract mutables, of
-course, which means that the write operations, `set` and `modify`, of `Molecule`
-are only *partial*.
+course, which means that write operations, `set`, `remove` and `modify`, on
+`Molecule`s and lensed atoms created from molecules are only *partial*.
 
 Also, if the template contains multiple abstract mutables that correspond to the
 same underlying state, then writing through the template will give unpredictable
