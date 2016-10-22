@@ -43,6 +43,8 @@ export class AbstractMutable extends Kefir.Property {
     return new LensedAtom(this, P(...ls))
   }
   view(...ls) {
+    // We do not currently implement view() differently from lens(), because
+    // such an implementation would not be faster/smaller.
     return this.lens(...ls)
   }
   _maybeEmitValue(next) {
