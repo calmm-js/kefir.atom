@@ -11,8 +11,9 @@ with [Kefir](http://rpominov.github.io/kefir/).  Using this library:
   operations at any point and through all views.
 
 * You can *observe* state and *react upon* state changes
-  as [AbstractMutable](#class-AbstractMutable)s are also
-  Kefir [properties]((http://rpominov.github.io/kefir/#about-observables)).
+  as [AbstractMutable](#class-AbstractMutable)s are
+  also
+  [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
 
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a *transactional* manner
