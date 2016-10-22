@@ -40,7 +40,7 @@ Using this library:
   also
   [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
   * *This means that you can make it so that computations dependent upon state
-    remain consistent even when state changes over time.*
+    are kept consistent as state changes over time.*
 
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a **_transactional_** manner
