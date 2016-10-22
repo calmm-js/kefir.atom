@@ -24,8 +24,9 @@ of [Kefir](http://rpominov.github.io/kefir/#about-observables) and the concepts
 added by this library
 
 * **AbstractMutable**,
-* **Atom**, and
-* **LensedAtom**.
+* **Atom**,
+* **LensedAtom**, and
+* **Molecule**.
 
 ## Reference
 
@@ -39,50 +40,99 @@ of this library.  It provides a convenience function that constructs a `new`
 instance of the [`Atom`](#class-Atom) class.
 
 The classes [`AbstractMutable`](#class-AbstractMutable), [`Atom`](#class-Atom),
-and [`LensedAtom`](#class-LensedAtom) are also provided as named exports:
+[`LensedAtom`](#class-LensedAtom) and [`Molecule`](#class-Molecule) are also
+provided as named exports:
 
 ```js
-import {AbstractMutable, Atom, LensedAtom} from "kefir.atom"
+import {AbstractMutable, Atom, LensedAtom, Molecule} from "kefir.atom"
 ```
+
+Note that the default export is not the same as the named export `Atom`.
 
 There are use cases where you would want to create new subtypes of
 [`AbstractMutable`](#class-AbstractMutable), but it seems unlikely that you
-should inherit from [`Atom`](#class-Atom) or [`LensedAtom`](#class-LensedAtom).
+should inherit from the other classes.
 
 ### <a name="class-AbstractMutable"></a>[`AbstractMutable a :> Property a`](#class-AbstractMutable)
 
 `AbstractMutable` is the base interface against which most code using atoms is
 actually written.  An `AbstractMutable` is a property that also provides for
-ability to request to `modify` the value of the property.
+ability to request to [`modify`](#modify) the value of the property.
 
 Note that we often abuse terminology and speak of [`Atom`](#class-Atom)s when we
 should speak of `AbstractMutable`s, because [`Atom`](#class-Atom) is easier to
 pronounce and is more concrete.
 
-`AbstractMutable` does not implement the `get` and `modify` methods&mdash;they
-are to be defined by subtypes.  Otherwise all of the classes provide the same
-methods with the same semantics.
+`AbstractMutable` does not implement the [`get`](#get) and [`modify`](#modify)
+methods&mdash;they are to be defined by subtypes.  Otherwise all of the classes
+provide the same methods with the same semantics.
 
 ### <a name="class-Atom"></a>[`Atom a :> AbstractMutable a`](#class-Atom)
 
-An `Atom` is a simple implementation of an
-[`AbstractMutable`](#class-AbstractMutable) that actually stores the value.  One
-can create an `Atom` directly by giving an initial value.
+An `Atom` is a simple implementation of
+an [`AbstractMutable`](#class-AbstractMutable) that actually stores state.  One
+can create an `Atom` directly by explicitly giving an initial value or one can
+create an `Atom` without an initial value.
 
-Note that `Atom` is not the only possible root implementation of
-[`AbstractMutable`](#class-AbstractMutable).  For example, it would be possible
-to implement an [`AbstractMutable`](#class-AbstractMutable) whose state is
-actually stored in an external database that can be observed and mutated by
+Note that `Atom` is not the only possible root implementation
+of [`AbstractMutable`](#class-AbstractMutable).  For example, it would be
+possible to implement an [`AbstractMutable`](#class-AbstractMutable) whose state
+is actually stored in an external database that can be observed and mutated by
 multiple clients.
 
 ### <a name="class-LensedAtom"></a>[`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
 
-A `LensedAtom` is an implementation of an
-[`AbstractMutable`](#class-AbstractMutable) that doesn't actually store
-anything, but instead refers to a part, specified using a
-[lens](https://github.com/calmm-js/partial.lenses/), of another
-[`AbstractMutable`](#class-AbstractMutable).  One creates `LensedAtom`s by
-calling the `lens` method of an [`AbstractMutable`](#class-AbstractMutable).
+A `LensedAtom` is an implementation of
+an [`AbstractMutable`](#class-AbstractMutable) that doesn't actually store
+state, but instead refers to a part, specified using
+a [lens](https://github.com/calmm-js/partial.lenses/), of
+another [`AbstractMutable`](#class-AbstractMutable).  One creates `LensedAtom`s
+by calling the [`lens`](#lens) method of
+an [`AbstractMutable`](#class-AbstractMutable).
+
+### <a name="class-Molecule"></a>[`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
+
+A `Molecule` is a special *partial* implementation of
+an [`AbstractMutable`](#class-AbstractMutable) that is constructed from a
+template of abstract mutables:
+
+```js
+const xyA = Atom({x: 1, y: 2})
+const xL = xyA.lens("x")
+const yL = xyA.lens("y")
+const xyM = new Molecule({x: xL, y: yL})
+```
+
+When read, either as a property or via [`get`](#get), the abstract mutables in
+the template are replaced by their values:
+
+```js
+R.equals( xyM.get(), xyA.get() )
+// true
+```
+
+When written to, the abstract mutables in the template are written to with
+matching elements from the written value:
+
+```js
+xyM.lens("x").set(3)
+xL.get()
+// 3
+yL.get()
+// 2
+```
+
+The writes are performed [`holding`](#holding) event propagation.
+
+It is considered an error, and the effect is unpredictable, if the written value
+does not match the template, aside from the positions of abstract mutables, of
+course, which means that write operations, [`set`](#set), [`remove`](#remove)
+and [`modify`](#modify), on `Molecule`s and lensed atoms created from molecules
+are only *partial*.
+
+Also, if the template contains multiple abstract mutables that correspond to the
+same underlying state, then writing through the template will give unpredictable
+results.
 
 ### <a name="Atom"></a>[`Atom(initialValue)`](#Atom "Atom :: a -> Atom a")
 
@@ -97,11 +147,15 @@ Synchronously computes the current value of the atom.  Use of `get` is
 discouraged: prefer to depend on an atom as you would with ordinary Kefir
 properties.
 
+When `get` is called on [`AbstractMutable`](#class-AbstractMutable) that has a
+root [`Atom`](#class-Atom) that does not have a value, `get` returns the value
+of those [`Atom`](#class-Atom)s as `undefined`.
+
 ### <a name="lens"></a>[`atom.lens(...ls)`](#lens "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
-Creates a new lensed atom with the given path from the original atom.
-Modifications to the lensed atom are reflected in the original atom and vice
-verse.
+Creates a new [`LensedAtom`](#class-LensedAtom) with the given path from the
+original atom.  Modifications to the lensed atom are reflected in the original
+atom and vice verse.
 
 The lenses are treated as a path
 of [partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one
@@ -134,8 +188,9 @@ reference to existing mutable state.
 Conceptually applies the given function to the current value of the atom and
 replaces the value of the atom with the new value returned by the function.
 This is what happens with the basic [`Atom`](#class-Atom) implementation.  What
-actually happens is decided by the implementation of [`AbstractMutable`](#class-AbstractMutable) whose
-`modify` method is ultimately called.
+actually happens is decided by the implementation
+of [`AbstractMutable`](#class-AbstractMutable) whose `modify` method is
+ultimately called.
 
 ### <a name="set"></a>[`atom.set(value)`](#set "set :: AbstractMutable a -> a -> ()")
 
@@ -146,10 +201,11 @@ provided for convenience.
 
 `atom.remove()` is equivalent to [`atom.set()`](#set), which is also equivalent
 to [`atom.set(undefined)`](#set), and is provided for convenience.  Calling
-`remove` on a plain `Atom` doesn't usually make sense, but `remove` can be
-useful with lensed atoms, where the "removal" will then follow from the
-semantics of [remove](https://github.com/calmm-js/partial.lenses#remove) on
-partial lenses.
+`remove` on a plain [`Atom`](#class-Atom) doesn't usually make sense, but
+`remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
+"removal" will then follow from the semantics
+of [remove](https://github.com/calmm-js/partial.lenses#remove) on partial
+lenses.
 
 ### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> Property b")
 
@@ -165,7 +221,8 @@ import {holding} from "kefir.atom"
 ```
 
 which is function that is given a thunk to call while holding the propagation of
-events from changes to atoms.  The thunk can `get`, `set`, `remove` and `modify`
+events from changes to atoms.  The thunk
+can [`get`](#get), [`set`](#set), [`remove`](#remove) and [`modify`](#modify)
 any number of atoms.  After the thunk returns, persisting changes to atoms are
 propagated.
 
@@ -188,52 +245,3 @@ holding(() => {
 
 The example outputs `x 1` and `y 2` before and `y 1` after the call to
 `holding(...)`.
-
-### <a name="class-Molecule"></a>[`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
-
-A `Molecule`
-
-```js
-import {Molecule} from "kefir.atom"
-```
-
-is a special *partial* implementation of
-an [`AbstractMutable`](#class-AbstractMutable) that is constructed from a
-template of abstract mutables:
-
-```js
-const xyA = Atom({x: 1, y: 2})
-const xL = xyA.lens("x")
-const yL = xyA.lens("y")
-const xyM = new Molecule({x: xL, y: yL})
-```
-
-When read, either as a property or via `get`, the abstract mutables in the
-template are replaced by their values:
-
-```js
-R.equals( xyM.get(), xyA.get() )
-// true
-```
-
-When written to, the abstract mutables in the template are written to with
-matching elements from the written value:
-
-```js
-xyM.lens("x").set(3)
-xL.get()
-// 3
-yL.get()
-// 2
-```
-
-The writes are performed `holding` event propagation.
-
-It is considered an error, and the effect is unpredictable, if the written value
-does not match the template, aside from the positions of abstract mutables, of
-course, which means that write operations, `set`, `remove` and `modify`, on
-`Molecule`s and lensed atoms created from molecules are only *partial*.
-
-Also, if the template contains multiple abstract mutables that correspond to the
-same underlying state, then writing through the template will give unpredictable
-results.
