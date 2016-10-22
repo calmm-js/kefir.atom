@@ -53,3 +53,15 @@ describe("Molecule", () => {
   testEq('{const x = new Molecule([{x: Atom(1)}, {y: 2}, Atom(3)]); return x}', [{x: 1}, {y: 2}, 3])
   testEq('{const x = Atom(1), y = Atom(2), xy = new Molecule({x, z: ["z"], y: [y]}); xy.lens(L.props("x", "y")).set({x: 3, y: [4]}); return Kefir.combine([x, y, xy])}', [3, 4, {x: 3, z: ["z"], y: [4]}])
 })
+
+describe("variable", () => {
+  testEq('{const x = Atom(); return x.get()}', undefined)
+  testEq('{const x = Atom(); return x.orAsync(1)}', 1)
+  testEq('{const x = Atom(), y = x.lens("lol"); return y.get()}', undefined)
+  testEq('{const x = Atom(), y = x.lens("lol"); return y.orAsync(1)}', 1)
+  testEq('{const x = Atom(), y = new Molecule({x}); return y.get()}', {x: undefined})
+  testEq('{const x = Atom(), y = new Molecule({x}); return x.orAsync(1)}', 1)
+  testEq('{const x = Atom(), y = x.lens("y"); let r = "initial"; y.onValue(y => r = y); return r}', "initial")
+  testEq('{const x = Atom(), y = x.lens("y"); let r = "initial"; y.onValue(y => r = y); x.set({y: 1}); return r}', 1)
+  testEq('{const x = Atom(), y = x.lens("y"); let r = "initial"; y.onValue(y => r = y); holding(() => x.set({y: 1})); return r}', 1)
+})
