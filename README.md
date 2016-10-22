@@ -55,17 +55,16 @@ should inherit from the other classes.
 
 ### <a name="class-AbstractMutable"></a>[`AbstractMutable a :> Property a`](#class-AbstractMutable)
 
-`AbstractMutable` is the base interface against which most code using atoms is
-actually written.  An `AbstractMutable` is a property that also provides for
-ability to request to [`modify`](#modify) the value of the property.
+`AbstractMutable` is the abstract base class or interface against which most
+code using atoms is actually written.  An `AbstractMutable` is a
+Kefir [property](http://rpominov.github.io/kefir/#about-observables) that also
+provides for ability to request to [`modify`](#modify) the value of the
+property.  `AbstractMutable`s implicitly skip duplicates using
+Ramda's [`equals`](http://ramdajs.com/0.21.0/docs/#equals) function.
 
 Note that we often abuse terminology and speak of [`Atom`](#class-Atom)s when we
 should speak of `AbstractMutable`s, because [`Atom`](#class-Atom) is easier to
 pronounce and is more concrete.
-
-`AbstractMutable` does not implement the [`get`](#get) and [`modify`](#modify)
-methods&mdash;they are to be defined by subtypes.  Otherwise all of the classes
-provide the same methods with the same semantics.
 
 ### <a name="class-Atom"></a>[`Atom a :> AbstractMutable a`](#class-Atom)
 
@@ -134,12 +133,13 @@ Also, if the template contains multiple abstract mutables that correspond to the
 same underlying state, then writing through the template will give unpredictable
 results.
 
-### <a name="Atom"></a>[`Atom(initialValue)`](#Atom "Atom :: a -> Atom a")
+### <a name="Atom"></a>[`Atom(value)`](#Atom "Atom :: a -> Atom a")
 
-Creates a new atom with the given initial value.  An atom is a modifiable Kefir
-[property](http://rpominov.github.io/kefir/#about-observables).  Atoms (and
-lensed atoms) implicitly skip duplicates using Ramda's
-[`equals`](http://ramdajs.com/0.21.0/docs/#equals) function.
+Creates a new atom with the given initial value.
+
+### <a name="Atom-empty"></a>[`Atom()`](#Atom "Atom :: () -> Atom a")
+
+Creates a new atom without an initial value.
 
 ### <a name="get"></a>[`atom.get()`](#get "get :: AbstractMutable a -> a")
 
