@@ -30,7 +30,7 @@ added by this library
 
 ## Reference
 
-Typically one only uses the default import
+Typically one only uses the default export
 
 ```js
 import Atom from "kefir.atom"
