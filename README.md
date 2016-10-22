@@ -48,8 +48,8 @@ Using this library:
   * *This means that you can avoid glitches and computing unnecessary
     intermediate states.*
 
-The rest of this README provides a brief description of the
-main [concepts](#concepts) of this library and a [reference](#reference).
+The rest of this README provides a diagram of the main [concepts](#concepts) of
+this library and a [reference](#reference).
 
 [![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
 
