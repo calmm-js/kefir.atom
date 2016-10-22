@@ -11,18 +11,20 @@ become invalid or inconsistent.
 
 Using this library:
 
-* You can **_store_** state in **_first-class_** objects
+* You can **_store_** state in *first-class* objects
   called [Atom](#class-Atom)s.
   * *This means that you can avoid copying or duplicating state to share it
     across components of your program.  You simply share references to the
     state.*
 
-* You can define **_decomposed_** views of state using [lens](#lens)es.
+* You can define **_decomposed_** *first-class* views of state
+  using [lens](#lens)es.
   * *This means that when a component of your program is only interested in a
     part of state you can make it so that the module does not need to know about
     the rest of the state.*
 
-* You can define **_composed_** views of state as [Molecule](#class-Molecule)s.
+* You can define **_composed_** *first-class* views of state
+  as [Molecule](#class-Molecule)s.
   * *This means that when a component of your program is interested in parts of
     state that are stored separately you make it so that the module does not
     need to know that.*
