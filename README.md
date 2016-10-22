@@ -204,9 +204,9 @@ values of those [`Atom`](#class-Atom)s as `undefined`.
 
 ### <a name="lens"></a>[`atom.lens(...ls)`](#lens "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
-Creates a new [`LensedAtom`](#class-LensedAtom) with the given path from the
-original atom.  Modifications to the lensed atom are reflected in the original
-atom and vice verse.
+Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
+with the given path from the original atom.  Modifications to the lensed atom
+are reflected in the original atom and vice verse.
 
 The lenses are treated as a path
 of [partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one
@@ -260,8 +260,8 @@ lenses.
 
 ### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> Property b")
 
-Creates a new view with the given path from the original atom.  Changes to the
-original atom are reflected in the view.
+Creates a new read-only view with the given path from the original atom.
+Changes to the original atom are reflected in the view.
 
 ### <a name="holding"></a>[`holding(() => ...)`](#holding "holding :: (() -> a) -> a")
 
