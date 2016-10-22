@@ -69,10 +69,10 @@ concepts
 of [Kefir](http://rpominov.github.io/kefir/#about-observables) and the concepts
 added by this library
 
-* **AbstractMutable**,
-* **Atom**,
-* **LensedAtom**, and
-* **Molecule**.
+* **[AbstractMutable](#class-AbstractMutable)**,
+* **[Atom](#class-Atom)**,
+* **[LensedAtom](#class-LensedAtom)**, and
+* **[Molecule](#class-Molecule)**.
 
 ## Reference
 
