@@ -4,9 +4,9 @@
 
 In previous versions of this library, `AbstractMutable`s, including `Atom`,
 `LensedAtom` and `Molecule`, were always considered to hold a value.  The
-initial value of an `Atom` constructed without an argument, `Atom()` was
-implicitly `undefined`.  Also, when subscribing to an `AbstractMutable`, there
-would always immediately be an event.
+initial value of an `Atom()` constructed without an argument was implicitly
+`undefined`.  Also, when subscribing to an `AbstractMutable`, there would always
+immediately be an event.
 
 Now an `Atom` may be initially *empty*.  When subscribing to an
 `AbstractMutable` whose root `Atom` is empty, there will be no immediate event.
