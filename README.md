@@ -13,38 +13,38 @@ Using this library:
 
 * You can **_store_** state in **_first-class_** objects
   called [Atom](#class-Atom)s.
-  * This means that you can avoid copying or duplicating state to share it
+  * *This means that you can avoid copying or duplicating state to share it
     across components of your program.  You simply share a reference, the
-    `Atom`, to the state.
+    `Atom`, to the state.*
 
 * You can define **_decomposed_** views of state using [lens](#lens)es.
-  * This means that when a component of your program is only interested in a
+  * *This means that when a component of your program is only interested in a
     part of state you can make it so that the module does not need to know about
-    the rest of the state.
+    the rest of the state.*
 
 * You can define **_composed_** views of state as [Molecule](#class-Molecule)s.
-  * This means that when a component of your program is interested in parts of
+  * *This means that when a component of your program is interested in parts of
     state that are stored separately you make it so that the module does not
-    need to know that.
+    need to know that.*
 
 * You get **_consistent_** access to state using [get](#get)
   and [modify](#modify) operations at any point and through all views.
-  * This means that by using views, both decomposed and composed, of state you
-    avoid copying state the problems associated with that.
+  * *This means that by using views, both decomposed and composed, of state you
+    avoid copying state the problems associated with that.*
 
 * You can **_observe_** state and **_react upon_** state changes
   as [AbstractMutable](#class-AbstractMutable)s are
   also
   [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
-  * This means that by expressing computations dependent upon state using
+  * *This means that by expressing computations dependent upon state using
     observable combinators, the state dependent computation remain consistent
-    even when state changes over time.
+    even when state changes over time.*
 
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a **_transactional_** manner
   by [holding](#holding) event propagation from state changes.
-  * This means that you can avoid glitches and computing unnecessary
-    intermediate states.
+  * *This means that you can avoid glitches and computing unnecessary
+    intermediate states.*
 
 [![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
 
