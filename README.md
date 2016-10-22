@@ -1,22 +1,23 @@
 This library provides a family of concepts for managing state
 with [Kefir](http://rpominov.github.io/kefir/).  Using this library:
 
-* You can *store* state in *first-class* objects called [Atom](#class-Atom)s.
+* You can **_store_** state in **_first-class_** objects
+  called [Atom](#class-Atom)s.
 
-* You can define *decomposed* views of state using [lens](#lens)es.
+* You can define **_decomposed_** views of state using [lens](#lens)es.
 
-* You can define *composed* views of state as [Molecule](#class-Molecule)s.
+* You can define **_composed_** views of state as [Molecule](#class-Molecule)s.
 
-* You get *consistent* access to state using [get](#get) and [modify](#modify)
-  operations at any point and through all views.
+* You get **_consistent_** access to state using [get](#get)
+  and [modify](#modify) operations at any point and through all views.
 
-* You can *observe* state and *react upon* state changes
+* You can **_observe_** state and **_react upon_** state changes
   as [AbstractMutable](#class-AbstractMutable)s are
   also
   [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
 
 * You can mutate state through multiple views and multiple
-  atomic [modify](#modify) operations in a *transactional* manner
+  atomic [modify](#modify) operations in a **_transactional_** manner
   by [holding](#holding) event propagation from state changes.
 
 See [CHANGELOG](CHANGELOG.md).
