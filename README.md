@@ -34,13 +34,13 @@ Using this library:
   * *This means that by using views, both decomposed and composed, of state you
     can avoid copying state and inconsistency problems associated with that.*
 
-* You can **_observe_** state and **_react upon_** state changes
+* You can express arbitrary **_dependent computations_** using observable
+  combinators from [Kefir](http://rpominov.github.io/kefir/)
   as [AbstractMutable](#class-AbstractMutable)s are
   also
   [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
-  * *This means that by expressing computations dependent upon state using
-    observable combinators, the state dependent computation remain consistent
-    even when state changes over time.*
+  * *This means that you can make it so that computations dependent upon state
+    remain consistent even when state changes over time.*
 
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a **_transactional_** manner
