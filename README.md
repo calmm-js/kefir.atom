@@ -137,7 +137,7 @@ results.
 
 Creates a new atom with the given initial value.
 
-### <a name="Atom-empty"></a>[`Atom()`](#Atom "Atom :: () -> Atom a")
+### <a name="Atom-empty"></a>[`Atom()`](#Atom-empty "Atom :: () -> Atom a")
 
 Creates a new atom without an initial value.
 
