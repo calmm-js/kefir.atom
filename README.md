@@ -3,6 +3,10 @@ managing
 [state](https://en.wikipedia.org/wiki/State_(computer_science)#Program_state)
 with [Kefir](http://rpominov.github.io/kefir/).
 
+[![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
+
+## Motivation
+
 Use of state and mutation is often considered error-prone and rightly so.
 Stateful concepts are *inherently difficult*, because, unlike stateless
 concepts, they include the concept of time: *state changes over time*.  When
@@ -52,8 +56,6 @@ Using this library:
 
 The rest of this README provides a [reference](#reference) manual for this
 library.
-
-[![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
 
 ## Reference
 
