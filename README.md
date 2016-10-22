@@ -32,7 +32,7 @@ Using this library:
 * You get **_consistent_** access to state using [get](#get)
   and [modify](#modify) operations at any point and through all views.
   * *This means that by using views, both decomposed and composed, of state you
-    avoid copying state the problems associated with that.*
+    can avoid copying state and inconsistency problems associated with that.*
 
 * You can **_observe_** state and **_react upon_** state changes
   as [AbstractMutable](#class-AbstractMutable)s are
