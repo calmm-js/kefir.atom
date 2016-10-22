@@ -241,7 +241,10 @@ replaces the value of the atom with the new value returned by the function.
 This is what happens with the basic [`Atom`](#class-Atom) implementation.  What
 actually happens is decided by the implementation
 of [`AbstractMutable`](#class-AbstractMutable) whose `modify` method is
-ultimately called.
+ultimately called.  For example, the `modify` operation
+of [`LensedAtom`](#class-LensedAtom) combines the function with its lens and
+uses the resulting function to `modify` its source.  From the point of view of
+the caller the end result is the same as with an [`Atom`](#class-Atom).
 
 ### <a name="set"></a>[`atom.set(value)`](#set "set :: AbstractMutable a -> a -> ()")
 
