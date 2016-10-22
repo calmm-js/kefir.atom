@@ -45,7 +45,9 @@ Using this library:
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a **_transactional_** manner
   by [holding](#holding) event propagation from state changes.
-  * *This means that you can avoid glitches and computing unnecessary
+  * *This means that you can avoid
+    some
+    [glitches and unnecessary computations](https://en.wikipedia.org/wiki/Reactive_programming#Glitches) of
     intermediate states.*
 
 The rest of this README provides a diagram of the main [concepts](#concepts) of
