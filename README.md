@@ -14,8 +14,8 @@ Using this library:
 * You can **_store_** state in **_first-class_** objects
   called [Atom](#class-Atom)s.
   * *This means that you can avoid copying or duplicating state to share it
-    across components of your program.  You simply share a reference, the
-    `Atom`, to the state.*
+    across components of your program.  You simply share references to the
+    state.*
 
 * You can define **_decomposed_** views of state using [lens](#lens)es.
   * *This means that when a component of your program is only interested in a
