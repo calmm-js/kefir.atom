@@ -1,7 +1,7 @@
 {
   "name": "kefir.atom",
   "version": "3.0.0",
-  "description": "Reactive variables with Kefir",
+  "description": "Manage state with Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
     "dist": "babel src --source-maps inline --out-dir lib",
@@ -14,11 +14,16 @@
     "url": "git+https://github.com/calmm-js/kefir.atom.git"
   },
   "keywords": [
-    "kefir",
-    "reactive",
-    "model",
     "atom",
-    "lens"
+    "compose",
+    "decompose",
+    "kefir",
+    "lens",
+    "model",
+    "observable",
+    "reactive",
+    "state",
+    "transaction"
   ],
   "license": "MIT",
   "bugs": {
