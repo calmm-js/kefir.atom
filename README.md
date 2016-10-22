@@ -199,8 +199,8 @@ discouraged: prefer to depend on an atom as you would with ordinary Kefir
 properties.
 
 When `get` is called on an [`AbstractMutable`](#class-AbstractMutable) that has
-a root [`Atom`](#class-Atom) that does not have a value, `get` returns the value
-of those [`Atom`](#class-Atom)s as `undefined`.
+a root [`Atom`](#class-Atom) that does not have a value, `get` returns the
+values of those [`Atom`](#class-Atom)s as `undefined`.
 
 ### <a name="lens"></a>[`atom.lens(...ls)`](#lens "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
