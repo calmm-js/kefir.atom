@@ -26,7 +26,7 @@ Using this library:
 * You can define **_composed_** *first-class* views of state
   as [Molecule](#class-Molecule)s.
   * *This means that when a component of your program is interested in parts of
-    state that are stored separately you make it so that the module does not
+    state that are stored separately you can make it so that the module does not
     need to know that.*
 
 * You get **_consistent_** access to state using [get](#get)
