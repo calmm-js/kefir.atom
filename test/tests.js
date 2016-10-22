@@ -14,6 +14,10 @@ function show(x) {
   }
 }
 
+Kefir.Observable.prototype.orAsync = function (y) {
+  return this.merge(Kefir.later(0, y))
+}
+
 const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
   const actual = eval(`(Atom, Kefir, L, R, Molecule, holding) => ${expr}`)(
                         Atom, Kefir, L, R, Molecule, holding)
@@ -29,7 +33,7 @@ const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
 })
 
 describe("Atom", () => {
-  testEq('{const xy = Atom({x: {y: 1}}); return xy}', {x: {y: 1}})
+  testEq('{const xy = Atom({x: {y: 1}}); return xy.orAsync("test bug")}', {x: {y: 1}})
   testEq('{const xy = Atom({x: {y: 1}}); xy.set({x: {y: 2}}) ; return xy.get()}', {x: {y: 2}})
   testEq('{const xy = Atom({x: 1, y: 2}); xy.lens("x").remove(); return xy}', {y: 2})
   testEq('{const xy = Atom({x: {y: 1}}), y = xy.lens("x"); return y.get()}', {y: 1})
