@@ -186,11 +186,28 @@ results.
 
 ### <a name="Atom"></a>[`Atom(value)`](#Atom "Atom :: a -> Atom a")
 
-Creates a new atom with the given initial value.
+Creates a new atom with the given initial value.  For example:
+
+```js
+const notEmpty = Atom("initial")
+notEmpty.get()
+// 'initial'
+notEmpty.log()
+// [property] <value:current> initial
+```
 
 ### <a name="Atom-empty"></a>[`Atom()`](#Atom-empty "Atom :: () -> Atom a")
 
-Creates a new atom without an initial value.
+Creates a new atom without an initial value.  For example:
+
+```js
+const empty = Atom()
+empty.get()
+// undefined
+empty.log()
+empty.set("first")
+// [property] <value> first
+```
 
 ### <a name="get"></a>[`atom.get()`](#get "get :: AbstractMutable a -> a")
 
