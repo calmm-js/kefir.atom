@@ -62,7 +62,8 @@ provided as named exports:
 import {AbstractMutable, Atom, LensedAtom, Molecule} from "kefir.atom"
 ```
 
-Note that the default export is not the same as the named export `Atom`.
+Note that the [default export](#Atom) is not the same as the named
+export [`Atom`](#class-Atom).
 
 There are use cases where you would want to create new subtypes of
 [`AbstractMutable`](#class-AbstractMutable), but it seems unlikely that you
