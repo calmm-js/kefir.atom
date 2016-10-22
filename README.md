@@ -1,26 +1,50 @@
-This library provides a family of concepts for managing state
-with [Kefir](http://rpominov.github.io/kefir/).  Using this library:
+This library provides a family of [concepts](#concepts) for
+managing
+[state](https://en.wikipedia.org/wiki/State_(computer_science)#Program_state)
+with [Kefir](http://rpominov.github.io/kefir/).
+
+Use of state and mutation is often considered error-prone and rightly so.
+Stateful concepts are *inherently difficult*, because, unlike stateless
+concepts, they include the concept of time: *state changes over time*.  When
+state changes, computations based on state, including copies of state, may
+become invalid or inconsistent.
+
+Using this library:
 
 * You can **_store_** state in **_first-class_** objects
   called [Atom](#class-Atom)s.
+  * This means that you can avoid copying or duplicating state to share it
+    across components of your program.  You simply share a reference, the
+    `Atom`, to the state.
 
 * You can define **_decomposed_** views of state using [lens](#lens)es.
+  * This means that when a component of your program is only interested in a
+    part of state you can make it so that the module does not need to know about
+    the rest of the state.
 
 * You can define **_composed_** views of state as [Molecule](#class-Molecule)s.
+  * This means that when a component of your program is interested in parts of
+    state that are stored separately you make it so that the module does not
+    need to know that.
 
 * You get **_consistent_** access to state using [get](#get)
   and [modify](#modify) operations at any point and through all views.
+  * This means that by using views, both decomposed and composed, of state you
+    avoid copying state the problems associated with that.
 
 * You can **_observe_** state and **_react upon_** state changes
   as [AbstractMutable](#class-AbstractMutable)s are
   also
   [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
+  * This means that by expressing computations dependent upon state using
+    observable combinators, the state dependent computation remain consistent
+    even when state changes over time.
 
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a **_transactional_** manner
   by [holding](#holding) event propagation from state changes.
-
-See [CHANGELOG](CHANGELOG.md).
+  * This means that you can avoid glitches and computing unnecessary
+    intermediate states.
 
 [![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
 
@@ -88,6 +112,10 @@ An `Atom` is a simple implementation of
 an [`AbstractMutable`](#class-AbstractMutable) that actually stores state.  One
 can create an `Atom` directly by explicitly giving an initial value or one can
 create an `Atom` without an initial value.
+
+The *value* stored by an `Atom` *must* be treated as an *immutable* object.
+Instead of mutating the value stored by an `Atom`, one mutates the `Atom` by
+calling [`modify`](#modify), which makes the `Atom` to refer to the new value.
 
 Note that `Atom` is not the only possible root implementation
 of [`AbstractMutable`](#class-AbstractMutable).  For example, it would be
@@ -269,3 +297,5 @@ The implementations of the concepts provided by this library have been
 **use atoms and lenses with impunity**.  The bad news is that the implementation
 is tightly bound to the internals of Kefir.  Should the internals change, this
 library will need to be updated as well.
+
+See also [CHANGELOG](CHANGELOG.md).
