@@ -32,11 +32,11 @@ describe("Atom", () => {
   testEq('{const xy = Atom({x: {y: 1}}); return xy}', {x: {y: 1}})
   testEq('{const xy = Atom({x: {y: 1}}); xy.set({x: {y: 2}}) ; return xy.get()}', {x: {y: 2}})
   testEq('{const xy = Atom({x: 1, y: 2}); xy.lens("x").remove(); return xy}', {y: 2})
-  testEq('{const xy = Atom({x: {y: 1}}); const y = xy.lens("x"); return y.get()}', {y: 1})
-  testEq('{const xy = Atom({x: {y: 1}}); const y = xy.lens("x"); y.set({y: 3}); return y}', {y: 3})
-  testEq('{const xy = Atom({x: {y: 2}}); const y = xy.lens("x"); const z = y.lens("y"); return z}', 2)
-  testEq('{const xy = Atom({x: {y: 3}}); const z = xy.lens("x", "y"); z.set(2); return z}', 2)
-  testEq('{const xy = Atom({x: {y: 3}}); const z = xy.view("x", "y"); return z.get()}', 3)
+  testEq('{const xy = Atom({x: {y: 1}}), y = xy.lens("x"); return y.get()}', {y: 1})
+  testEq('{const xy = Atom({x: {y: 1}}), y = xy.lens("x"); y.set({y: 3}); return y}', {y: 3})
+  testEq('{const xy = Atom({x: {y: 2}}), y = xy.lens("x"), z = y.lens("y"); return z}', 2)
+  testEq('{const xy = Atom({x: {y: 3}}), z = xy.lens("x", "y"); z.set(2); return z}', 2)
+  testEq('{const xy = Atom({x: {y: 3}}), z = xy.view("x", "y"); return z.get()}', 3)
 })
 
 describe("holding", () => {
