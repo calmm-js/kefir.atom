@@ -194,9 +194,17 @@ Creates a new atom without an initial value.
 
 ### <a name="get"></a>[`atom.get()`](#get "get :: AbstractMutable a -> a")
 
-Synchronously computes the current value of the atom.  Use of `get` is
-discouraged: prefer to depend on an atom as you would with ordinary Kefir
-properties.
+Synchronously computes the current value of the atom.  For example:
+
+```js
+const root = Atom({x: 1})
+const x = root.lens("x")
+x.get()
+// 1
+```
+
+Use of `get` is discouraged: prefer to depend on an atom as you would with
+ordinary Kefir properties.
 
 When `get` is called on an [`AbstractMutable`](#class-AbstractMutable) that has
 a root [`Atom`](#class-Atom) that does not have a value, `get` returns the
@@ -206,7 +214,18 @@ values of those [`Atom`](#class-Atom)s as `undefined`.
 
 Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
 with the given path from the original atom.  Modifications to the lensed atom
-are reflected in the original atom and vice verse.
+are reflected in the original atom and vice verse.  For example:
+
+```js
+const root = Atom({x: 1})
+const x = root.lens("x")
+x.set(2)
+root.get()
+// { x: 2 }
+root.set({x: 3})
+x.get()
+// 3
+```
 
 The lenses are treated as a path
 of [partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one
@@ -237,14 +256,34 @@ reference to existing mutable state.
 ### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify :: AbstractMutable a -> (a -> a) -> ()")
 
 Conceptually applies the given function to the current value of the atom and
-replaces the value of the atom with the new value returned by the function.
+replaces the value of the atom with the new value returned by the function.  For
+example:
+
+```js
+const root = Atom({x: 1})
+root.modify(({x}) => ({x: x-1}))
+root.get()
+// { x: 0 }
+```
+
 This is what happens with the basic [`Atom`](#class-Atom) implementation.  What
 actually happens is decided by the implementation
 of [`AbstractMutable`](#class-AbstractMutable) whose `modify` method is
 ultimately called.  For example, the `modify` operation
 of [`LensedAtom`](#class-LensedAtom) combines the function with its lens and
 uses the resulting function to `modify` its source.  From the point of view of
-the caller the end result is the same as with an [`Atom`](#class-Atom).
+the caller the end result is the same as with an [`Atom`](#class-Atom).  For
+example:
+
+```js
+const root = Atom({x: 1})
+const x = root.lens("x")
+x.modify(x => x-1)
+x.get()
+// 0
+root.get()
+// { x: 0 }
+```
 
 ### <a name="set"></a>[`atom.set(value)`](#set "set :: AbstractMutable a -> a -> ()")
 
@@ -254,9 +293,22 @@ provided for convenience.
 ### <a name="remove"></a>[`atom.remove()`](#remove "remove :: AbstractMutable a -> ()")
 
 `atom.remove()` is equivalent to [`atom.set()`](#set), which is also equivalent
-to [`atom.set(undefined)`](#set), and is provided for convenience.  Calling
-`remove` on a plain [`Atom`](#class-Atom) doesn't usually make sense, but
-`remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
+to [`atom.set(undefined)`](#set), and is provided for convenience.  For example:
+
+```js
+const items = Atom(["To be", "Not to be"])
+const second = items.lens(1)
+second.get()
+// 'Not to be'
+second.remove()
+second.get()
+// undefined
+items.get()
+// [ 'To be' ]
+```
+
+Calling `remove` on a plain [`Atom`](#class-Atom) doesn't usually make sense,
+but `remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
 "removal" will then follow from the semantics
 of [remove](https://github.com/calmm-js/partial.lenses#remove) on partial
 lenses.
