@@ -1,4 +1,22 @@
-Reactive variables with [Kefir](http://rpominov.github.io/kefir/).
+This library provides a family of concepts for managing state
+with [Kefir](http://rpominov.github.io/kefir/).  Using this library:
+
+* You can *store* state in *first-class* objects called [Atom](#class-Atom)s.
+
+* You can define *decomposed* views of state using [lens](#lens)es.
+
+* You can define *composed* views of state as [Molecule](#class-Molecule)s.
+
+* You get *consistent* access to state using [get](#get) and [modify](#modify)
+  operations at any point and through all views.
+
+* You can *observe* state and *react upon* state changes
+  as [AbstractMutable](#class-AbstractMutable)s are also
+  Kefir [properties]((http://rpominov.github.io/kefir/#about-observables)).
+
+* You can mutate state through multiple views and multiple
+  atomic [modify](#modify) operations in a *transactional* manner
+  by [holding](#holding) event propagation from state changes.
 
 See [CHANGELOG](CHANGELOG.md).
 
