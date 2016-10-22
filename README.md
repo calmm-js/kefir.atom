@@ -20,14 +20,14 @@ Using this library:
 * You can define **_decomposed_** *first-class* views of state
   using [lens](#lens)es.
   * *This means that when a component of your program is only interested in a
-    part of state you can make it so that the module does not need to know about
-    the rest of the state.*
+    part of state you can make it so that the component does not need to know
+    about the rest of the state.*
 
 * You can define **_composed_** *first-class* views of state
   as [Molecule](#class-Molecule)s.
   * *This means that when a component of your program is interested in parts of
-    state that are stored separately you can make it so that the module does not
-    need to know that.*
+    state that are stored separately you can make it so that the component does
+    not need to know that.*
 
 * You get **_consistent_** access to state using [get](#get)
   and [modify](#modify) operations at any point and through all views.
