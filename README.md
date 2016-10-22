@@ -1,5 +1,7 @@
 Reactive variables with [Kefir](http://rpominov.github.io/kefir/).
 
+See [CHANGELOG](CHANGELOG.md).
+
 Note: This implementation is **optimized for space** at a fairly low level.  The
 good news is that you can **use atoms and lenses with impunity**.  The bad news
 is that the implementation is tightly bound to the internals of Kefir.  Should

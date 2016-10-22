@@ -100,23 +100,28 @@ export class LensedAtom extends MutableWithSource {
 //
 
 export class Atom extends AbstractMutable {
-  constructor(value) {
+  constructor() {
     super()
-    this._emitValue(value)
+    if (arguments.length)
+      this._emitValue(arguments[0])
   }
   get() {
-    return this._currentEvent.value
+    const current = this._currentEvent
+    return current ? current.value : undefined
   }
   modify(fn) {
     const current = this._currentEvent
-    const prev = current.value
+    const prev = current ? current.value : undefined
     const next = fn(prev)
     if (lock) {
       if (!atoms.find(x => x === this)) {
-        prevs.push(prev)
+        prevs.push(current ? prev : mismatch)
         atoms.push(this)
       }
-      current.value = next
+      if (current)
+        current.value = next
+      else
+        this._currentEvent = {type: "value", value: next}
     } else {
       this._maybeEmitValue(next)
     }
@@ -205,4 +210,4 @@ export class Molecule extends MutableWithSource {
 
 //
 
-export default value => new Atom(value)
+export default (...value) => new Atom(...value)
