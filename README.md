@@ -145,7 +145,7 @@ const CartItem = ({item}) =>
 ```
 
 The `CartItem` component is designed to work as `Item` for the previous `Items`
-component.  It is a simple component that is a given state named `item` that is
+component.  It is a simple component that is given state named `item` that is
 supposed to refer to an object containing `name` and `count` fields.  `CartItem`
 uses the previously defined `Remove` and `Counter` components.  The `Remove`
 component is simply passed the `item` as the `removable`.  The `Counter`
