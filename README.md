@@ -241,27 +241,22 @@ which is function that is given a thunk to call while holding the propagation of
 events from changes to atoms.  The thunk
 can [`get`](#get), [`set`](#set), [`remove`](#remove) and [`modify`](#modify)
 any number of atoms.  After the thunk returns, persisting changes to atoms are
-propagated.
-
-Consider the following example:
+propagated.  For example:
 
 ```js
 const xy = Atom({x: 1, y: 2})
-
 const x = xy.lens("x")
 const y = xy.lens("y")
-
 x.log("x")
+// x <value:current> 1
 y.log("y")
-
+// y <value:current> 2
 holding(() => {
   xy.set({x: 2, y: 1})
   x.set(x.get() - 1)
 })
+// y <value> 1
 ```
-
-The example outputs `x 1` and `y 2` before and `y 1` after the call to
-`holding(...)`.
 
 ### Concepts
 
