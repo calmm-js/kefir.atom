@@ -77,8 +77,9 @@ the
 
 ### Counters are not toys!
 
-So, how does one start writing a Shopping Cart UI?  Well, of course, the first
-thing is to write the classic counter component:
+So, how does one start writing a Shopping Cart UI?
+
+Well, *of course*, the first thing is to write the classic counter component:
 
 ```jsx
 const Counter = ({count}) =>
