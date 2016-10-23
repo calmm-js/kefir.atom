@@ -229,7 +229,8 @@ const App = ({state, cart = state.lens("cart", L.define([]))}) =>
 ```
 
 The `App` above lenses the `cart` state out of the whole app `state` and then
-instantiates the components.  For the purposes of this example we are done.
+instantiates the components.  For the purposes of this example we are done.  See
+a live version [here](https://calmm-js.github.io/karet-shopping-cart/).
 
 ## Reference
 
