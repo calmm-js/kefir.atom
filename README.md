@@ -17,38 +17,38 @@ Using this library:
 
 * You can **_store_** state in *first-class* objects
   called [Atom](#class-Atom)s.
-  * *This means that program components can _declare_ the state they are
-    interested in _as parameters_ and share state by passing references to state
-    as arguments _without copying state_.*
+  * *This means that program components can __declare__ the state they are
+    interested in __as parameters__ and share state by passing references to
+    state as arguments __without copying state__.*
 
 * You can declare **_decomposed_** *first-class* views of state
   using [lens](#lens)es and **_composed_** *first-class* views of state
   as [Molecule](#class-Molecule)s.
-  * *This means that parameters of program components can _declare precisely_
-    the state they are interested in as parameters _independently of the storage
-    of state_.*
+  * *This means that parameters of program components can __declare precisely__
+    the state they are interested in as parameters __independently of the
+    storage of state__.*
 
 * You get **_consistent_** read-write access to state using [get](#get)
   and [modify](#modify) operations at any point and through all views.
   * *This means that by using views, both decomposed and composed, of state you
-    can avoid copying state and the inconsistency problems associated with such
-    copying.*
+    can __avoid__ copying state and the __inconsistency problems__ associated
+    with such copying.*
 
 * You can declare arbitrary **_dependent computations_** using observable
   combinators from [Kefir](http://rpominov.github.io/kefir/)
   as [AbstractMutable](#class-AbstractMutable)s are also
   [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
-  * *This means that you can declare computations dependent upon state
-    independently of time as such computation are kept consistent as state
+  * *This means that you can __declare computations__ dependent __upon state__
+    __independently of time__ as such computation are kept consistent as state
     changes over time.*
 
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a **_transactional_** manner
   by [holding](#holding) event propagation from state changes.
-  * *This means that you can avoid
+  * *This means that you can __avoid__
     some
     [glitches and unnecessary computations](https://en.wikipedia.org/wiki/Reactive_programming#Glitches) of
-    intermediate states.*
+    __intermediate states__.*
 
 The rest of this README provides a [reference](#reference) manual for this
 library.
