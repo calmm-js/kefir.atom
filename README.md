@@ -56,8 +56,179 @@ Using this library:
   * *This means that __algorithmic efficiency is a feature__ of this library
     rather than an afterthought requiring further innovation.*
 
-The rest of this README provides a [reference](#reference) manual for this
-library.
+The rest of this README contains a [tutorial](#tutorial) to managing state using
+atoms and provides a [reference](#reference) manual for this library.
+
+## Tutorial
+
+Let's write the very beginnings of a Shopping Cart UI
+using [Karet](https://github.com/calmm-js/karet) and a few other libraries.
+
+Karet is simple library that allows one to embed Kefir observables
+into [React](https://facebook.github.io/react/) VDOM.  If this tutorial advances
+at a too fast a pace, then you might want to read a
+longer
+[introduction](https://github.com/calmm-js/documentation/blob/master/introduction-to-calmm.md) to
+the approach.
+
+This example is actually a stripped down version of
+the
+[Karet Shopping Cart example](https://github.com/calmm-js/karet-shopping-cart).
+
+### Counters are not toys!
+
+So, how does one start writing a Shopping Cart UI?  Well, of course, the first
+thing is to write the classic counter component:
+
+```jsx
+const Counter = ({count}) =>
+  <span>
+    <button onClick={() => count.modify(R.add(-1))}>-</button>
+    {count}
+    <button onClick={() => count.modify(R.add(+1))}>+</button>
+  </span>
+```
+
+The `Counter` component displays a `count`, which is supposed to refer to state
+that contains an integer, and buttons labeled `-` and `+` that decrement and
+increment the `count`.
+
+As you probably know, a counter component such as the above is a typical first
+example that the documentation of any respectable front-end framework will give
+you.  Until now you may have *mistakenly* thought that those are just toys.
+
+### Component, remove thyself!
+
+The next thing is to write a component that can remove itself:
+
+```jsx
+const Remove = ({removable}) =>
+  <button onClick={() => removable.remove()}>x</button>
+```
+
+The `Remove` component gives you a button labeled `x` that
+calls [`remove`](#remove) on the `removable` state given to it.
+
+### Lists are simple data structures
+
+The next thing is to write a higher-order component that can display a list
+of items:
+
+```jsx
+const Items = ({items, Item}) =>
+  <ul>
+    {fromIds(K(items, U.mapi(idx("id"))), ix =>
+             <Item key={ix.id} item={items.lens(ix.index)}/>)}
+  </ul>
+```
+
+The `Items` component is given state named `items` that is supposed to refer to
+an array of objects with `id`s.  From that array it then produces an unordered
+list of `Item` components, passing them an `item` that corresponds to an element
+of the `items` state array.
+
+### Items in a cart
+
+We then need some items for the cart:
+
+```jsx
+const cartCount =
+  P(L.choose(({count: _, ...rest} = {}) => L.defaults({count: 0, ...rest})),
+    "count")
+
+const CartItem = ({item}) =>
+  <li>
+    <Remove removable={item}/>
+    <Counter count={item.lens(cartCount)}/>
+    {item.view("name")}
+  </li>
+```
+
+The `CartItem` component is designed to work as `Item` for the previous `Items`
+component.  It is a simple component that is a given state named `item` that is
+supposed to refer to an object containing `name` and `count` fields.  `CartItem`
+uses the previously defined `Remove` and `Counter` components.  The `Remove`
+component is simply passed the `item` as the `removable`.  The `Counter`
+component is given a lensed view of the `count`.  The `cartCount` lens makes it
+so that when the `count` property reaches `0` the whole item is removed.
+
+**This is important:** By using a simple lens as an adapter, we could plug the
+previously defined `Counter` component into the shopping cart state.
+
+If this is the first time you
+encounter [partial lenses](https://github.com/calmm-js/partial.lenses), then the
+definition of `cartCount` may be difficult to understand, but it is not very
+complex at all.  It works like this.  It first looks at the incoming object and
+grabs all the properties, except for `count`, as `rest`.  It the uses that to
+return a lens that, when written, will replace an object of the form `{count: 0,
+...rest}` with `undefined`.  This way, when the `count` reaches `0`, the whole
+item gets removed.  After working with partial lenses for some time you will be
+able to write far more interesting lenses.
+
+### Items to put into the cart
+
+We are nearly done!  We just need one more component for product:
+
+```jsx
+const productCount = item =>
+  P(L.find(R.whereEq({id: item.id})),
+    L.defaults(item),
+    "count",
+    L.defaults(0),
+    L.normalize(R.max(0)))
+
+const ProductItem = cart => ({item}) =>
+  <li>
+    {K(item, item =>
+       <Counter count={cart.lens(productCount(item))}/>)}
+    {item.view("name")}
+  </li>
+```
+
+The `ProductItem` component is also designed to work as an `Item` for the
+previous `Items` component.  Note that `ProductItem` actually takes two curried
+arguments.  The first argument `cart` is supposed to refer to cart state.
+`ProductItem` also reuses the `Counter` component.  This time we give it another
+non-trivial lens.  The `productCount` lens is a parameterized lens that is given
+an `item` to put into the `cart`.
+
+### Putting it all together
+
+We now have all the components to put together our shopping cart application.
+Here is a list of some Finnish delicacies:
+
+```jsx
+const products = [
+  {id: 1, name: "Sinertävä lenkki 500g"},
+  {id: 2, name: "Maksainen laatikko 400g"},
+  {id: 3, name: "Maitoa etäisesti muistuttava juoma 1l"},
+  {id: 4, name: "Festi moka kaffe 500g"},
+  {id: 5, name: "Niin hyvä voffeli ettei saa 55g"},
+  {id: 6, name: "Suklainen Japanilainen viihdyttäjä 37g"},
+]
+```
+
+And, finally, here is our `App`:
+
+```jsx
+const App = ({state, cart = state.lens("cart", L.define([]))}) =>
+  <div>
+    <h1>Shopping Cart example</h1>
+    <div>
+      <div>
+        <h2>Products</h2>
+        <Items Item={ProductItem(cart)} items={Atom(products)}/>
+      </div>
+      <div>
+        <h2>Shopping List</h2>
+        <Items Item={CartItem} items={cart}/>
+      </div>
+    </div>
+  </div>
+```
+
+The `App` above lenses the `cart` state out of the whole app `state` and then
+instantiates the components.  For the purposes of this example we are done.
 
 ## Reference
 
