@@ -54,7 +54,7 @@ Using this library:
   declare precisely the state they are interested in and views of state only
   propagate actual changes of state.
   * *This means that __algorithmic efficiency is a feature__ of this library
-    rather than an after thought requiring further innovation.*
+    rather than an afterthought requiring further innovation.*
 
 The rest of this README provides a [reference](#reference) manual for this
 library.
