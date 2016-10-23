@@ -134,7 +134,7 @@ We then need some items for the cart:
 
 ```jsx
 const cartCount =
-  P(L.choose(({count: _, ...rest} = {}) => L.defaults({count: 0, ...rest})),
+  P(L.choose((props = {}) => L.defaults({...props, count: 0})),
     "count")
 
 const CartItem = ({item}) =>
@@ -160,11 +160,11 @@ If this is the first time you
 encounter [partial lenses](https://github.com/calmm-js/partial.lenses), then the
 definition of `cartCount` may be difficult to understand, but it is not very
 complex at all.  It works like this.  It first looks at the incoming object and
-grabs all the properties, except for `count`, as `rest`.  It the uses that to
-return a lens that, when written, will replace an object of the form `{count: 0,
-...rest}` with `undefined`.  This way, when the `count` reaches `0`, the whole
-item gets removed.  After working with partial lenses for some time you will be
-able to write far more interesting lenses.
+grabs all the properties as `props`.  It then uses those to return a lens that,
+when written, will replace an object of the form `{...props, count: 0}` with
+`undefined`.  This way, when the `count` reaches `0`, the whole item gets
+removed.  After working with partial lenses for some time you will be able to
+write far more interesting lenses.
 
 ### Items to put into the cart
 
