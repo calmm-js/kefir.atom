@@ -19,17 +19,17 @@ Using this library:
   called [Atom](#class-Atom)s.
   * *This means that program components can __declare__ the state they are
     interested in __as parameters__ and share state by passing references to
-    state as arguments __without copying state__.*
+    state as arguments __without copying__ state.*
 
-* You can declare **_decomposed_** *first-class* views of state
-  using [lens](#lens)es and **_composed_** *first-class* views of state
+* You can declare **_decompose_**d *first-class* views of state
+  using [lens](#lens)es and **_compose_**d *first-class* views of state
   as [Molecule](#class-Molecule)s.
   * *This means that parameters of program components can __declare precisely__
     the state they are interested in as parameters __independently of the
-    storage of state__.*
+    storage__ of state.*
 
 * You get **_consistent_** read-write access to state using [get](#get)
-  and [modify](#modify) operations at any point and through all views.
+  and [modify](#modify) operations *at any point and through all views*.
   * *This means that by using views, both decomposed and composed, of state you
     can __avoid__ copying state and the __inconsistency problems__ associated
     with such copying.*
@@ -43,7 +43,7 @@ Using this library:
     changes over time.*
 
 * You can mutate state through multiple views and multiple
-  atomic [modify](#modify) operations in a **_transactional_** manner
+  atomic [modify](#modify) operations in a **_transaction_**al manner
   by [holding](#holding) event propagation from state changes.
   * *This means that you can __avoid__
     some
