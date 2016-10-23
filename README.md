@@ -91,7 +91,7 @@ const Counter = ({count}) =>
 
 The `Counter` component displays a `count`, which is supposed to refer to state
 that contains an integer, and buttons labeled `-` and `+` that decrement and
-increment the `count`.
+increment the `count` using [`modify`](#modify).
 
 As you probably know, a counter component such as the above is a typical first
 example that the documentation of any respectable front-end framework will give
@@ -149,8 +149,9 @@ component.  It is a simple component that is a given state named `item` that is
 supposed to refer to an object containing `name` and `count` fields.  `CartItem`
 uses the previously defined `Remove` and `Counter` components.  The `Remove`
 component is simply passed the `item` as the `removable`.  The `Counter`
-component is given a lensed view of the `count`.  The `cartCount` lens makes it
-so that when the `count` property reaches `0` the whole item is removed.
+component is given a [lens](#lens)ed view of the `count`.  The `cartCount` lens
+makes it so that when the `count` property reaches `0` the whole item is
+removed.
 
 **_This is important:_** By using a simple lens as an adapter, we could plug the
 previously defined `Counter` component into the shopping cart state.
