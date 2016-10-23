@@ -1,4 +1,4 @@
-This library provides a family of [concepts](#concepts) for
+This library provides a family of [concepts](#concepts) and tools for
 managing
 [state](https://en.wikipedia.org/wiki/State_(computer_science)#Program_state)
 with [Kefir](http://rpominov.github.io/kefir/).
@@ -17,34 +17,30 @@ Using this library:
 
 * You can **_store_** state in *first-class* objects
   called [Atom](#class-Atom)s.
-  * *This means that you can avoid copying or duplicating state to share it
-    across components of your program.  You simply share references to the
-    state.*
+  * *This means that program components can _declare_ the state they are
+    interested in _as parameters_ and share state by passing references to state
+    as arguments _without copying state_.*
 
-* You can define **_decomposed_** *first-class* views of state
-  using [lens](#lens)es.
-  * *This means that when a component of your program is only interested in a
-    part of state you can make it so that the component does not need to know
-    about the rest of the state.*
-
-* You can define **_composed_** *first-class* views of state
+* You can declare **_decomposed_** *first-class* views of state
+  using [lens](#lens)es and **_composed_** *first-class* views of state
   as [Molecule](#class-Molecule)s.
-  * *This means that when a component of your program is interested in parts of
-    state that are stored separately you can make it so that the component does
-    not need to know that.*
+  * *This means that parameters of program components can _declare precisely_
+    the state they are interested in as parameters _independently of the storage
+    of state_.*
 
-* You get **_consistent_** access to state using [get](#get)
+* You get **_consistent_** read-write access to state using [get](#get)
   and [modify](#modify) operations at any point and through all views.
   * *This means that by using views, both decomposed and composed, of state you
-    can avoid copying state and inconsistency problems associated with that.*
+    can avoid copying state and the inconsistency problems associated with such
+    copying.*
 
-* You can express arbitrary **_dependent computations_** using observable
+* You can declare arbitrary **_dependent computations_** using observable
   combinators from [Kefir](http://rpominov.github.io/kefir/)
-  as [AbstractMutable](#class-AbstractMutable)s are
-  also
+  as [AbstractMutable](#class-AbstractMutable)s are also
   [Kefir](http://rpominov.github.io/kefir/) [properties](http://rpominov.github.io/kefir/#about-observables).
-  * *This means that you can make it so that computations dependent upon state
-    are kept consistent as state changes over time.*
+  * *This means that you can declare computations dependent upon state
+    independently of time as such computation are kept consistent as state
+    changes over time.*
 
 * You can mutate state through multiple views and multiple
   atomic [modify](#modify) operations in a **_transactional_** manner
