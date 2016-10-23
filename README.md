@@ -168,7 +168,7 @@ able to write far more interesting lenses.
 
 ### Items to put into the cart
 
-We are nearly done!  We just need one more component for product:
+We are nearly done!  We just need one more component for products:
 
 ```jsx
 const productCount = item =>
