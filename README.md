@@ -50,6 +50,12 @@ Using this library:
     [glitches and unnecessary computations](https://en.wikipedia.org/wiki/Reactive_programming#Glitches) of
     __intermediate states__.*
 
+* You can **_avoid unnecessary recomputations_**, because program components can
+  declare precisely the state they are interested in and views of state only
+  propagate actual changes of state.
+  * *This means that algorithmic efficiency is a feature of this library rather
+    than an after thought requiring further innovation.*
+
 The rest of this README provides a [reference](#reference) manual for this
 library.
 
