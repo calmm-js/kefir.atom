@@ -24,9 +24,8 @@ Using this library:
 * You can declare **_decompose_**d *first-class* views of state
   using [lens](#lens)es and **_compose_**d *first-class* views of state
   as [Molecule](#class-Molecule)s.
-  * *This means that parameters of program components can __declare precisely__
-    the state they are interested in as parameters __independently of the
-    storage__ of state.*
+  * *This means that program components can __declare precisely__ the state they
+    are interested in as parameters __independently of the storage__ of state.*
 
 * You get **_consistent_** read-write access to state using [get](#get)
   and [modify](#modify) operations *at any point and through all views*.
