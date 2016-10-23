@@ -47,6 +47,7 @@ describe("holding", () => {
   testEq('{const a = Atom({x: 1}), b = a.lens("x"); let n = 0; const inc = () => ++n; a.onValue(inc); b.onValue(inc); holding(() => {a.set({x: 2}); b.set(1)}); return n}', 2)
   testEq('{const a = Atom({x: 1}), b = a.lens("x"); let n = 0; const inc = () => ++n; a.onValue(inc); b.onValue(inc); holding(() => {a.set({x: 2}); b.set(3)}); return n}', 4)
   testEq('{const a = Atom({x: 1}), b = a.lens("x"); return holding(() => {a.set({x: 2}); return b.get()})}', 2)
+  testEq('{const a = Atom("a1"), b = Atom("b1"); let r = ""; a.merge(b).onValue(x => r = r + x); holding(() => {a.set("a2"); b.set("b2")}); return r}', "a1b1a2b2")
 })
 
 describe("Molecule", () => {
