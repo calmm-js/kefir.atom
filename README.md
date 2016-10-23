@@ -61,8 +61,8 @@ atoms and provides a [reference](#reference) manual for this library.
 
 ## Tutorial
 
-Let's write the very beginnings of a Shopping Cart UI
-using [Karet](https://github.com/calmm-js/karet) and a few other libraries.
+Let's write the very beginnings of a Shopping Cart UI using atoms
+and [Karet](https://github.com/calmm-js/karet) and a few other libraries.
 
 Karet is simple library that allows one to embed Kefir observables
 into [React](https://facebook.github.io/react/) VDOM.  If this tutorial advances
