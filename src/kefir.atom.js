@@ -11,8 +11,8 @@ const atoms = []
 
 const release = () => {
   while (prevs.length) {
-    const prev = prevs.pop()
-    const atom = atoms.pop()
+    const prev = prevs.shift()
+    const atom = atoms.shift()
     const next = atom._currentEvent.value
 
     if (!R.equals(prev, next))

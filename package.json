@@ -1,6 +1,6 @@
 {
   "name": "kefir.atom",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Manage state with Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
