@@ -23,9 +23,9 @@ Using this library:
     interested in __as parameters__ and share state by passing references to
     state as arguments __without copying__ state.*
 
-* You can declare **_decompose_**d *first-class* views of state
-  using [lens](#lens)es and **_compose_**d *first-class* views of state
-  as [Molecule](#class-Molecule)s.
+* You can declare **_decompose_**d *first-class* [views](#view) of state
+  using [lenses](https://github.com/calmm-js/partial.lenses) and **_compose_**d
+  *first-class* views of state as [Molecule](#class-Molecule)s.
   * *This means that program components can __declare precisely__ the state they
     are interested in as parameters __independently of the storage__ of state.*
 
@@ -120,7 +120,7 @@ of items:
 const Items = ({items, Item}) =>
   <ul>
     {fromIds(K(items, U.mapi(idx("id"))), ix =>
-             <Item key={ix.id} item={items.lens(ix.index)}/>)}
+             <Item key={ix.id} item={items.view(ix.index)}/>)}
   </ul>
 ```
 
@@ -141,7 +141,7 @@ const cartCount =
 const CartItem = ({item}) =>
   <li>
     <Remove removable={item}/>
-    <Counter count={item.lens(cartCount)}/>
+    <Counter count={item.view(cartCount)}/>
     {item.view("name")}
   </li>
 ```
@@ -151,9 +151,10 @@ component.  It is a simple component that is given state named `item` that is
 supposed to refer to an object containing `name` and `count` fields.  `CartItem`
 uses the previously defined `Remove` and `Counter` components.  The `Remove`
 component is simply passed the `item` as the `removable`.  The `Counter`
-component is given a [lens](#lens)ed view of the `count`.  The `cartCount` lens
-makes it so that when the `count` property reaches `0` the whole item is
-removed.
+component is given
+a [lensed](https://github.com/calmm-js/partial.lenses) [view](#view) of the
+`count`.  The `cartCount` lens makes it so that when the `count` property
+reaches `0` the whole item is removed.
 
 **_This is important:_** By using a simple lens as an adapter, we could plug the
 previously defined `Counter` component into the shopping cart state.
@@ -183,7 +184,7 @@ const productCount = item =>
 const ProductItem = cart => ({item}) =>
   <li>
     {K(item, item =>
-       <Counter count={cart.lens(productCount(item))}/>)}
+       <Counter count={cart.view(productCount(item))}/>)}
     {item.view("name")}
   </li>
 ```
@@ -214,7 +215,7 @@ const products = [
 And, finally, here is our `App`:
 
 ```jsx
-const App = ({state, cart = state.lens("cart", L.define([]))}) =>
+const App = ({state, cart = state.view("cart", L.define([]))}) =>
   <div>
     <h1>Shopping Cart example</h1>
     <div>
@@ -276,7 +277,7 @@ Synchronously computes the current value of the atom.  For example:
 
 ```js
 const root = Atom({x: 1})
-const x = root.lens("x")
+const x = root.view("x")
 x.get()
 // 1
 ```
@@ -298,46 +299,9 @@ both.get()
 
 ### <a name="lens"></a>[`atom.lens(...ls)`](#lens "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
-Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
-with the given path from the original atom.  Modifications to the lensed atom
-are reflected in the original atom and vice verse.  For example:
-
-```js
-const root = Atom({x: 1})
-const x = root.lens("x")
-x.set(2)
-root.get()
-// { x: 2 }
-root.set({x: 3})
-x.get()
-// 3
-```
-
-The lenses are treated as a path
-of [partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one
-of the key ideas that makes lensed atoms possible is the compositionality of
-partial lenses.  See the equations
-here: [`L.compose`](https://github.com/calmm-js/partial.lenses#compose).  Those
-equations make it possible not just to create lenses via composition (left hand
-sides of equations), but also to create paths of lensed atoms (right hand sides
-of equations).  More concretely, both the `c` in
-
-```js
-const b = a.lens(a_to_b_PLens)
-const c = b.lens(b_to_c_PLens)
-```
-
-and in
-
-```js
-const c = a.lens(a_to_b_PLens, b_to_c_PLens)
-```
-
-can be considered equivalent thanks to the compositionality equations of lenses.
-
-Note that, for most intents and purposes, `lens` is a referentially transparent
-function: it does not create *new* mutable state&mdash;it merely creates a
-reference to existing mutable state.
+**The `lens` method has been deprecated. Use the [`view`](#view) method instead.
+The [`view`](#view) method has always been a duplicate of
+`lens`. See [CHANGELOG](#310) for futher details.**
 
 ### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify :: AbstractMutable a -> (a -> a) -> ()")
 
@@ -363,7 +327,7 @@ example:
 
 ```js
 const root = Atom({x: 1})
-const x = root.lens("x")
+const x = root.view("x")
 x.modify(x => x-1)
 x.get()
 // 0
@@ -383,7 +347,7 @@ to [`atom.set(undefined)`](#set), and is provided for convenience.  For example:
 
 ```js
 const items = Atom(["To be", "Not to be"])
-const second = items.lens(1)
+const second = items.view(1)
 second.get()
 // 'Not to be'
 second.remove()
@@ -399,10 +363,48 @@ but `remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
 of [remove](https://github.com/calmm-js/partial.lenses#remove) on partial
 lenses.
 
-### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> Property b")
+### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
-Creates a new read-only view with the given path from the original atom.
-Changes to the original atom are reflected in the view.
+Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
+with the given path from the original atom.  Modifications to the lensed atom
+are reflected in the original atom and vice verse.  For example:
+
+```js
+const root = Atom({x: 1})
+const x = root.view("x")
+x.set(2)
+root.get()
+// { x: 2 }
+root.set({x: 3})
+x.get()
+// 3
+```
+
+The lenses are treated as a path
+of [partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one
+of the key ideas that makes lensed atoms possible is the compositionality of
+partial lenses.  See the equations
+here: [`L.compose`](https://github.com/calmm-js/partial.lenses#compose).  Those
+equations make it possible not just to create lenses via composition (left hand
+sides of equations), but also to create paths of lensed atoms (right hand sides
+of equations).  More concretely, both the `c` in
+
+```js
+const b = a.view(a_to_b_PLens)
+const c = b.view(b_to_c_PLens)
+```
+
+and in
+
+```js
+const c = a.view(a_to_b_PLens, b_to_c_PLens)
+```
+
+can be considered equivalent thanks to the compositionality equations of lenses.
+
+Note that, for most intents and purposes, `view` is a referentially transparent
+function: it does not create *new* mutable state&mdash;it merely creates a
+reference to existing mutable state.
 
 ### <a name="holding"></a>[`holding(() => ...)`](#holding "holding :: (() -> a) -> a")
 
@@ -420,8 +422,8 @@ propagated.  For example:
 
 ```js
 const xy = Atom({x: 1, y: 2})
-const x = xy.lens("x")
-const y = xy.lens("y")
+const x = xy.view("x")
+const y = xy.view("y")
 x.log("x")
 // x <value:current> 1
 y.log("y")
@@ -504,7 +506,7 @@ an [`AbstractMutable`](#class-AbstractMutable) that doesn't actually store
 state, but instead refers to a part, specified using
 a [lens](https://github.com/calmm-js/partial.lenses/), of
 another [`AbstractMutable`](#class-AbstractMutable).  One creates `LensedAtom`s
-by calling the [`lens`](#lens) method of
+by calling the [`view`](#view) method of
 an [`AbstractMutable`](#class-AbstractMutable).
 
 #### <a name="class-Molecule"></a>[`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
@@ -515,8 +517,8 @@ template of abstract mutables:
 
 ```js
 const xyA = Atom({x: 1, y: 2})
-const xL = xyA.lens("x")
-const yL = xyA.lens("y")
+const xL = xyA.view("x")
+const yL = xyA.view("y")
 const xyM = new Molecule({x: xL, y: yL})
 ```
 
@@ -532,7 +534,7 @@ When written to, the abstract mutables in the template are written to with
 matching elements from the written value:
 
 ```js
-xyM.lens("x").set(3)
+xyM.view("x").set(3)
 xL.get()
 // 3
 yL.get()
@@ -559,9 +561,9 @@ See [CHANGELOG](CHANGELOG.md).
 
 The implementations of the concepts provided by this library have been
 **optimized for space** at a fairly low level.  The good news is that you can
-**use atoms and lenses with impunity**.  The bad news is that the implementation
-is tightly bound to the internals of Kefir.  Should the internals change, this
-library will need to be updated as well.
+**use atoms and lensed atoms with impunity**.  The bad news is that the
+implementation is tightly bound to the internals of Kefir.  Should the internals
+change, this library will need to be updated as well.
 
 ### Related work
 

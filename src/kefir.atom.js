@@ -4,6 +4,19 @@ import P, * as L  from "partial.lenses"
 
 //
 
+const warn = process.env.NODE_ENV === "production" ? () => {} : (() => {
+  const warned = {}
+
+  return message => {
+    if (!(message in warned)) {
+      warned[message] = message
+      console.warn("kefir.atom:", message)
+    }
+  }
+})()
+
+//
+
 let lock = 0
 
 const prevs = []
@@ -40,12 +53,11 @@ export class AbstractMutable extends Kefir.Property {
     this.set()
   }
   lens(...ls) {
-    return new LensedAtom(this, P(...ls))
+    warn("The `lens` method has been deprecated. Use the `view` method instead.")
+    return this.view(...ls)
   }
   view(...ls) {
-    // We do not currently implement view() differently from lens(), because
-    // such an implementation would not be faster/smaller.
-    return this.lens(...ls)
+    return new LensedAtom(this, P(...ls))
   }
   _maybeEmitValue(next) {
     const prev = this._currentEvent
