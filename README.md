@@ -301,7 +301,7 @@ both.get()
 
 **The `lens` method has been deprecated. Use the [`view`](#view) method instead.
 The [`view`](#view) method has always been a duplicate of
-`lens`. See [CHANGELOG](#310) for futher details.**
+`lens`. See [CHANGELOG](CHANGELOG.md#310) for futher details.**
 
 ### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify :: AbstractMutable a -> (a -> a) -> ()")
 
