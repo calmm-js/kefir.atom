@@ -551,7 +551,11 @@ Also, if the template contains multiple abstract mutables that correspond to the
 same underlying state, then writing through the template will give unpredictable
 results.
 
-## <a name="about"></a>About the implementation
+## About
+
+See [CHANGELOG](CHANGELOG.md).
+
+### Implementation trade-offs
 
 The implementations of the concepts provided by this library have been
 **optimized for space** at a fairly low level.  The good news is that you can
@@ -559,4 +563,19 @@ The implementations of the concepts provided by this library have been
 is tightly bound to the internals of Kefir.  Should the internals change, this
 library will need to be updated as well.
 
-See also [CHANGELOG](CHANGELOG.md).
+### Related work
+
+The term "atom" is borrowed from [Clojure](http://clojure.org/reference/atoms)
+and comes from the idea that one only
+performs ["atomic"](https://en.wikipedia.org/wiki/Read-modify-write),
+or [race-condition](https://en.wikipedia.org/wiki/Race_condition) free,
+operations on individual atoms.
+
+The idea of combining atoms and lenses came
+from [Bacon.Model](https://github.com/baconjs/bacon.model), which we used
+initially.
+
+Our use of atoms was initially shaped by a search of way to make it possible to
+program in ways similar to what could be done
+using [Reagent](https://reagent-project.github.io/) and (early versions
+of) [WebSharper UI.Next](http://websharper.com/docs/ui.next).
