@@ -62,8 +62,9 @@ atoms and provides a [reference](#reference) manual for this library.
 
 ## Tutorial
 
-Let's write the very beginnings of a Shopping Cart UI using atoms
-and [Karet](https://github.com/calmm-js/karet) and a few other libraries.
+Let's write the very beginnings of a Shopping Cart UI using atoms with
+the [`karet`](https://github.com/calmm-js/karet) and via
+the [`karet.util`](https://github.com/calmm-js/karet.util) libraries.
 
 Karet is simple library that allows one to embed Kefir observables
 into [React](https://facebook.github.io/react/) VDOM.  If this tutorial advances
@@ -119,8 +120,8 @@ of items:
 ```jsx
 const Items = ({items, Item}) =>
   <ul>
-    {fromIds(K(items, U.mapi(idx("id"))), ix =>
-             <Item key={ix.id} item={items.view(ix.index)}/>)}
+    {U.seq(items, U.indices, U.mapCached(i =>
+           <Item key={i} item={U.view(i, items)}/>))}
   </ul>
 ```
 
@@ -134,15 +135,17 @@ of the `items` state array.
 We then need some items for the cart:
 
 ```jsx
+const cartName = U.view("name")
+
 const cartCount =
-  P(L.choose((props = {}) => L.defaults({...props, count: 0})),
-    "count")
+  U.view(P(L.choose((props = {}) => L.defaults({...props, count: 0})),
+           "count"))
 
 const CartItem = ({item}) =>
   <li>
     <Remove removable={item}/>
-    <Counter count={item.view(cartCount)}/>
-    {item.view("name")}
+    <Counter count={cartCount(item)}/>
+    {cartName(item)}
   </li>
 ```
 
@@ -174,18 +177,19 @@ write far more interesting lenses.
 We are nearly done!  We just need one more component for products:
 
 ```jsx
-const productCount = item =>
-  P(L.find(R.whereEq({id: item.id})),
-    L.defaults(item),
-    "count",
-    L.defaults(0),
-    L.normalize(R.max(0)))
+const productName = U.view("name")
+
+const productCount = U.staged(item =>
+  U.view(P(L.find(R.whereEq({id: item.id})),
+           L.defaults(item),
+           "count",
+           L.defaults(0),
+           L.normalize(R.max(0)))))
 
 const ProductItem = cart => ({item}) =>
   <li>
-    {K(item, item =>
-       <Counter count={cart.view(productCount(item))}/>)}
-    {item.view("name")}
+    {K(item, item => <Counter count={productCount(item, cart)}/>)}
+    {productName(item)}
   </li>
 ```
 
@@ -205,25 +209,26 @@ Here is a list of some Finnish delicacies:
 const products = [
   {id: 1, name: "Sinertävä lenkki 500g"},
   {id: 2, name: "Maksainen laatikko 400g"},
-  {id: 3, name: "Maitoa etäisesti muistuttava juoma 1l"},
+  {id: 3, name: "Maitoa etäisesti muistuttava juoma 0.9l"},
   {id: 4, name: "Festi moka kaffe 500g"},
   {id: 5, name: "Niin hyvä voffeli ettei saa 55g"},
-  {id: 6, name: "Suklainen Japanilainen viihdyttäjä 37g"},
+  {id: 6, name: "Suklainen Japanilainen viihdyttäjä 37g"}
 ]
 ```
 
 And, finally, here is our `App`:
 
 ```jsx
-const App = ({state, cart = state.view("cart", L.define([]))}) =>
+export default ({state, cart = U.view(P("cart", L.define([])), state)}) =>
   <div>
-    <h1>Shopping Cart example</h1>
-    <div>
-      <div>
+    <h1>Karet (toy) Shopping Cart example</h1>
+    <a href="https://github.com/calmm-js/karet-shopping-cart">GitHub</a>
+    <div className="panels">
+      <div className="panel">
         <h2>Products</h2>
-        <Items Item={ProductItem(cart)} items={Atom(products)}/>
+        <Items Item={ProductItem(cart)} items={products}/>
       </div>
-      <div>
+      <div className="panel">
         <h2>Shopping Cart</h2>
         <Items Item={CartItem} items={cart}/>
       </div>
