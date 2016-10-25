@@ -1,3 +1,5 @@
+[ [Motivation](#motivation) | [Tutorial](#tutorial) | [Reference](#reference) | [About](#about) ]
+
 This library provides a family of [concepts](#concepts) and tools for
 managing
 [state](https://en.wikipedia.org/wiki/State_(computer_science)#Program_state)
@@ -549,7 +551,7 @@ Also, if the template contains multiple abstract mutables that correspond to the
 same underlying state, then writing through the template will give unpredictable
 results.
 
-## About the implementation
+## <a name="about"></a>About the implementation
 
 The implementations of the concepts provided by this library have been
 **optimized for space** at a fairly low level.  The good news is that you can
