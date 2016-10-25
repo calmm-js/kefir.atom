@@ -5,12 +5,14 @@
 Previously `AbstractMutable`s had two methods using lenses: `lens` and `view`.
 The idea was that `lens` would create a read-write view and `view` would create
 a read-only view.  The distinction has now been dropped and `lens` has been
-deprecated.
+deprecated.  Simply replace calls to `lens` with calls to `view`:
 
 ```diff
 -a.lens(...)
 +a.view(...)
 ```
+
+Note that the above change is compatible with previous versions of this library.
 
 There a number of reasons for this change:
 
