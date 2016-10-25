@@ -14,7 +14,7 @@ deprecated.  Simply replace calls to `lens` with calls to `view`:
 
 Note that the above change is compatible with previous versions of this library.
 
-There a number of reasons for this change:
+There are a number of reasons for this change:
 
 * First of all the distinction isn't very useful in a language such as
   JavaScript where the read-only/read-write distinction cannot be enforced by a
