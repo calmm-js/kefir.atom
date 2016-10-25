@@ -23,7 +23,7 @@ Using this library:
     interested in __as parameters__ and share state by passing references to
     state as arguments __without copying__ state.*
 
-* You can declare **_decompose_**d *first-class* [views](#view) of state
+* You can declare **_decompose_**d *first-class* [view](#view)s of state
   using [lenses](https://github.com/calmm-js/partial.lenses) and **_compose_**d
   *first-class* views of state as [Molecule](#class-Molecule)s.
   * *This means that program components can __declare precisely__ the state they
