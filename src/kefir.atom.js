@@ -72,7 +72,7 @@ export class MutableWithSource extends AbstractMutable {
   constructor(source) {
     super()
     this._source = source
-    this._$handleValue = null
+    this._$handleAny = null
   }
   get() {
     const current = this._currentEvent
@@ -81,17 +81,17 @@ export class MutableWithSource extends AbstractMutable {
     else
       return this._getFromSource()
   }
-  _handleValue() {
+  _handleAny() {
     this._maybeEmitValue(this._getFromSource())
   }
   _onActivation() {
-    const handleValue = value => this._handleValue(value)
-    this._$handleValue = handleValue
-    this._source.onValue(handleValue)
+    const handleAny = () => this._handleAny()
+    this._$handleAny = handleAny
+    this._source.onAny(handleAny)
   }
   _onDeactivation() {
-    this._source.offValue(this._$handleValue)
-    this._$handleValue = null
+    this._source.offAny(this._$handleAny)
+    this._$handleAny = null
     this._currentEvent = null
   }
 }
