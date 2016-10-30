@@ -481,7 +481,7 @@ code using atoms is actually written.  An `AbstractMutable` is a
 Kefir [property](http://rpominov.github.io/kefir/#about-observables) that also
 provides for ability to request to [`modify`](#modify) the value of the
 property.  `AbstractMutable`s implicitly skip duplicates using
-Ramda's [`equals`](http://ramdajs.com/0.21.0/docs/#equals) function.
+Ramda's [`identical`](http://ramdajs.com/0.21.0/docs/#identical) function.
 
 Note that we often abuse terminology and speak of [`Atom`](#class-Atom)s when we
 should speak of `AbstractMutable`s, because [`Atom`](#class-Atom) is easier to
@@ -531,7 +531,7 @@ When read, either as a property or via [`get`](#get), the abstract mutables in
 the template are replaced by their values:
 
 ```js
-R.equals( xyM.get(), xyA.get() )
+R.identical( xyM.get(), xyA.get() )
 // true
 ```
 

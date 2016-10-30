@@ -1,6 +1,10 @@
 import * as Kefir from "kefir"
-import * as R     from "ramda"
 import P, * as L  from "partial.lenses"
+
+//
+
+const identical = (a, b) =>
+  a === b && (a !== 0 || 1 / a === 1 / b) || a !== a && b !== b
 
 //
 
@@ -28,7 +32,7 @@ const release = () => {
     const atom = atoms.shift()
     const next = atom._currentEvent.value
 
-    if (!R.equals(prev, next))
+    if (!identical(prev, next))
       atom._emitValue(next)
   }
 }
@@ -61,7 +65,7 @@ export class AbstractMutable extends Kefir.Property {
   }
   _maybeEmitValue(next) {
     const prev = this._currentEvent
-    if (!prev || !R.equals(prev.value, next))
+    if (!prev || !identical(prev.value, next))
       this._emitValue(next)
   }
 }
@@ -203,7 +207,7 @@ function setMutables(template, value) {
     else if (constructor === Object)
       for (const k in template)
         setMutables(template[k], value[k])
-    else if (!R.equals(template, value))
+    else if (!identical(template, value))
       mismatch()
   }
 }

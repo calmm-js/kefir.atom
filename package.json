@@ -1,6 +1,6 @@
 {
   "name": "kefir.atom",
-  "version": "3.1.1",
+  "version": "4.0.0",
   "description": "Manage state with Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
@@ -38,11 +38,11 @@
     "babel-register": "^6.16.3",
     "eslint": "^3.7.0",
     "mocha": "^3.1.0",
-    "nyc": "^8.3.0"
+    "nyc": "^8.3.0",
+    "ramda": "^0.22.1"
   },
   "dependencies": {
     "kefir": "^3.3.0",
-    "partial.lenses": ">=2.2.0 <4.0.0",
-    "ramda": ">=0.20.1 <0.23.0"
+    "partial.lenses": ">=2.2.0 <4.0.0"
   }
 }
