@@ -16,8 +16,8 @@ Ramda's `identical`.  There are two main reasons for the change:
   updates and can be implemented so that it works several orders magnitude
   faster than Ramda's `equals`.
 
-In cases where you really want a more through equality check, you can explicitly
-use Kefir's `skipDuplicates`.
+In cases where you really want a more thorough equality check, you can
+explicitly use Kefir's `skipDuplicates`.
 
 ## 3.1.0
 
