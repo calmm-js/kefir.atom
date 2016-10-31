@@ -165,9 +165,9 @@ previously defined `Counter` component into the shopping cart state.
 If this is the first time you
 encounter [partial lenses](https://github.com/calmm-js/partial.lenses), then the
 definition of `cartCount` may be difficult to understand, but it is not very
-complex at all.  It works like this.  It first looks at the incoming object and
-grabs all the properties as `props`.  It then uses those to return a lens that,
-when written, will replace an object of the form `{...props, count: 0}` with
+complex at all.  It works like this.  It looks at the incoming object and grabs
+all the properties as `props`.  It then uses those to return a lens that, when
+written through, will replace an object of the form `{...props, count: 0}` with
 `undefined`.  This way, when the `count` reaches `0`, the whole item gets
 removed.  After working with partial lenses for some time you will be able to
 write far more interesting lenses.
