@@ -236,8 +236,10 @@ export default ({state, cart = U.view(P("cart", L.define([])), state)}) =>
 ```
 
 The `App` above lenses the `cart` state out of the whole app `state` and then
-instantiates the components.  For the purposes of this example we are done.  See
-a live version [here](https://calmm-js.github.io/karet-shopping-cart/).
+instantiates the components.  Note that we use the higher-order `Items`
+component twice with different `Item` components and different lists of `items`.
+For the purposes of this example we are done.  See a live
+version [here](https://calmm-js.github.io/karet-shopping-cart/).
 
 ## Reference
 
