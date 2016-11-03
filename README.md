@@ -114,7 +114,7 @@ calls [`remove`](#remove) on the `removable` state given to it.
 
 ### Lists are simple data structures
 
-Then you write a higher-order component that can display a list of items:
+Then we write a higher-order component that can display a list of items:
 
 ```jsx
 const Items = ({items, Item}) =>
