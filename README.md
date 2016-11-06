@@ -218,7 +218,7 @@ const products = [
 And, finally, here is our `App`:
 
 ```jsx
-export default ({state, cart = U.view(P("cart", L.define([])), state)}) =>
+export default ({state, cart = U.view(["cart", L.define([])], state)}) =>
   <div>
     <h1>Karet (toy) Shopping Cart example</h1>
     <a href="https://github.com/calmm-js/karet-shopping-cart">GitHub</a>
