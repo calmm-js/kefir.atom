@@ -77,6 +77,8 @@ This example is actually a stripped down version of
 the
 [Karet Shopping Cart example](https://github.com/calmm-js/karet-shopping-cart).
 
+See a live version [here](https://calmm-js.github.io/karet-shopping-cart/).
+
 ### Counters are not toys!
 
 So, how does one create a Shopping Cart UI?
@@ -240,8 +242,23 @@ export default ({state, cart = U.view(["cart", L.define([])], state)}) =>
 The `App` above lenses the `cart` state out of the whole app `state` and then
 instantiates the components.  Note that we use the higher-order `Items`
 component twice with different `Item` components and different lists of `items`.
-For the purposes of this example we are done.  See a live
-version [here](https://calmm-js.github.io/karet-shopping-cart/).
+
+### Summary
+
+For the purposes of this example we are done.  Here is a summary:
+
+* We wrote several components such as `Counter`, `Removable` and `Items` that
+  are not specific to the application in any way.
+
+* Each component is just one function that takes (possibly reactive variables
+  as) parameters and returns VDOM.
+
+* We composed components together as VDOM expressions.
+
+* We used `Counter` and `Items` twice in different contexts.
+
+* When using `Counter` we used lenses to decompose application specific state to
+  match the interface of the component.
 
 ## Reference
 
