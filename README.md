@@ -125,9 +125,9 @@ const Items = ({items, Item}) =>
 ```
 
 The `Items` component is given state named `items` that is supposed to refer to
-an array of objects with `id`s.  From that array it then produces an unordered
-list of `Item` components, passing them an `item` that corresponds to an element
-of the `items` state array.
+an array of objects.  From that array it then produces an unordered list of
+`Item` components, passing them an `item` that corresponds to an element of the
+`items` state array.
 
 ### Items in a cart
 
