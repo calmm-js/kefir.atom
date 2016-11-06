@@ -137,8 +137,8 @@ We then need some items for the cart:
 const cartName = U.view("name")
 
 const cartCount =
-  U.view(P(L.choose((props = {}) => L.defaults({...props, count: 0})),
-           "count"))
+  U.view([L.choose((props = {}) => L.defaults({...props, count: 0})),
+          "count"])
 
 const CartItem = ({item}) =>
   <li>
@@ -179,11 +179,11 @@ We are nearly done!  We just need one more component for products:
 const productName = U.view("name")
 
 const productCount = U.staged(item =>
-  U.view(P(L.find(R.whereEq({id: item.id})),
-           L.defaults(item),
-           "count",
-           L.defaults(0),
-           L.normalize(R.max(0)))))
+  U.view([L.find(R.whereEq({id: item.id})),
+          L.defaults(item),
+          "count",
+          L.defaults(0),
+          L.normalize(R.max(0))]))
 
 const ProductItem = cart => ({item}) =>
   <li>
