@@ -133,7 +133,8 @@ an array of objects.  From that array it then produces an unordered list of
 
 ### Items in a cart
 
-We then need some items for the cart:
+We haven't actually written anything shopping cart specific yet.  Let's change
+that by writing a component for cart items:
 
 ```jsx
 const cartName = U.view("name")
