@@ -158,7 +158,9 @@ a [lensed](https://github.com/calmm-js/partial.lenses) [view](#view) of the
 `count`.  The `cartCount` lens makes it so that when the `count` property
 reaches `0` the whole item is removed.
 
-**_This is important:_** By using a simple lens as an adapter, we could plug the
+**_This is important:_** By using a simple lens as an adapter, we
+could
+[plug](https://github.com/calmm-js/documentation/blob/master/introduction-to-calmm.md#imagine) the
 previously defined `Counter` component into the shopping cart state.
 
 If this is the first time you
