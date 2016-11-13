@@ -3,7 +3,8 @@
 This library provides a family of [concepts](#concepts) and tools for
 managing
 [state](https://en.wikipedia.org/wiki/State_(computer_science)#Program_state)
-with [Kefir](http://rpominov.github.io/kefir/).
+with [lenses](https://github.com/calmm-js/partial.lenses)
+and [Kefir](http://rpominov.github.io/kefir/).
 
 [![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
 
