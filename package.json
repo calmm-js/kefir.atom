@@ -1,7 +1,7 @@
 {
   "name": "kefir.atom",
-  "version": "4.0.0",
-  "description": "Manage state with Kefir",
+  "version": "4.0.1",
+  "description": "Composable and decomposable reactive state with lenses and Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
     "dist": "babel src --source-maps inline --out-dir lib",
