@@ -582,7 +582,7 @@ When read, either as a property or via [`get`](#get), the abstract mutables in
 the template are replaced by their values:
 
 ```js
-R.identical( xyM.get(), xyA.get() )
+R.equals( xyM.get(), xyA.get() )
 // true
 ```
 
