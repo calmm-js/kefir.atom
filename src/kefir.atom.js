@@ -1,5 +1,5 @@
 import * as Kefir from "kefir"
-import P, * as L  from "partial.lenses"
+import * as L     from "partial.lenses"
 
 //
 
@@ -61,7 +61,7 @@ export class AbstractMutable extends Kefir.Property {
     return this.view(...ls)
   }
   view(...ls) {
-    return new LensedAtom(this, P(...ls))
+    return new LensedAtom(this, L.compose(...ls))
   }
   _maybeEmitValue(next) {
     const prev = this._currentEvent
