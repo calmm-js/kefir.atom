@@ -1,10 +1,6 @@
-import * as Kefir from "kefir"
-import * as L     from "partial.lenses"
-
-//
-
-const identical = (a, b) =>
-  a === b && (a !== 0 || 1 / a === 1 / b) || a !== a && b !== b
+import {identicalU, isArray, isObject} from "infestines"
+import {Property, combine} from "kefir"
+import {compose, get, modify, set} from "partial.lenses"
 
 //
 
@@ -26,18 +22,18 @@ let lock = 0
 const prevs = []
 const atoms = []
 
-const release = () => {
+function release() {
   while (prevs.length) {
     const prev = prevs.shift()
     const atom = atoms.shift()
     const next = atom._currentEvent.value
 
-    if (!identical(prev, next))
+    if (!identicalU(prev, next))
       atom._emitValue(next)
   }
 }
 
-export const holding = ef => {
+export function holding(ef) {
   ++lock
   try {
     return ef()
@@ -49,7 +45,7 @@ export const holding = ef => {
 
 //
 
-export class AbstractMutable extends Kefir.Property {
+export class AbstractMutable extends Property {
   set(value) {
     this.modify(() => value)
   }
@@ -61,11 +57,11 @@ export class AbstractMutable extends Kefir.Property {
     return this.view(...ls)
   }
   view(...ls) {
-    return new LensedAtom(this, L.compose(...ls))
+    return new LensedAtom(this, compose(...ls))
   }
   _maybeEmitValue(next) {
     const prev = this._currentEvent
-    if (!prev || !identical(prev.value, next))
+    if (!prev || !identicalU(prev.value, next))
       this._emitValue(next)
   }
 }
@@ -107,11 +103,14 @@ export class LensedAtom extends MutableWithSource {
     super(source)
     this._lens = lens
   }
+  set(v) {
+    this._source.set(set(this._lens, v, this._source.get()))
+  }
   modify(fn) {
-    this._source.modify(L.modify(this._lens, fn))
+    this._source.modify(modify(this._lens, fn))
   }
   _getFromSource() {
-    return L.get(this._lens, this._source.get())
+    return get(this._lens, this._source.get())
   }
 }
 
@@ -127,10 +126,16 @@ export class Atom extends AbstractMutable {
     const current = this._currentEvent
     return current ? current.value : undefined
   }
+  set(v) {
+    const current = this._currentEvent
+    this._setInternal(current, current ? current.value : undefined, v)
+  }
   modify(fn) {
     const current = this._currentEvent
     const prev = current ? current.value : undefined
-    const next = fn(prev)
+    this._setInternal(current, prev, fn(prev))
+  }
+  _setInternal(current, prev, next) {
     if (lock) {
       if (!atoms.find(x => x === this)) {
         prevs.push(current ? prev : mismatch)
@@ -148,41 +153,35 @@ export class Atom extends AbstractMutable {
 
 //
 
-const constructorOf = x => x && x.constructor
-
 function getMutables(template, mutables = []) {
   if (template instanceof AbstractMutable &&
       !mutables.find(m => m === template)) {
     mutables.push(template)
   } else {
-    const constructor = constructorOf(template)
-
-    if (constructor === Array)
+    if (isArray(template))
       for (let i=0, n=template.length; i<n; ++i)
         getMutables(template[i], mutables)
-    else if (constructor === Object)
+    else if (isObject(template))
       for (const k in template)
         getMutables(template[k], mutables)
   }
   return mutables
 }
 
-function combine(template) {
+function molecule(template) {
   if (template instanceof AbstractMutable) {
     return template.get()
   } else {
-    const constructor = constructorOf(template)
-
-    if (constructor === Array) {
+    if (isArray(template)) {
       const n = template.length
       const next = Array(n)
       for (let i=0; i<n; ++i)
-        next[i] = combine(template[i])
+        next[i] = molecule(template[i])
       return next
-    } else if (constructor === Object) {
+    } else if (isObject(template)) {
       const next = {}
       for (const k in template)
-        next[k] = combine(template[k])
+        next[k] = molecule(template[k])
       return next
     } else {
       return template
@@ -190,35 +189,30 @@ function combine(template) {
   }
 }
 
-const mismatch = () => {throw new Error("Molecule cannot change the template.")}
+function mismatch() {throw new Error("Molecule cannot change the template.")}
 
 function setMutables(template, value) {
   if (template instanceof AbstractMutable) {
     return template.set(value)
   } else {
-    const constructor = constructorOf(template)
-
-    if (constructor !== constructorOf(value))
-      mismatch()
-
-    if (constructor === Array)
+    if (isArray(template) && isArray(value))
       for (let i=0, n=template.length; i<n; ++i)
         setMutables(template[i], value[i])
-    else if (constructor === Object)
+    else if (isObject(template) && isObject(value))
       for (const k in template)
         setMutables(template[k], value[k])
-    else if (!identical(template, value))
+    else if (!identicalU(template, value))
       mismatch()
   }
 }
 
 export class Molecule extends MutableWithSource {
   constructor(template) {
-    super(Kefir.combine(getMutables(template)))
+    super(combine(getMutables(template)))
     this._template = template
   }
   _getFromSource() {
-    return combine(this._template)
+    return molecule(this._template)
   }
   modify(fn) {
     const next = fn(this.get())
