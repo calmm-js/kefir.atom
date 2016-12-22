@@ -1,6 +1,6 @@
 {
   "name": "kefir.atom",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "Composable and decomposable reactive state with lenses and Kefir",
   "main": "lib/kefir.atom.js",
   "scripts": {
@@ -42,8 +42,8 @@
     "ramda": "^0.22.1"
   },
   "dependencies": {
-    "infestines": "^0.1.4",
+    "infestines": "^0.2.0",
     "kefir": "^3.3.0",
-    "partial.lenses": ">=2.2.0 <7.0.0"
+    "partial.lenses": ">=2.2.0 <8.0.0"
   }
 }
