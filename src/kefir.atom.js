@@ -222,4 +222,9 @@ export class Molecule extends MutableWithSource {
 
 //
 
-export default (...value) => new Atom(...value)
+export default function atom() {
+  if (arguments.length)
+    return new Atom(arguments[0])
+  else
+    return new Atom()
+}
