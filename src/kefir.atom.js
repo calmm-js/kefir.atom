@@ -4,16 +4,13 @@ import {compose, get, modify, set} from "partial.lenses"
 
 //
 
-const warn = process.env.NODE_ENV === "production" ? () => {} : (() => {
-  const warned = {}
-
-  return message => {
-    if (!(message in warned)) {
-      warned[message] = message
-      console.warn("kefir.atom:", message)
-    }
+const warned = {}
+function warn(message) {
+  if (!(message in warned)) {
+    warned[message] = message
+    console.warn("kefir.atom:", message)
   }
-})()
+}
 
 //
 
@@ -53,7 +50,8 @@ export class AbstractMutable extends Property {
     this.set()
   }
   lens(...ls) {
-    warn("The `lens` method has been deprecated. Use the `view` method instead.")
+    if (process.env.NODE_ENV !== "production")
+      warn("The `lens` method has been deprecated. Use the `view` method instead.")
     return this.view(...ls)
   }
   view(...ls) {
