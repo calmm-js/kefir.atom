@@ -1,0 +1,25 @@
+{
+  "name": "kefir.atom",
+  "description": "Composable and decomposable reactive state with lenses and Kefir",
+  "main": "dist/kefir.atom.js",
+  "license": "MIT",
+  "keywords": [
+    "atom",
+    "compose",
+    "decompose",
+    "kefir",
+    "lens",
+    "model",
+    "observable",
+    "reactive",
+    "state",
+    "transaction"
+  ],
+  "homepage": "https://github.com/calmm-js/kefir.atom",
+  "dependencies": {
+    "infestines": ">=0.2.0 <0.4.0",
+    "kefir": "^3.3.0",
+    "partial.lenses": ">=2.2.0 <8.0.0"
+  },
+  "ignore": ["*", "!*.md", "!dist/*"]
+}
