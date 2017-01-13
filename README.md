@@ -6,7 +6,7 @@ managing
 with [lenses](https://github.com/calmm-js/partial.lenses)
 and [Kefir](http://rpominov.github.io/kefir/).
 
-[![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![Code Coverage](https://img.shields.io/codecov/c/github/calmm-js/kefir.atom/master.svg)](https://codecov.io/github/calmm-js/kefir.atom?branch=master) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
+[![npm version](https://badge.fury.io/js/kefir.atom.svg)](http://badge.fury.io/js/kefir.atom) [![Bower version](https://badge.fury.io/bo/kefir.atom.svg)](https://badge.fury.io/bo/kefir.atom) [![Build Status](https://travis-ci.org/calmm-js/kefir.atom.svg?branch=master)](https://travis-ci.org/calmm-js/kefir.atom) [![Code Coverage](https://img.shields.io/codecov/c/github/calmm-js/kefir.atom/master.svg)](https://codecov.io/github/calmm-js/kefir.atom?branch=master) [![](https://david-dm.org/calmm-js/kefir.atom.svg)](https://david-dm.org/calmm-js/kefir.atom) [![](https://david-dm.org/calmm-js/kefir.atom/dev-status.svg)](https://david-dm.org/calmm-js/kefir.atom?type=dev)
 
 ## Contents
 

@@ -1,4 +1,4 @@
-import {identicalU, isArray, isObject} from "infestines"
+import {identicalU, inherit, isArray, isObject} from "infestines"
 import {Property, combine} from "kefir"
 import {compose, get, modify, set} from "partial.lenses"
 
@@ -42,97 +42,104 @@ export function holding(ef) {
 
 //
 
-export class AbstractMutable extends Property {
+export function AbstractMutable() {
+  Property.call(this)
+}
+
+inherit(AbstractMutable, Property, {
   set(value) {
     this.modify(() => value)
-  }
+  },
   remove() {
     this.set()
-  }
+  },
   lens(...ls) {
     if (process.env.NODE_ENV !== "production")
       warn("The `lens` method has been deprecated. Use the `view` method instead.")
     return this.view(...ls)
-  }
+  },
   view(...ls) {
     return new LensedAtom(this, compose(...ls))
-  }
+  },
   _maybeEmitValue(next) {
     const prev = this._currentEvent
     if (!prev || !identicalU(prev.value, next))
       this._emitValue(next)
   }
-}
+})
 
 //
 
-export class MutableWithSource extends AbstractMutable {
-  constructor(source) {
-    super()
-    this._source = source
-    this._$handleAny = null
-  }
+export function MutableWithSource(source) {
+  AbstractMutable.call(this)
+  this._source = source
+  this._$handleAny = null
+}
+
+inherit(MutableWithSource, AbstractMutable, {
   get() {
     const current = this._currentEvent
     if (current && !lock)
       return current.value
     else
       return this._getFromSource()
-  }
+  },
   _handleAny() {
     this._maybeEmitValue(this._getFromSource())
-  }
+  },
   _onActivation() {
     const handleAny = () => this._handleAny()
     this._$handleAny = handleAny
     this._source.onAny(handleAny)
-  }
+  },
   _onDeactivation() {
     this._source.offAny(this._$handleAny)
     this._$handleAny = null
     this._currentEvent = null
   }
-}
+})
 
 //
 
-export class LensedAtom extends MutableWithSource {
-  constructor(source, lens) {
-    super(source)
-    this._lens = lens
-  }
+export function LensedAtom(source, lens) {
+  MutableWithSource.call(this, source)
+  this._lens = lens
+}
+
+inherit(LensedAtom, MutableWithSource, {
   set(v) {
     this._source.set(set(this._lens, v, this._source.get()))
-  }
+  },
   modify(fn) {
     this._source.modify(modify(this._lens, fn))
-  }
+  },
   _getFromSource() {
     return get(this._lens, this._source.get())
   }
-}
+})
 
 //
 
-export class Atom extends AbstractMutable {
-  constructor() {
-    super()
-    if (arguments.length)
-      this._emitValue(arguments[0])
-  }
+export function Atom() {
+  AbstractMutable.call(this)
+  if (arguments.length)
+    this._emitValue(arguments[0])
+}
+
+inherit(Atom, AbstractMutable, {
   get() {
     const current = this._currentEvent
     return current ? current.value : undefined
-  }
+  },
   set(v) {
     const current = this._currentEvent
     this._setInternal(current, current ? current.value : undefined, v)
-  }
+  },
   modify(fn) {
     const current = this._currentEvent
     const prev = current ? current.value : undefined
     this._setInternal(current, prev, fn(prev))
-  }
+  },
   _setInternal(current, prev, next) {
     if (lock) {
       if (!atoms.find(x => x === this)) {
@@ -147,7 +154,7 @@ export class Atom extends AbstractMutable {
       this._maybeEmitValue(next)
     }
   }
-}
+})
 
 //
 
@@ -204,19 +211,20 @@ function setMutables(template, value) {
   }
 }
 
-export class Molecule extends MutableWithSource {
-  constructor(template) {
-    super(combine(getMutables(template)))
-    this._template = template
-  }
+export function Molecule(template) {
+  MutableWithSource.call(this, combine(getMutables(template)))
+  this._template = template
+}
+
+inherit(Molecule, MutableWithSource, {
   _getFromSource() {
     return molecule(this._template)
-  }
+  },
   modify(fn) {
     const next = fn(this.get())
     holding(() => setMutables(this._template, next))
   }
-}
+})
 
 //
 
