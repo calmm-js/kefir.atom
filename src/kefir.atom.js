@@ -1,4 +1,4 @@
-import {identicalU, inherit, isArray, isObject} from "infestines"
+import {always, identicalU, inherit, isArray, isObject} from "infestines"
 import {Property, combine} from "kefir"
 import {compose, get, modify, set} from "partial.lenses"
 
@@ -48,7 +48,7 @@ export function AbstractMutable() {
 
 inherit(AbstractMutable, Property, {
   set(value) {
-    this.modify(() => value)
+    this.modify(always(value))
   },
   remove() {
     this.set()
