@@ -158,19 +158,18 @@ inherit(Atom, AbstractMutable, {
 
 //
 
-function getMutables(template, mutables = []) {
+function pushMutables(template, mutables) {
   if (template instanceof AbstractMutable &&
       mutables.indexOf(template) < 0) {
     mutables.push(template)
   } else {
     if (isArray(template))
       for (let i=0, n=template.length; i<n; ++i)
-        getMutables(template[i], mutables)
+        pushMutables(template[i], mutables)
     else if (isObject(template))
       for (const k in template)
-        getMutables(template[k], mutables)
+        pushMutables(template[k], mutables)
   }
-  return mutables
 }
 
 function molecule(template) {
@@ -212,7 +211,9 @@ function setMutables(template, value) {
 }
 
 export function Molecule(template) {
-  MutableWithSource.call(this, combine(getMutables(template)))
+  const mutables = []
+  pushMutables(template, mutables)
+  MutableWithSource.call(this, combine(mutables))
   this._template = template
 }
 
