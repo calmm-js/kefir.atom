@@ -58,7 +58,7 @@ inherit(AbstractMutable, Property, {
 export function MutableWithSource(source) {
   AbstractMutable.call(this)
   this._source = source
-  this._$handleAny = null
+  this._$onAny = null
 }
 
 inherit(MutableWithSource, AbstractMutable, {
@@ -69,17 +69,17 @@ inherit(MutableWithSource, AbstractMutable, {
     else
       return this._getFromSource()
   },
-  _handleAny() {
+  _onAny() {
     this._maybeEmitValue(this._getFromSource())
   },
   _onActivation() {
-    const handleAny = () => this._handleAny()
-    this._$handleAny = handleAny
-    this._source.onAny(handleAny)
+    const onAny = () => this._onAny()
+    this._$onAny = onAny
+    this._source.onAny(onAny)
   },
   _onDeactivation() {
-    this._source.offAny(this._$handleAny)
-    this._$handleAny = null
+    this._source.offAny(this._$onAny)
+    this._$onAny = null
     this._currentEvent = null
   }
 })
