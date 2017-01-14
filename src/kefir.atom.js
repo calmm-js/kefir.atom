@@ -4,16 +4,6 @@ import {compose, get, modify, set} from "partial.lenses"
 
 //
 
-const warned = {}
-function warn(message) {
-  if (!(message in warned)) {
-    warned[message] = message
-    console.warn("kefir.atom:", message)
-  }
-}
-
-//
-
 let lock = 0
 
 const prevs = []
@@ -52,11 +42,6 @@ inherit(AbstractMutable, Property, {
   },
   remove() {
     this.set()
-  },
-  lens(...ls) {
-    if (process.env.NODE_ENV !== "production")
-      warn("The `lens` method has been deprecated. Use the `view` method instead.")
-    return this.view(...ls)
   },
   view(...ls) {
     return new LensedAtom(this, compose(...ls))

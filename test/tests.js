@@ -70,7 +70,3 @@ describe("variable", () => {
   testEq('{const x = Atom(), y = x.view("y"); let r = "initial"; y.onValue(y => r = y); x.set({y: 1}); return r}', 1)
   testEq('{const x = Atom(), y = x.view("y"); let r = "initial"; y.onValue(y => r = y); holding(() => x.set({y: 1})); return r}', 1)
 })
-
-describe("deprecated", () => {
-  testEq('Atom({x: 1}).lens("x")', 1)
-})

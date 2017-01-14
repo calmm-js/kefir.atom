@@ -353,12 +353,6 @@ both.get()
 // { empty: undefined, notEmpty: 'initial' }
 ```
 
-### <a name="lens"></a>[`atom.lens(...ls)`](#lens "lens :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
-
-**The `lens` method has been deprecated. Use the [`view`](#view) method instead.
-The [`view`](#view) method has always been a duplicate of
-`lens`. See [CHANGELOG](CHANGELOG.md#310) for futher details.**
-
 ### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify :: AbstractMutable a -> (a -> a) -> ()")
 
 Conceptually applies the given function to the current value of the atom and
