@@ -142,7 +142,7 @@ inherit(Atom, AbstractMutable, {
   },
   _setInternal(current, prev, next) {
     if (lock) {
-      if (!atoms.find(x => x === this)) {
+      if (atoms.indexOf(this) < 0) {
         prevs.push(current ? prev : mismatch)
         atoms.push(this)
       }
@@ -160,7 +160,7 @@ inherit(Atom, AbstractMutable, {
 
 function getMutables(template, mutables = []) {
   if (template instanceof AbstractMutable &&
-      !mutables.find(m => m === template)) {
+      mutables.indexOf(template) < 0) {
     mutables.push(template)
   } else {
     if (isArray(template))
