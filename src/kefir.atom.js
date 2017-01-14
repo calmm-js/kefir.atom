@@ -44,6 +44,10 @@ inherit(AbstractMutable, Property, {
     this.set()
   },
   view(...ls) {
+    if (process.env.NODE_ENV !== "production" && !this.view.warned && ls.length !== 1) {
+      this.view.warned = 1
+      console.warn("kefir.atom: The view method will be changed to allow only exactly 1 argument in the next major version.  Simply pass an array of lenses.")
+    }
     return new LensedAtom(this, compose(...ls))
   },
   _maybeEmitValue(next) {

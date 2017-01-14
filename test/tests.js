@@ -43,8 +43,8 @@ describe("view", () => {
   testEq('{const xy = Atom({x: {y: 1}}), y = xy.view("x"); return y.get()}', {y: 1})
   testEq('{const xy = Atom({x: {y: 1}}), y = xy.view("x"); y.set({y: 3}); return y}', {y: 3})
   testEq('{const xy = Atom({x: {y: 2}}), y = xy.view("x"), z = y.view("y"); return z}', 2)
-  testEq('{const xy = Atom({x: {y: 3}}), z = xy.view("x", "y"); z.set(2); return z}', 2)
-  testEq('{const xy = Atom({x: {y: 3}}), z = xy.view("x", "y"); return z.get()}', 3)
+  testEq('{const xy = Atom({x: {y: 3}}), z = xy.view(["x", "y"]); z.set(2); return z}', 2)
+  testEq('{const xy = Atom({x: {y: 3}}), z = xy.view(["x", "y"]); return z.get()}', 3)
 })
 
 describe("holding", () => {
@@ -69,4 +69,8 @@ describe("variable", () => {
   testEq('{const x = Atom(), y = x.view("y"); let r = "initial"; y.onValue(y => r = y); return r}', "initial")
   testEq('{const x = Atom(), y = x.view("y"); let r = "initial"; y.onValue(y => r = y); x.set({y: 1}); return r}', 1)
   testEq('{const x = Atom(), y = x.view("y"); let r = "initial"; y.onValue(y => r = y); holding(() => x.set({y: 1})); return r}', 1)
+})
+
+describe("deprecated", () => {
+  testEq('{const x = Atom({x: {y: 1}}); return x.view("x", "y").get()}', 1)
 })

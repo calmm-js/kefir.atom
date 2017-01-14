@@ -1,5 +1,30 @@
 # Changelog
 
+## 4.1.0
+
+The `lens` method that was deprecated already in `3.1.0` was removed.  If you
+really need it, you can monkey patch it back:
+
+```js
+import {AbstractMutable} from "kefir.atom"
+AbstractMutable.prototype.lens = AbstractMutable.prototype.view
+```
+
+A warning was added to the `view` method to say that it will be changed to
+accept exactly 1 argument in the next release.  This change will be done for the
+following reasons:
+
+* `partial.lenses` nowadays supports using an array of lenses for composition.
+  The difference in convenience between `x.view(l1, l2)` and `x.view([l1, l2])`
+  is small and makes the cost explicit.
+
+* Variable argument functions in JavaScript are not free.  A variable argument
+  `view` is more complex, typically requires more allocations and is more
+  difficult for JavaScript engines to inline and compile into really efficient
+  code.
+
+The small benefit of convenience does not seem worth the costs.
+
 ## 4.0.0
 
 Previously duplicates were skipped with Ramda's `equals`.  This is ideal in the
