@@ -1,4 +1,4 @@
-[ [Contents](#contents) | [Motivation](#motivation) | [Tutorial](#tutorial) | [Reference](#reference) | [About](#about) ]
+[ [≡](#contents) | [Motivation](#motivation) | [Tutorial](#tutorial) | [Reference](#reference) | [About](#about) ]
 
 This library provides a family of [concepts](#concepts) and tools for
 managing
@@ -302,7 +302,7 @@ import Atom from "kefir.atom"
 of this library.  It provides a convenience function that constructs a `new`
 instance of the [`Atom`](#class-Atom) class.
 
-### <a name="Atom"></a>[`Atom(value)`](#Atom "Atom: a -> Atom a")
+### <a name="Atom"></a> [≡](#contents) [`Atom(value)`](#Atom "Atom: a -> Atom a")
 
 Creates a new atom with the given initial value.  For example:
 
@@ -314,7 +314,7 @@ notEmpty.log()
 // [property] <value:current> initial
 ```
 
-### <a name="Atom-empty"></a>[`Atom()`](#Atom-empty "Atom: () -> Atom a")
+### <a name="Atom-empty"></a> [≡](#contents) [`Atom()`](#Atom-empty "Atom: () -> Atom a")
 
 Creates a new atom without an initial value.  For example:
 
@@ -327,7 +327,7 @@ empty.set("first")
 // [property] <value> first
 ```
 
-### <a name="get"></a>[`atom.get()`](#get "get: AbstractMutable a -> a")
+### <a name="get"></a> [≡](#contents) [`atom.get()`](#get "get: AbstractMutable a -> a")
 
 Synchronously computes the current value of the atom.  For example:
 
@@ -353,7 +353,7 @@ both.get()
 // { empty: undefined, notEmpty: 'initial' }
 ```
 
-### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify: AbstractMutable a -> (a -> a) -> ()")
+### <a name="modify"></a> [≡](#contents) [`atom.modify(currentValue => newValue)`](#modify "modify: AbstractMutable a -> (a -> a) -> ()")
 
 Conceptually applies the given function to the current value of the atom and
 replaces the value of the atom with the new value returned by the function.  For
@@ -385,12 +385,12 @@ root.get()
 // { x: 0 }
 ```
 
-### <a name="set"></a>[`atom.set(value)`](#set "set: AbstractMutable a -> a -> ()")
+### <a name="set"></a> [≡](#contents) [`atom.set(value)`](#set "set: AbstractMutable a -> a -> ()")
 
 `atom.set(value)` is equivalent to [`atom.modify(() => value)`](#modify) and is
 provided for convenience.
 
-### <a name="remove"></a>[`atom.remove()`](#remove "remove: AbstractMutable a -> ()")
+### <a name="remove"></a> [≡](#contents) [`atom.remove()`](#remove "remove: AbstractMutable a -> ()")
 
 `atom.remove()` is equivalent to [`atom.set()`](#set), which is also equivalent
 to [`atom.set(undefined)`](#set), and is provided for convenience.  For example:
@@ -413,7 +413,7 @@ but `remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
 of [remove](https://github.com/calmm-js/partial.lenses#L-remove) on partial
 lenses.
 
-### <a name="view"></a>[`atom.view(lens)`](#view "view: AbstractMutable a -> PLens a b -> LensedAtom b")
+### <a name="view"></a> [≡](#contents) [`atom.view(lens)`](#view "view: AbstractMutable a -> PLens a b -> LensedAtom b")
 
 Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
 with the lens from the original atom.  Modifications to the lensed atom are
@@ -454,7 +454,7 @@ Note that, for most intents and purposes, `view` is a referentially transparent
 function: it does not create *new* mutable state&mdash;it merely creates a
 reference to existing mutable state.
 
-### <a name="holding"></a>[`holding(() => ...)`](#holding "holding: (() -> a) -> a")
+### <a name="holding"></a> [≡](#contents) [`holding(() => ...)`](#holding "holding: (() -> a) -> a")
 
 There is also a named import `holding`
 
@@ -517,7 +517,7 @@ There are use cases where you would want to create new subtypes of
 [`AbstractMutable`](#class-AbstractMutable), but it seems unlikely that you
 should inherit from the other classes.
 
-#### <a name="class-AbstractMutable"></a>[`AbstractMutable a :> Property a`](#class-AbstractMutable)
+#### <a name="class-AbstractMutable"></a> [≡](#contents) [`AbstractMutable a :> Property a`](#class-AbstractMutable)
 
 `AbstractMutable` is the abstract base class or interface against which most
 code using atoms is actually written.  An `AbstractMutable` is a
@@ -530,7 +530,7 @@ Note that we often abuse terminology and speak of [`Atom`](#class-Atom)s when we
 should speak of `AbstractMutable`s, because [`Atom`](#class-Atom) is easier to
 pronounce and is more concrete.
 
-#### <a name="class-Atom"></a>[`Atom a :> AbstractMutable a`](#class-Atom)
+#### <a name="class-Atom"></a> [≡](#contents) [`Atom a :> AbstractMutable a`](#class-Atom)
 
 An `Atom` is a simple implementation of
 an [`AbstractMutable`](#class-AbstractMutable) that actually stores state.  One
@@ -547,7 +547,7 @@ possible to implement an [`AbstractMutable`](#class-AbstractMutable) whose state
 is actually stored in an external database that can be observed and mutated by
 multiple clients.
 
-#### <a name="class-LensedAtom"></a>[`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
+#### <a name="class-LensedAtom"></a> [≡](#contents) [`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
 
 A `LensedAtom` is an implementation of
 an [`AbstractMutable`](#class-AbstractMutable) that doesn't actually store
@@ -557,7 +557,7 @@ another [`AbstractMutable`](#class-AbstractMutable).  One creates `LensedAtom`s
 by calling the [`view`](#view) method of
 an [`AbstractMutable`](#class-AbstractMutable).
 
-#### <a name="class-Molecule"></a>[`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
+#### <a name="class-Molecule"></a> [≡](#contents) [`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
 
 A `Molecule` is a special *partial* implementation of
 an [`AbstractMutable`](#class-AbstractMutable) that is constructed from a
