@@ -118,14 +118,14 @@ inherit(Atom, AbstractMutable, {
   },
   set(v) {
     const current = this._currentEvent
-    this._setInternal(current, current ? current.value : undefined, v)
+    this._set(current, current ? current.value : undefined, v)
   },
   modify(fn) {
     const current = this._currentEvent
     const prev = current ? current.value : undefined
-    this._setInternal(current, prev, fn(prev))
+    this._set(current, prev, fn(prev))
   },
-  _setInternal(current, prev, next) {
+  _set(current, prev, next) {
     if (lock) {
       if (atoms.indexOf(this) < 0) {
         prevs.push(current ? prev : mismatch)
