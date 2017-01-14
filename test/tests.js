@@ -33,6 +33,7 @@ const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
 })
 
 describe("Atom", () => {
+  testEq('{const x = Atom({x: 2}); x.view("x").modify(R.inc) ; return x.get()}', {x:3})
   testEq('{const xy = Atom({x: {y: 1}}); return xy.orAsync("test bug")}', {x: {y: 1}})
   testEq('{const xy = Atom({x: {y: 1}}); xy.set({x: {y: 2}}) ; return xy.get()}', {x: {y: 2}})
 })
