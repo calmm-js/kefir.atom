@@ -26,7 +26,7 @@ and [Kefir](http://rpominov.github.io/kefir/).
   * [`atom.modify(currentValue => newValue)`](#modify "modify: AbstractMutable a -> (a -> a) -> ()")
   * [`atom.set(value)`](#set "set: AbstractMutable a -> a -> ()")
   * [`atom.remove()`](#remove "remove: AbstractMutable a -> ()")
-  * [`atom.view(...ls)`](#view "view: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
+  * [`atom.view(lens)`](#view "view: AbstractMutable a -> PLens a b -> LensedAtom b")
   * [`holding(() => ...)`](#holding "holding: (() -> a) -> a")
   * [Concepts](#concepts)
     * [`AbstractMutable a :> Property a`](#class-AbstractMutable)
@@ -410,14 +410,14 @@ items.get()
 Calling `remove` on a plain [`Atom`](#class-Atom) doesn't usually make sense,
 but `remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
 "removal" will then follow from the semantics
-of [remove](https://github.com/calmm-js/partial.lenses#remove) on partial
+of [remove](https://github.com/calmm-js/partial.lenses#L-remove) on partial
 lenses.
 
-### <a name="view"></a>[`atom.view(...ls)`](#view "view: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
+### <a name="view"></a>[`atom.view(lens)`](#view "view: AbstractMutable a -> PLens a b -> LensedAtom b")
 
 Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
-with the given path from the original atom.  Modifications to the lensed atom
-are reflected in the original atom and vice verse.  For example:
+with the lens from the original atom.  Modifications to the lensed atom are
+reflected in the original atom and vice verse.  For example:
 
 ```js
 const root = Atom({x: 1})
@@ -430,14 +430,12 @@ x.get()
 // 3
 ```
 
-The lenses are treated as a path
-of [partial lenses](https://github.com/calmm-js/partial.lenses/).  In fact, one
-of the key ideas that makes lensed atoms possible is the compositionality of
+One of the key ideas that makes lensed atoms work is the compositionality of
 partial lenses.  See the equations
-here: [`L.compose`](https://github.com/calmm-js/partial.lenses#compose).  Those
-equations make it possible not just to create lenses via composition (left hand
-sides of equations), but also to create paths of lensed atoms (right hand sides
-of equations).  More concretely, both the `c` in
+here: [`L.compose`](https://github.com/calmm-js/partial.lenses#L-compose).
+Those equations make it possible not just to create lenses via composition (left
+hand sides of equations), but also to create paths of lensed atoms (right hand
+sides of equations).  More concretely, both the `c` in
 
 ```js
 const b = a.view(a_to_b_PLens)
@@ -447,7 +445,7 @@ const c = b.view(b_to_c_PLens)
 and in
 
 ```js
-const c = a.view(a_to_b_PLens, b_to_c_PLens)
+const c = a.view([a_to_b_PLens, b_to_c_PLens])
 ```
 
 can be considered equivalent thanks to the compositionality equations of lenses.
