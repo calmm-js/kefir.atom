@@ -20,14 +20,14 @@ and [Kefir](http://rpominov.github.io/kefir/).
   * [Putting it all together](#putting-it-all-together)
   * [Summary](#summary)
 * [Reference](#reference)
-  * [`Atom(value)`](#Atom "Atom :: a -> Atom a")
-  * [`Atom()`](#Atom-empty "Atom :: () -> Atom a")
-  * [`atom.get()`](#get "get :: AbstractMutable a -> a")
-  * [`atom.modify(currentValue => newValue)`](#modify "modify :: AbstractMutable a -> (a -> a) -> ()")
-  * [`atom.set(value)`](#set "set :: AbstractMutable a -> a -> ()")
-  * [`atom.remove()`](#remove "remove :: AbstractMutable a -> ()")
-  * [`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
-  * [`holding(() => ...)`](#holding "holding :: (() -> a) -> a")
+  * [`Atom(value)`](#Atom "Atom: a -> Atom a")
+  * [`Atom()`](#Atom-empty "Atom: () -> Atom a")
+  * [`atom.get()`](#get "get: AbstractMutable a -> a")
+  * [`atom.modify(currentValue => newValue)`](#modify "modify: AbstractMutable a -> (a -> a) -> ()")
+  * [`atom.set(value)`](#set "set: AbstractMutable a -> a -> ()")
+  * [`atom.remove()`](#remove "remove: AbstractMutable a -> ()")
+  * [`atom.view(...ls)`](#view "view: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
+  * [`holding(() => ...)`](#holding "holding: (() -> a) -> a")
   * [Concepts](#concepts)
     * [`AbstractMutable a :> Property a`](#class-AbstractMutable)
     * [`Atom a :> AbstractMutable a`](#class-Atom)
@@ -302,7 +302,7 @@ import Atom from "kefir.atom"
 of this library.  It provides a convenience function that constructs a `new`
 instance of the [`Atom`](#class-Atom) class.
 
-### <a name="Atom"></a>[`Atom(value)`](#Atom "Atom :: a -> Atom a")
+### <a name="Atom"></a>[`Atom(value)`](#Atom "Atom: a -> Atom a")
 
 Creates a new atom with the given initial value.  For example:
 
@@ -314,7 +314,7 @@ notEmpty.log()
 // [property] <value:current> initial
 ```
 
-### <a name="Atom-empty"></a>[`Atom()`](#Atom-empty "Atom :: () -> Atom a")
+### <a name="Atom-empty"></a>[`Atom()`](#Atom-empty "Atom: () -> Atom a")
 
 Creates a new atom without an initial value.  For example:
 
@@ -327,7 +327,7 @@ empty.set("first")
 // [property] <value> first
 ```
 
-### <a name="get"></a>[`atom.get()`](#get "get :: AbstractMutable a -> a")
+### <a name="get"></a>[`atom.get()`](#get "get: AbstractMutable a -> a")
 
 Synchronously computes the current value of the atom.  For example:
 
@@ -353,7 +353,7 @@ both.get()
 // { empty: undefined, notEmpty: 'initial' }
 ```
 
-### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify :: AbstractMutable a -> (a -> a) -> ()")
+### <a name="modify"></a>[`atom.modify(currentValue => newValue)`](#modify "modify: AbstractMutable a -> (a -> a) -> ()")
 
 Conceptually applies the given function to the current value of the atom and
 replaces the value of the atom with the new value returned by the function.  For
@@ -385,12 +385,12 @@ root.get()
 // { x: 0 }
 ```
 
-### <a name="set"></a>[`atom.set(value)`](#set "set :: AbstractMutable a -> a -> ()")
+### <a name="set"></a>[`atom.set(value)`](#set "set: AbstractMutable a -> a -> ()")
 
 `atom.set(value)` is equivalent to [`atom.modify(() => value)`](#modify) and is
 provided for convenience.
 
-### <a name="remove"></a>[`atom.remove()`](#remove "remove :: AbstractMutable a -> ()")
+### <a name="remove"></a>[`atom.remove()`](#remove "remove: AbstractMutable a -> ()")
 
 `atom.remove()` is equivalent to [`atom.set()`](#set), which is also equivalent
 to [`atom.set(undefined)`](#set), and is provided for convenience.  For example:
@@ -413,7 +413,7 @@ but `remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
 of [remove](https://github.com/calmm-js/partial.lenses#remove) on partial
 lenses.
 
-### <a name="view"></a>[`atom.view(...ls)`](#view "view :: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
+### <a name="view"></a>[`atom.view(...ls)`](#view "view: AbstractMutable a -> (...PLens a b) -> LensedAtom b")
 
 Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
 with the given path from the original atom.  Modifications to the lensed atom
@@ -456,7 +456,7 @@ Note that, for most intents and purposes, `view` is a referentially transparent
 function: it does not create *new* mutable state&mdash;it merely creates a
 reference to existing mutable state.
 
-### <a name="holding"></a>[`holding(() => ...)`](#holding "holding :: (() -> a) -> a")
+### <a name="holding"></a>[`holding(() => ...)`](#holding "holding: (() -> a) -> a")
 
 There is also a named import `holding`
 
