@@ -18,9 +18,12 @@ Kefir.Observable.prototype.orAsync = function (y) {
   return this.merge(Kefir.later(0, y))
 }
 
+const run = expr =>
+  eval(`(Atom, Kefir, L, R, Molecule, holding) => ${expr}`)(
+         Atom, Kefir, L, R, Molecule, holding)
+
 const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
-  const actual = eval(`(Atom, Kefir, L, R, Molecule, holding) => ${expr}`)(
-                        Atom, Kefir, L, R, Molecule, holding)
+  const actual = run(expr)
   const check = actual => {
     if (!R.equals(actual, expect))
       throw new Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
@@ -30,6 +33,20 @@ const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
     actual.take(1).onValue(check)
   else
     check(actual)
+})
+
+const testThrows = expr => it(`${expr} => throws`, () => {
+  let raised
+  let result
+  try {
+    result = run(expr)
+    raised = false
+  } catch (e) {
+    result = e
+    raised = true
+  }
+  if (!raised)
+    throw new Error(`Expected ${expr} to throw, returned ${show(result)}`)
 })
 
 describe("Atom", () => {
@@ -71,6 +88,7 @@ describe("variable", () => {
   testEq('{const x = Atom(), y = x.view("y"); let r = "initial"; y.onValue(y => r = y); holding(() => x.set({y: 1})); return r}', 1)
 })
 
-describe("deprecated", () => {
-  testEq('{const x = Atom({x: {y: 1}}); return x.view("x", "y").get()}', 1)
-})
+if (process.env.NODE_ENV !== "production")
+  describe("errors", () => {
+    testThrows('Atom(0).view(1, 2)')
+  })

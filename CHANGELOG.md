@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.0
+
+Calling `view` with other than exactly one argument throws an error in non
+production builds.
+
 ## 4.1.0
 
 The `lens` method that was deprecated already in `3.1.0` was removed.  If you

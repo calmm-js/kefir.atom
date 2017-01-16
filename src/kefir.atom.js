@@ -1,6 +1,6 @@
 import {always, identicalU, inherit, isArray, isObject} from "infestines"
 import {Property, combine} from "kefir"
-import {compose, get, modify, set} from "partial.lenses"
+import {get, modify, set} from "partial.lenses"
 
 //
 
@@ -43,12 +43,10 @@ inherit(AbstractMutable, Property, {
   remove() {
     this.set()
   },
-  view(...ls) {
-    if (process.env.NODE_ENV !== "production" && !this.view.warned && ls.length !== 1) {
-      this.view.warned = 1
-      console.warn("kefir.atom: The view method will be changed to allow only exactly 1 argument in the next major version.  Simply pass an array of lenses.")
-    }
-    return new LensedAtom(this, compose(...ls))
+  view(lens) {
+    if (process.env.NODE_ENV !== "production" && arguments.length !== 1)
+      throw new Error("kefir.atom: The `view` method takes exactly 1 argument.")
+    return new LensedAtom(this, lens)
   },
   _maybeEmitValue(next) {
     const prev = this._currentEvent
