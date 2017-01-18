@@ -33,7 +33,7 @@ and [Kefir](http://rpominov.github.io/kefir/).
     * [`Atom a :> AbstractMutable a`](#class-Atom)
     * [`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
     * [`Molecule a :> AbstractMutable (a where AbstractMutable x := x)`](#class-Molecule)
-    * [`SettableProperty a :> AbstractMutable a`]("class-SettableProperty)
+    * [`SettableProperty a :> AbstractMutable a`](#class-SettableProperty)
 * [About](#about)
   * [Implementation trade-offs](#implementation-trade-offs)
   * [Related work](#related-work)
@@ -602,7 +602,7 @@ Also, if the template contains multiple abstract mutables that correspond to the
 same underlying state, then writing through the template will give unpredictable
 results.
 
-#### <a name="class-SettableProperty"></a> [≡](#contents) [`SettableProperty a :> AbstractMutable a`]("class-SettableProperty)
+#### <a name="class-SettableProperty"></a> [≡](#contents) [`SettableProperty a :> AbstractMutable a`](#class-SettableProperty)
 
 A `SettableProperty` allows to create an atom out of a Kefir property and a
 `set` function.
