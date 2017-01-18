@@ -1,6 +1,6 @@
 import * as Kefir from "kefir"
-import * as R     from "ramda"
 import * as L     from "partial.lenses"
+import * as R     from "ramda"
 
 import Atom, {Molecule, holding} from "../src/kefir.atom"
 
