@@ -1,5 +1,5 @@
 import {always, identicalU, inherit, isArray, isObject} from "infestines"
-import {Property, combine} from "kefir"
+import {Observable, Property, combine} from "kefir"
 import {get, modify, set} from "partial.lenses"
 
 //
@@ -58,6 +58,8 @@ inherit(AbstractMutable, Property, {
 //
 
 export function MutableWithSource(source) {
+  if (process.env.NODE_ENV !== "production" && !(source instanceof Observable))
+    throw new Error("kefir.atom: Expected an Observable.")
   AbstractMutable.call(this)
   this._source = source
   this._$onAny = null
