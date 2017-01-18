@@ -2,7 +2,11 @@ import * as Kefir from "kefir"
 import * as L     from "partial.lenses"
 import * as R     from "ramda"
 
-import Atom, {Molecule, holding} from "../src/kefir.atom"
+import Atom, {
+  Molecule,
+  MutableWithSource,
+  holding
+} from "../src/kefir.atom"
 
 function show(x) {
   switch (typeof x) {
@@ -19,8 +23,8 @@ Kefir.Observable.prototype.orAsync = function (y) {
 }
 
 const run = expr =>
-  eval(`(Atom, Kefir, L, R, Molecule, holding) => ${expr}`)(
-         Atom, Kefir, L, R, Molecule, holding)
+  eval(`(Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding) => ${expr}`)(
+         Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding)
 
 const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
   const actual = run(expr)
@@ -72,6 +76,8 @@ describe("holding", () => {
 })
 
 describe("Molecule", () => {
+  testEq('new Molecule(42)', 42)
+  testEq('new Molecule([101])', [101])
   testEq('{const x = new Molecule([{x: Atom(1)}, {y: 2}, Atom(3)]); return x}', [{x: 1}, {y: 2}, 3])
   testEq('{const x = Atom(1), y = Atom(2), xy = new Molecule({x, z: ["z"], y: [y]}); xy.view(L.props("x", "y")).set({x: 3, y: [4]}); return Kefir.combine([x, y, xy])}', [3, 4, {x: 3, z: ["z"], y: [4]}])
 })
@@ -90,4 +96,6 @@ describe("variable", () => {
 
 if (process.env.NODE_ENV !== "production") describe("errors", () => {
   testThrows('Atom(0).view(1, 2)')
+  testThrows(`new Molecule([]).set({})`)
+  testThrows(`new MutableWithSource(1)`)
 })
