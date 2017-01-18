@@ -90,6 +90,28 @@ inherit(MutableWithSource, AbstractMutable, {
 
 //
 
+export function SettableProperty(property, setter) {
+  if (process.env.NODE_ENV !== "production" && !(property instanceof Property))
+    throw new Error("kefir.atom: Expected a Property.")
+  MutableWithSource.call(this, property)
+  this._setter = setter
+}
+
+inherit(SettableProperty, MutableWithSource, {
+  _getFromSource() {
+    const current = this._source._currentEvent
+    return current && current.value
+  },
+  set(value) {
+    (0,this._setter)(value)
+  },
+  modify(fn) {
+    this.set(fn(this._getFromSource()))
+  }
+})
+
+//
+
 export function LensedAtom(source, lens) {
   MutableWithSource.call(this, source)
   this._lens = lens
