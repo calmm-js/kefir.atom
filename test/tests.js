@@ -23,8 +23,8 @@ Kefir.Observable.prototype.orAsync = function (y) {
 }
 
 const run = expr =>
-  eval(`(Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding) => ${expr}`)(
-         Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding)
+  eval(`(Atom, Kefir, L, R, Molecule, MutableWithSource, holding) => ${expr}`)(
+         Atom, Kefir, L, R, Molecule, MutableWithSource, holding)
 
 const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
   const actual = run(expr)
