@@ -22,17 +22,17 @@ and [Kefir](http://rpominov.github.io/kefir/).
 * [Reference](#reference)
   * [`Atom(value)`](#Atom "Atom: a -> Atom a")
   * [`Atom()`](#Atom-empty "Atom: () -> Atom a")
-  * [`atom.get()`](#get "get: AbstractMutable a -> a")
-  * [`atom.modify(currentValue => newValue)`](#modify "modify: AbstractMutable a -> (a -> a) -> ()")
-  * [`atom.set(value)`](#set "set: AbstractMutable a -> a -> ()")
-  * [`atom.remove()`](#remove "remove: AbstractMutable a -> ()")
-  * [`atom.view(lens)`](#view "view: AbstractMutable a -> PLens a b -> LensedAtom b")
+  * [`atom.get()`](#get "AbstractMutable a :: get: () -> a")
+  * [`atom.modify(currentValue => newValue)`](#modify "AbstractMutable a :: modify: (a -> a) -> ()")
+  * [`atom.set(value)`](#set "AbstractMutable a :: set: a -> ()")
+  * [`atom.remove()`](#remove "AbstractMutable a :: remove: () -> ()")
+  * [`atom.view(lens)`](#view "AbstractMutable a :: view: PLens a b -> LensedAtom b")
   * [`holding(() => ...)`](#holding "holding: (() -> a) -> a")
   * [Concepts](#concepts)
     * [`AbstractMutable a :> Property a`](#class-AbstractMutable)
     * [`Atom a :> AbstractMutable a`](#class-Atom)
     * [`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
-    * [`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
+    * [`Molecule a :> AbstractMutable (a where AbstractMutable x := x)`](#class-Molecule)
 * [About](#about)
   * [Implementation trade-offs](#implementation-trade-offs)
   * [Related work](#related-work)
@@ -327,7 +327,7 @@ empty.set("first")
 // [property] <value> first
 ```
 
-### <a name="get"></a> [≡](#contents) [`atom.get()`](#get "get: AbstractMutable a -> a")
+### <a name="get"></a> [≡](#contents) [`atom.get()`](#get "AbstractMutable a :: get: () -> a")
 
 Synchronously computes the current value of the atom.  For example:
 
@@ -353,7 +353,7 @@ both.get()
 // { empty: undefined, notEmpty: 'initial' }
 ```
 
-### <a name="modify"></a> [≡](#contents) [`atom.modify(currentValue => newValue)`](#modify "modify: AbstractMutable a -> (a -> a) -> ()")
+### <a name="modify"></a> [≡](#contents) [`atom.modify(currentValue => newValue)`](#modify "AbstractMutable a :: modify: (a -> a) -> ()")
 
 Conceptually applies the given function to the current value of the atom and
 replaces the value of the atom with the new value returned by the function.  For
@@ -385,12 +385,12 @@ root.get()
 // { x: 0 }
 ```
 
-### <a name="set"></a> [≡](#contents) [`atom.set(value)`](#set "set: AbstractMutable a -> a -> ()")
+### <a name="set"></a> [≡](#contents) [`atom.set(value)`](#set "AbstractMutable a :: set: a -> ()")
 
 `atom.set(value)` is equivalent to [`atom.modify(() => value)`](#modify) and is
 provided for convenience.
 
-### <a name="remove"></a> [≡](#contents) [`atom.remove()`](#remove "remove: AbstractMutable a -> ()")
+### <a name="remove"></a> [≡](#contents) [`atom.remove()`](#remove "AbstractMutable a :: remove: () -> ()")
 
 `atom.remove()` is equivalent to [`atom.set()`](#set), which is also equivalent
 to [`atom.set(undefined)`](#set), and is provided for convenience.  For example:
@@ -413,7 +413,7 @@ but `remove` can be useful with [`LensedAtom`](#class-LensedAtom)s, where the
 of [remove](https://github.com/calmm-js/partial.lenses#L-remove) on partial
 lenses.
 
-### <a name="view"></a> [≡](#contents) [`atom.view(lens)`](#view "view: AbstractMutable a -> PLens a b -> LensedAtom b")
+### <a name="view"></a> [≡](#contents) [`atom.view(lens)`](#view "AbstractMutable a :: view: PLens a b -> LensedAtom b")
 
 Creates a new [`LensedAtom`](#class-LensedAtom) that provides a read-write view
 with the lens from the original atom.  Modifications to the lensed atom are
@@ -557,7 +557,7 @@ another [`AbstractMutable`](#class-AbstractMutable).  One creates `LensedAtom`s
 by calling the [`view`](#view) method of
 an [`AbstractMutable`](#class-AbstractMutable).
 
-#### <a name="class-Molecule"></a> [≡](#contents) [`Molecule t :> AbstractMutable (t where AbstractMutable x := x)`](#class-Molecule)
+#### <a name="class-Molecule"></a> [≡](#contents) [`Molecule a :> AbstractMutable (a where AbstractMutable x := x)`](#class-Molecule)
 
 A `Molecule` is a special *partial* implementation of
 an [`AbstractMutable`](#class-AbstractMutable) that is constructed from a
