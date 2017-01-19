@@ -604,7 +604,7 @@ results.
 
 #### <a name="class-SettableProperty"></a> [≡](#contents) [`SettableProperty a :> AbstractMutable a`](#class-SettableProperty)
 
-A `SettableProperty` allows to create an atom out of a Kefir property and a
+A `SettableProperty` can be used to create an atom out of a Kefir property and a
 `set` function.
 
 For example:
