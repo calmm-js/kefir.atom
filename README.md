@@ -33,7 +33,6 @@ and [Kefir](http://rpominov.github.io/kefir/).
     * [`Atom a :> AbstractMutable a`](#class-Atom)
     * [`LensedAtom a :> AbstractMutable a`](#class-LensedAtom)
     * [`Molecule a :> AbstractMutable (a where AbstractMutable x := x)`](#class-Molecule)
-    * [`SettableProperty a :> AbstractMutable a`](#class-SettableProperty)
 * [About](#about)
   * [Implementation trade-offs](#implementation-trade-offs)
   * [Related work](#related-work)
@@ -601,29 +600,6 @@ are only *partial*.
 Also, if the template contains multiple abstract mutables that correspond to the
 same underlying state, then writing through the template will give unpredictable
 results.
-
-#### <a name="class-SettableProperty"></a> [≡](#contents) [`SettableProperty a :> AbstractMutable a`](#class-SettableProperty)
-
-A `SettableProperty` can be used to create an atom out of a Kefir property and a
-`set` function.
-
-For example:
-
-```js
-import * as Kefir         from "kefir"
-import {SettableProperty} from "kefir.atom"
-
-const getPathname = () => window.location.pathname
-
-const pathnameProperty =
-  Kefir.fromEvents(window, "popstate")
-  .map(getPathname)
-  .toProperty(getPathname)
-
-const pathnameAtom = new SettableProperty(pathnameProperty, newPathname => {
-  window.history.pushState(null, "", newPathname)
-})
-```
 
 ## About
 

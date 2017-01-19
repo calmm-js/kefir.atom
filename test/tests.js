@@ -6,7 +6,6 @@ import K          from "kefir.combines"
 import Atom, {
   Molecule,
   MutableWithSource,
-  SettableProperty,
   holding
 } from "../src/kefir.atom"
 
@@ -25,8 +24,8 @@ Kefir.Observable.prototype.orAsync = function (y) {
 }
 
 const run = expr =>
-  eval(`(Atom, Kefir, K, L, R, Molecule, MutableWithSource, SettableProperty, holding) => ${expr}`)(
-         Atom, Kefir, K, L, R, Molecule, MutableWithSource, SettableProperty, holding)
+  eval(`(Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding) => ${expr}`)(
+         Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding)
 
 const testEq = (expr, expect) => it(`${expr} => ${show(expect)}`, done => {
   const actual = run(expr)
@@ -96,18 +95,8 @@ describe("variable", () => {
   testEq('{const x = Atom(), y = x.view("y"); let r = "initial"; y.onValue(y => r = y); holding(() => x.set({y: 1})); return r}', 1)
 })
 
-describe("SettableProperty", () => {
-  testEq(`{const x = Atom(2),
-                 y = new SettableProperty(x, v => x.set(v)),
-                 y0 = y.get();
-           y.modify(R.dec);
-           return K(x, y, y0)}`,
-         [1, 1, 2])
-})
-
 if (process.env.NODE_ENV !== "production") describe("errors", () => {
   testThrows('Atom(0).view(1, 2)')
   testThrows(`new Molecule([]).set({})`)
   testThrows(`new MutableWithSource(1)`)
-  testThrows(`new SettableProperty(1)`)
 })
