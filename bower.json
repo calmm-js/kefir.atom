@@ -19,7 +19,7 @@
   "dependencies": {
     "infestines": "^0.4.0",
     "kefir": "^3.3.0",
-    "partial.lenses": "^8.0.0"
+    "partial.lenses": ">=8.0.0 <10.0.0"
   },
   "ignore": ["*", "!*.md", "!dist/*"]
 }
