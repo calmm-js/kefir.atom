@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.2.2
+
+This library now explicitly depends only on
+the [stable subset](https://github.com/calmm-js/partial.lenses/#stable-subset)
+of partial lenses.
+
 ## 5.0.0
 
 Calling `view` with other than exactly one argument throws an error in non
