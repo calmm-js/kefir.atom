@@ -49,7 +49,7 @@
     "mocha": "^3.2.0",
     "nyc": "^10.2.0",
     "ramda": "^0.23.0",
-    "uglify-js": "^2.8.20",
+    "uglify-js": "^2.8.21",
     "uglifyify": "^3.0.4"
   },
   "dependencies": {
