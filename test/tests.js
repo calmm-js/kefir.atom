@@ -23,9 +23,11 @@ Kefir.Observable.prototype.orAsync = function (y) {
   return this.merge(Kefir.later(0, y))
 }
 
+const objectConstant = {x: 1}
+
 const run = expr =>
-  eval(`(Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding) => ${expr}`)(
-         Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding)
+  eval(`(Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding, objectConstant) => ${expr}`)(
+         Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding, objectConstant)
 
 const testEq = (exprIn, expect) => {
   const expr = exprIn.replace(/[ \n]+/g, " ")
@@ -131,6 +133,11 @@ describe("Molecule", () => {
            xy.view(L.props("x", "y")).set({x: 3, y: [4]});
            return Kefir.combine([x, y, xy])}`,
          [3, 4, {x: 3, z: ["z"], y: [4]}])
+  testEq(`{const x = Atom("x1"),
+                 m = new Molecule([x, objectConstant]);
+           x.set("x2");
+           return m.get()[1] === objectConstant}`,
+         true)
 })
 
 describe("variable", () => {
