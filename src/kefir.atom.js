@@ -1,4 +1,11 @@
-import {always, identicalU, inherit, isArray, isObject} from "infestines"
+import {
+  always,
+  assocPartialU,
+  identicalU,
+  inherit,
+  isArray,
+  isObject
+} from "infestines"
 import {Observable, Property, combine} from "kefir"
 import {get, modify, set} from "partial.lenses"
 
@@ -167,14 +174,26 @@ function molecule(template) {
   } else {
     if (isArray(template)) {
       const n = template.length
-      const next = Array(n)
-      for (let i=0; i<n; ++i)
-        next[i] = molecule(template[i])
+      let next = template
+      for (let i=0; i<n; ++i) {
+        const v = molecule(template[i])
+        if (!identicalU(next[i], v)) {
+          if (next === template)
+            next = template.slice(0)
+          next[i] = v
+        }
+      }
       return next
     } else if (isObject(template)) {
-      const next = {}
-      for (const k in template)
-        next[k] = molecule(template[k])
+      let next = template
+      for (const k in template) {
+        const v = molecule(template[k])
+        if (!identicalU(next[k], v)) {
+          if (next === template)
+            next = assocPartialU(void 0, void 0, template) // Avoid Object.assign
+          next[k] = v
+        }
+      }
       return next
     } else {
       return template
