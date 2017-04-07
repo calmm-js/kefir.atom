@@ -138,15 +138,15 @@ export function Atom() {
 inherit(Atom, AbstractMutable, {
   get() {
     const current = this._currentEvent
-    return current ? current.value : undefined
+    return current ? current.value : void 0
   },
   set(v) {
     const current = this._currentEvent
-    this._set(current, current ? current.value : undefined, v)
+    this._set(current, current ? current.value : void 0, v)
   },
   modify(fn) {
     const current = this._currentEvent
-    const prev = current ? current.value : undefined
+    const prev = current ? current.value : void 0
     this._set(current, prev, fn(prev))
   },
   _set(current, prev, next) {
