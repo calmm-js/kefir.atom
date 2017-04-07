@@ -11,6 +11,19 @@ import {get, modify, set} from "partial.lenses"
 
 //
 
+const header = "kefir.atom: "
+
+function error(m) {
+  throw new Error(header + m)
+}
+
+function errorGiven(m, o) {
+  console.error(header + m + " - given:", o)
+  error(m)
+}
+
+//
+
 let lock = 0
 
 const prevs = []
@@ -52,7 +65,7 @@ inherit(AbstractMutable, Property, {
   },
   view(lens) {
     if (process.env.NODE_ENV !== "production" && arguments.length !== 1)
-      throw new Error("kefir.atom: The `view` method takes exactly 1 argument.")
+      errorGiven("The `view` method takes exactly 1 argument", arguments.length)
     return new LensedAtom(this, lens)
   },
   _maybeEmitValue(next) {
@@ -66,7 +79,7 @@ inherit(AbstractMutable, Property, {
 
 export function MutableWithSource(source) {
   if (process.env.NODE_ENV !== "production" && !(source instanceof Observable))
-    throw new Error("kefir.atom: Expected an Observable.")
+    errorGiven("Expected an Observable", source)
   AbstractMutable.call(this)
   this._source = source
   this._$onAny = null
@@ -139,7 +152,7 @@ inherit(Atom, AbstractMutable, {
   _set(current, prev, next) {
     if (lock) {
       if (atoms.indexOf(this) < 0) {
-        prevs.push(current ? prev : mismatch)
+        prevs.push(current ? prev : error /* <- just needs to be unique */)
         atoms.push(this)
       }
       if (current)
@@ -201,8 +214,6 @@ function molecule(template) {
   }
 }
 
-function mismatch() {throw new Error("Molecule cannot change the template.")}
-
 function setMutables(template, value) {
   if (template instanceof AbstractMutable) {
     return template.set(value)
@@ -214,7 +225,7 @@ function setMutables(template, value) {
       for (const k in template)
         setMutables(template[k], value[k])
     else if (!identicalU(template, value))
-      mismatch()
+      error("Molecule cannot change the template.")
   }
 }
 
