@@ -64,8 +64,9 @@ inherit(AbstractMutable, Property, {
     this.set()
   },
   view(lens) {
-    if (process.env.NODE_ENV !== "production" && arguments.length !== 1)
-      errorGiven("The `view` method takes exactly 1 argument", arguments.length)
+    if (process.env.NODE_ENV !== "production")
+      if (arguments.length !== 1)
+        errorGiven("The `view` method takes exactly 1 argument", arguments.length)
     return new LensedAtom(this, lens)
   },
   _maybeEmitValue(next) {
@@ -78,8 +79,9 @@ inherit(AbstractMutable, Property, {
 //
 
 export function MutableWithSource(source) {
-  if (process.env.NODE_ENV !== "production" && !(source instanceof Observable))
-    errorGiven("Expected an Observable", source)
+  if (process.env.NODE_ENV !== "production")
+    if (!(source instanceof Observable))
+      errorGiven("Expected an Observable", source)
   AbstractMutable.call(this)
   this._source = source
   this._$onAny = void 0
