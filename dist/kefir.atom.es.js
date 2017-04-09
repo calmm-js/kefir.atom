@@ -1,8 +1,6 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('infestines'), require('kefir'), require('partial.lenses')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'infestines', 'kefir', 'partial.lenses'], factory) :
-	(factory((global.kefir = global.kefir || {}, global.kefir.atom = global.kefir.atom || {}),global.I,global.kefir,global.L));
-}(this, (function (exports,infestines,kefir,partial_lenses) { 'use strict';
+import { always, assocPartialU, identicalU, inherit, isArray, isObject } from 'infestines';
+import { Observable, Property, combine } from 'kefir';
+import { get, modify, set } from 'partial.lenses';
 
 //
 
@@ -30,7 +28,7 @@ function release() {
     var _atom = atoms.shift();
     var next = _atom._currentEvent.value;
 
-    if (!infestines.identicalU(prev, next)) _atom._emitValue(next);
+    if (!identicalU(prev, next)) _atom._emitValue(next);
   }
 }
 
@@ -46,36 +44,36 @@ function holding(ef) {
 //
 
 function AbstractMutable() {
-  kefir.Property.call(this);
+  Property.call(this);
 }
 
-infestines.inherit(AbstractMutable, kefir.Property, {
+inherit(AbstractMutable, Property, {
   set: function set$$1(value) {
-    this.modify(infestines.always(value));
+    this.modify(always(value));
   },
   remove: function remove() {
     this.set();
   },
   view: function view(lens) {
-    if (arguments.length !== 1) errorGiven("The `view` method takes exactly 1 argument", arguments.length);
+    if (process.env.NODE_ENV !== "production") if (arguments.length !== 1) errorGiven("The `view` method takes exactly 1 argument", arguments.length);
     return new LensedAtom(this, lens);
   },
   _maybeEmitValue: function _maybeEmitValue(next) {
     var prev = this._currentEvent;
-    if (!prev || !infestines.identicalU(prev.value, next)) this._emitValue(next);
+    if (!prev || !identicalU(prev.value, next)) this._emitValue(next);
   }
 });
 
 //
 
 function MutableWithSource(source) {
-  if (!(source instanceof kefir.Observable)) errorGiven("Expected an Observable", source);
+  if (process.env.NODE_ENV !== "production") if (!(source instanceof Observable)) errorGiven("Expected an Observable", source);
   AbstractMutable.call(this);
   this._source = source;
   this._$onAny = void 0;
 }
 
-infestines.inherit(MutableWithSource, AbstractMutable, {
+inherit(MutableWithSource, AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
@@ -103,15 +101,15 @@ function LensedAtom(source, lens) {
   this._lens = lens;
 }
 
-infestines.inherit(LensedAtom, MutableWithSource, {
+inherit(LensedAtom, MutableWithSource, {
   set: function set$$1(v) {
-    this._source.set(partial_lenses.set(this._lens, v, this._source.get()));
+    this._source.set(set(this._lens, v, this._source.get()));
   },
   modify: function modify$$1(fn) {
-    this._source.modify(partial_lenses.modify(this._lens, fn));
+    this._source.modify(modify(this._lens, fn));
   },
   _getFromSource: function _getFromSource() {
-    return partial_lenses.get(this._lens, this._source.get());
+    return get(this._lens, this._source.get());
   }
 });
 
@@ -122,7 +120,7 @@ function Atom() {
   if (arguments.length) this._emitValue(arguments[0]);
 }
 
-infestines.inherit(Atom, AbstractMutable, {
+inherit(Atom, AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     return current ? current.value : void 0;
@@ -155,9 +153,9 @@ function pushMutables(template, mutables) {
   if (template instanceof AbstractMutable && mutables.indexOf(template) < 0) {
     mutables.push(template);
   } else {
-    if (infestines.isArray(template)) for (var i = 0, n = template.length; i < n; ++i) {
+    if (isArray(template)) for (var i = 0, n = template.length; i < n; ++i) {
       pushMutables(template[i], mutables);
-    } else if (infestines.isObject(template)) for (var k in template) {
+    } else if (isObject(template)) for (var k in template) {
       pushMutables(template[k], mutables);
     }
   }
@@ -167,23 +165,23 @@ function molecule(template) {
   if (template instanceof AbstractMutable) {
     return template.get();
   } else {
-    if (infestines.isArray(template)) {
+    if (isArray(template)) {
       var n = template.length;
       var next = template;
       for (var i = 0; i < n; ++i) {
         var v = molecule(template[i]);
-        if (!infestines.identicalU(next[i], v)) {
+        if (!identicalU(next[i], v)) {
           if (next === template) next = template.slice(0);
           next[i] = v;
         }
       }
       return next;
-    } else if (infestines.isObject(template)) {
+    } else if (isObject(template)) {
       var _next = template;
       for (var k in template) {
         var _v = molecule(template[k]);
-        if (!infestines.identicalU(_next[k], _v)) {
-          if (_next === template) _next = infestines.assocPartialU(void 0, void 0, template); // Avoid Object.assign
+        if (!identicalU(_next[k], _v)) {
+          if (_next === template) _next = assocPartialU(void 0, void 0, template); // Avoid Object.assign
           _next[k] = _v;
         }
       }
@@ -198,22 +196,22 @@ function setMutables(template, value) {
   if (template instanceof AbstractMutable) {
     return template.set(value);
   } else {
-    if (infestines.isArray(template) && infestines.isArray(value)) for (var i = 0, n = template.length; i < n; ++i) {
+    if (isArray(template) && isArray(value)) for (var i = 0, n = template.length; i < n; ++i) {
       setMutables(template[i], value[i]);
-    } else if (infestines.isObject(template) && infestines.isObject(value)) for (var k in template) {
+    } else if (isObject(template) && isObject(value)) for (var k in template) {
       setMutables(template[k], value[k]);
-    } else if (!infestines.identicalU(template, value)) error("Molecule cannot change the template.");
+    } else if (!identicalU(template, value)) error("Molecule cannot change the template.");
   }
 }
 
 function Molecule(template) {
   var mutables = [];
   pushMutables(template, mutables);
-  MutableWithSource.call(this, kefir.combine(mutables));
+  MutableWithSource.call(this, combine(mutables));
   this._template = template;
 }
 
-infestines.inherit(Molecule, MutableWithSource, {
+inherit(Molecule, MutableWithSource, {
   _getFromSource: function _getFromSource() {
     return molecule(this._template);
   },
@@ -233,14 +231,4 @@ function atom() {
   if (arguments.length) return new Atom(arguments[0]);else return new Atom();
 }
 
-exports.holding = holding;
-exports.AbstractMutable = AbstractMutable;
-exports.MutableWithSource = MutableWithSource;
-exports.LensedAtom = LensedAtom;
-exports.Atom = Atom;
-exports.Molecule = Molecule;
-exports['default'] = atom;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
+export { holding, AbstractMutable, MutableWithSource, LensedAtom, Atom, Molecule };export default atom;

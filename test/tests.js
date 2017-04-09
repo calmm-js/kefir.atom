@@ -7,7 +7,7 @@ import Atom, {
   Molecule,
   MutableWithSource,
   holding
-} from "../src/kefir.atom"
+} from "../dist/kefir.atom.cjs"
 
 function show(x) {
   switch (typeof x) {

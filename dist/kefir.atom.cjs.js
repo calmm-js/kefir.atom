@@ -1,8 +1,10 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('infestines'), require('kefir'), require('partial.lenses')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'infestines', 'kefir', 'partial.lenses'], factory) :
-	(factory((global.kefir = global.kefir || {}, global.kefir.atom = global.kefir.atom || {}),global.I,global.kefir,global.L));
-}(this, (function (exports,infestines,kefir,partial_lenses) { 'use strict';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var infestines = require('infestines');
+var kefir = require('kefir');
+var partial_lenses = require('partial.lenses');
 
 //
 
@@ -57,7 +59,7 @@ infestines.inherit(AbstractMutable, kefir.Property, {
     this.set();
   },
   view: function view(lens) {
-    if (arguments.length !== 1) errorGiven("The `view` method takes exactly 1 argument", arguments.length);
+    if (process.env.NODE_ENV !== "production") if (arguments.length !== 1) errorGiven("The `view` method takes exactly 1 argument", arguments.length);
     return new LensedAtom(this, lens);
   },
   _maybeEmitValue: function _maybeEmitValue(next) {
@@ -69,7 +71,7 @@ infestines.inherit(AbstractMutable, kefir.Property, {
 //
 
 function MutableWithSource(source) {
-  if (!(source instanceof kefir.Observable)) errorGiven("Expected an Observable", source);
+  if (process.env.NODE_ENV !== "production") if (!(source instanceof kefir.Observable)) errorGiven("Expected an Observable", source);
   AbstractMutable.call(this);
   this._source = source;
   this._$onAny = void 0;
@@ -240,7 +242,3 @@ exports.LensedAtom = LensedAtom;
 exports.Atom = Atom;
 exports.Molecule = Molecule;
 exports['default'] = atom;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
