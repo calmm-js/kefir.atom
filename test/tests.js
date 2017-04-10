@@ -33,7 +33,7 @@ const testEq = (exprIn, expect) => {
   const expr = exprIn.replace(/[ \n]+/g, " ")
   return it(`${expr} => ${show(expect)}`, done => {
     const actual = run(expr)
-    const check = actual => {
+    function check(actual) {
       if (!R.equals(actual, expect))
         throw new Error(`Expected: ${show(expect)}, actual: ${show(actual)}`)
       done()
