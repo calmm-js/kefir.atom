@@ -4,6 +4,7 @@ import * as R     from "ramda"
 import K          from "kefir.combines"
 
 import Atom, {
+  Join,
   Molecule,
   MutableWithSource,
   holding
@@ -26,8 +27,8 @@ Kefir.Observable.prototype.orAsync = function (y) {
 const objectConstant = {x: 1}
 
 const run = expr =>
-  eval(`(Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding, objectConstant) => ${expr}`)(
-         Atom, Kefir, K, L, R, Molecule, MutableWithSource, holding, objectConstant)
+  eval(`(Atom, Kefir, K, L, R, Join, Molecule, MutableWithSource, holding, objectConstant) => ${expr}`)(
+         Atom, Kefir, K, L, R, Join, Molecule, MutableWithSource, holding, objectConstant)
 
 const testEq = (exprIn, expect) => {
   const expr = exprIn.replace(/[ \n]+/g, " ")
@@ -168,8 +169,44 @@ describe("variable", () => {
          1)
 })
 
+describe("Join", () => {
+  testEq(`{const x = Atom(0),
+                 m = new Join(Kefir.constant(x));
+           m.onValue(() => {});
+           m.set(-1);
+           return m}`,
+         -1)
+
+  testEq(`new Join(Kefir.constant(Atom(101)))`, 101)
+
+  testEq(`{const x = Atom(0),
+                 y = Atom(1),
+                 m = new Join(Kefir.combine([x, y], (a, b) => a < b ? y : x));
+           m.onValue(() => {});
+           return m}`,
+         1)
+
+  testEq(`{const x = Atom(0),
+                 y = Atom(1),
+                 m = new Join(Kefir.combine([x, y], (a, b) => a < b ? y : x));
+           m.onValue(() => {});
+           m.set(-1);
+           return m}`,
+         0)
+
+  // Either of the two below will give a warning
+  testEq(`{const x = new Join(Kefir.constant(Atom(101)));
+           return x.get()}`,
+         undefined)
+  testEq(`{const x = new Join(Kefir.constant(Atom(101)));
+           x.modify(x => -x);
+           return x.get()}`,
+         undefined)
+})
+
 if (process.env.NODE_ENV !== "production") describe("errors", () => {
   testThrows(`Atom(0).view(1, 2)`)
   testThrows(`new Molecule([]).set({})`)
   testThrows(`new MutableWithSource(1)`)
+  testThrows(`new Join("non observable")`)
 })

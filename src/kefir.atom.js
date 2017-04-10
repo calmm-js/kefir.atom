@@ -19,6 +19,13 @@ import {get, modify, set} from "partial.lenses"
 
 const header = "kefir.atom: "
 
+function warn(f, m) {
+  if (!f.warned) {
+    f.warned = 1
+    console.warn(header + m)
+  }
+}
+
 function error(m) {
   throw new Error(header + m)
 }
@@ -177,6 +184,74 @@ inherit(Atom, AbstractMutable, {
     } else {
       this._maybeEmitValue(next)
     }
+  }
+})
+
+//
+
+export function Join(sources) {
+  warn(Join, "Join is an experimental feature and might be removed")
+  if (process.env.NODE_ENV !== "production")
+    if (!(sources instanceof Observable))
+      errorGiven("Expected an Observable", sources)
+  AbstractMutable.call(this)
+  this._sources = sources
+  this._source =
+  this._$onSources =
+  this._$onSource = void 0
+}
+
+inherit(Join, AbstractMutable, {
+  get() {
+    if (process.env.NODE_ENV !== "production")
+      if (!this._$onSource)
+        warn(this.get, "Join without subscription may not work correctly")
+    const source = this._source
+    return source && source.get()
+  },
+  modify(fn) {
+    if (process.env.NODE_ENV !== "production")
+      if (!this._$onSource)
+        warn(this.modify, "Join without subscription may not work correctly")
+    const source = this._source
+    source && source.modify(fn)
+  },
+  _onSources(e) {
+    switch (e.type) {
+      case "value":
+        this._maybeUnsubSource()
+        return (this._source = e.value).onAny(this._$onSource = e => this._onSource(e))
+      case "error":
+        return this._emitError(e.value)
+      default:
+        this._$onSources = void 0
+        break
+    }
+  },
+  _onSource(e) {
+    switch (e.type) {
+      case "value": return this._maybeEmitValue(this._source.get())
+      case "error": return this._emitError(e.value)
+      default:      return this._emitEnd()
+    }
+  },
+  _onActivation() {
+    const sources = this._sources
+    sources && sources.onAny(this._$onSources = e => this._onSources(e))
+  },
+  _onDeactivation() {
+    this._maybeUnsubSource()
+    const onSources = this._$onSources
+    if (onSources)
+      this._sources.offAny(onSources)
+    this._$onSources = void 0
+  },
+  _maybeUnsubSource() {
+    const onSource = this._$onSource
+    if (onSource)
+      this._source.offAny(onSource)
+    this._source =
+    this._$onSource = void 0
   }
 })
 
