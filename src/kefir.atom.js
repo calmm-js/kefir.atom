@@ -90,7 +90,7 @@ export function MutableWithSource(source) {
       errorGiven("Expected an Observable", source)
   AbstractMutable.call(this)
   this._source = source
-  this._$onAny = null
+  this._$onAny = void 0
 }
 
 inherit(MutableWithSource, AbstractMutable, {
@@ -108,7 +108,7 @@ inherit(MutableWithSource, AbstractMutable, {
       case "error":
         return this._emitError(e.value)
       default:
-        this._$onAny = null
+        this._$onAny = void 0
         return this._emitEnd()
     }
   },
@@ -119,7 +119,7 @@ inherit(MutableWithSource, AbstractMutable, {
     const onAny = this._$onAny
     if (onAny)
       this._source.offAny(onAny)
-    this._$onAny = null
+    this._$onAny = void 0
   }
 })
 
