@@ -10,6 +10,13 @@ var partial_lenses = require('partial.lenses');
 
 var header = "kefir.atom: ";
 
+function warn(f, m) {
+  if (!f.warned) {
+    f.warned = 1;
+    console.warn(header + m);
+  }
+}
+
 function error(m) {
   throw new Error(header + m);
 }
@@ -82,8 +89,16 @@ infestines.inherit(MutableWithSource, AbstractMutable, {
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
   },
-  _onAny: function _onAny() {
-    this._maybeEmitValue(this._getFromSource());
+  _onAny: function _onAny(e) {
+    switch (e.type) {
+      case "value":
+        return this._maybeEmitValue(this._getFromSource());
+      case "error":
+        return this._emitError(e.value);
+      default:
+        this._$onAny = void 0;
+        return this._emitEnd();
+    }
   },
   _onActivation: function _onActivation() {
     var _this = this;
@@ -93,8 +108,9 @@ infestines.inherit(MutableWithSource, AbstractMutable, {
     });
   },
   _onDeactivation: function _onDeactivation() {
-    this._source.offAny(this._$onAny);
-    this._$onAny = this._currentEvent = void 0;
+    var onAny = this._$onAny;
+    if (onAny) this._source.offAny(onAny);
+    this._$onAny = void 0;
   }
 });
 
@@ -148,6 +164,74 @@ infestines.inherit(Atom, AbstractMutable, {
     } else {
       this._maybeEmitValue(next);
     }
+  }
+});
+
+//
+
+function Join(sources) {
+  warn(Join, "Join is an experimental feature and might be removed");
+  if (process.env.NODE_ENV !== "production") if (!(sources instanceof kefir.Observable)) errorGiven("Expected an Observable", sources);
+  AbstractMutable.call(this);
+  this._sources = sources;
+  this._source = this._$onSources = this._$onSource = void 0;
+}
+
+infestines.inherit(Join, AbstractMutable, {
+  get: function get$$1() {
+    if (process.env.NODE_ENV !== "production") if (!this._$onSource) warn(this.get, "Join without subscription may not work correctly");
+    var source = this._source;
+    return source && source.get();
+  },
+  modify: function modify$$1(fn) {
+    if (process.env.NODE_ENV !== "production") if (!this._$onSource) warn(this.modify, "Join without subscription may not work correctly");
+    var source = this._source;
+    source && source.modify(fn);
+  },
+  _onSources: function _onSources(e) {
+    var _this2 = this;
+
+    switch (e.type) {
+      case "value":
+        this._maybeUnsubSource();
+        return (this._source = e.value).onAny(this._$onSource = function (e) {
+          return _this2._onSource(e);
+        });
+      case "error":
+        return this._emitError(e.value);
+      default:
+        this._$onSources = void 0;
+        break;
+    }
+  },
+  _onSource: function _onSource(e) {
+    switch (e.type) {
+      case "value":
+        return this._maybeEmitValue(this._source.get());
+      case "error":
+        return this._emitError(e.value);
+      default:
+        return this._emitEnd();
+    }
+  },
+  _onActivation: function _onActivation() {
+    var _this3 = this;
+
+    var sources = this._sources;
+    sources && sources.onAny(this._$onSources = function (e) {
+      return _this3._onSources(e);
+    });
+  },
+  _onDeactivation: function _onDeactivation() {
+    this._maybeUnsubSource();
+    var onSources = this._$onSources;
+    if (onSources) this._sources.offAny(onSources);
+    this._$onSources = void 0;
+  },
+  _maybeUnsubSource: function _maybeUnsubSource() {
+    var onSource = this._$onSource;
+    if (onSource) this._source.offAny(onSource);
+    this._source = this._$onSource = void 0;
   }
 });
 
@@ -208,10 +292,12 @@ function setMutables(template, value) {
   }
 }
 
+var empty = kefir.constant(infestines.array0);
+
 function Molecule(template) {
   var mutables = [];
   pushMutables(template, mutables);
-  MutableWithSource.call(this, kefir.combine(mutables));
+  MutableWithSource.call(this, mutables.length ? kefir.combine(mutables) : empty);
   this._template = template;
 }
 
@@ -220,11 +306,11 @@ infestines.inherit(Molecule, MutableWithSource, {
     return molecule(this._template);
   },
   modify: function modify$$1(fn) {
-    var _this2 = this;
+    var _this4 = this;
 
     var next = fn(this.get());
     holding(function () {
-      return setMutables(_this2._template, next);
+      return setMutables(_this4._template, next);
     });
   }
 });
@@ -240,5 +326,6 @@ exports.AbstractMutable = AbstractMutable;
 exports.MutableWithSource = MutableWithSource;
 exports.LensedAtom = LensedAtom;
 exports.Atom = Atom;
+exports.Join = Join;
 exports.Molecule = Molecule;
 exports['default'] = atom;
