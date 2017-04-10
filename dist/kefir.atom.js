@@ -168,8 +168,10 @@ infestines.inherit(Atom, AbstractMutable, {
 //
 
 function Join(sources) {
-  warn(Join, "Join is an experimental feature and might be removed");
-  if (!(sources instanceof kefir.Observable)) errorGiven("Expected an Observable", sources);
+  {
+    warn(Join, "Join is an experimental feature and might be removed");
+    if (!(sources instanceof kefir.Observable)) errorGiven("Expected an Observable", sources);
+  }
   AbstractMutable.call(this);
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;

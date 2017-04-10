@@ -190,10 +190,11 @@ inherit(Atom, AbstractMutable, {
 //
 
 export function Join(sources) {
-  warn(Join, "Join is an experimental feature and might be removed")
-  if (process.env.NODE_ENV !== "production")
+  if (process.env.NODE_ENV !== "production") {
+    warn(Join, "Join is an experimental feature and might be removed")
     if (!(sources instanceof Observable))
       errorGiven("Expected an Observable", sources)
+  }
   AbstractMutable.call(this)
   this._sources = sources
   this._source =
