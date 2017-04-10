@@ -1,12 +1,18 @@
 import {
   always,
+  array0,
   assocPartialU,
   identicalU,
   inherit,
   isArray,
   isObject
 } from "infestines"
-import {Observable, Property, combine} from "kefir"
+import {
+  Observable,
+  Property,
+  combine,
+  constant
+} from "kefir"
 import {get, modify, set} from "partial.lenses"
 
 //
@@ -84,7 +90,7 @@ export function MutableWithSource(source) {
       errorGiven("Expected an Observable", source)
   AbstractMutable.call(this)
   this._source = source
-  this._$onAny = void 0
+  this._$onAny = null
 }
 
 inherit(MutableWithSource, AbstractMutable, {
@@ -95,16 +101,25 @@ inherit(MutableWithSource, AbstractMutable, {
     else
       return this._getFromSource()
   },
-  _onAny() {
-    this._maybeEmitValue(this._getFromSource())
+  _onAny(e) {
+    switch (e.type) {
+      case "value":
+        return this._maybeEmitValue(this._getFromSource())
+      case "error":
+        return this._emitError(e.value)
+      default:
+        this._$onAny = null
+        return this._emitEnd()
+    }
   },
   _onActivation() {
     this._source.onAny(this._$onAny = e => this._onAny(e))
   },
   _onDeactivation() {
-    this._source.offAny(this._$onAny)
-    this._$onAny =
-    this._currentEvent = void 0
+    const onAny = this._$onAny
+    if (onAny)
+      this._source.offAny(onAny)
+    this._$onAny = null
   }
 })
 
@@ -229,10 +244,12 @@ function setMutables(template, value) {
   }
 }
 
+const empty = constant(array0)
+
 export function Molecule(template) {
   const mutables = []
   pushMutables(template, mutables)
-  MutableWithSource.call(this, combine(mutables))
+  MutableWithSource.call(this, mutables.length ? combine(mutables) : empty)
   this._template = template
 }
 
