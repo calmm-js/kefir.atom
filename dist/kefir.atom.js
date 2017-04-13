@@ -52,11 +52,9 @@ function holding(ef) {
 
 //
 
-function AbstractMutable() {
+var AbstractMutable = /*#__PURE__*/infestines.inherit(function AbstractMutable() {
   kefir.Property.call(this);
-}
-
-infestines.inherit(AbstractMutable, kefir.Property, {
+}, kefir.Property, {
   set: function set$$1(value) {
     this.modify(infestines.always(value));
   },
@@ -75,14 +73,12 @@ infestines.inherit(AbstractMutable, kefir.Property, {
 
 //
 
-function MutableWithSource(source) {
+var MutableWithSource = /*#__PURE__*/infestines.inherit(function MutableWithSource(source) {
   if (!(source instanceof kefir.Observable)) errorGiven("Expected an Observable", source);
   AbstractMutable.call(this);
   this._source = source;
   this._$onAny = void 0;
-}
-
-infestines.inherit(MutableWithSource, AbstractMutable, {
+}, AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
@@ -114,12 +110,10 @@ infestines.inherit(MutableWithSource, AbstractMutable, {
 
 //
 
-function LensedAtom(source, lens) {
+var LensedAtom = /*#__PURE__*/infestines.inherit(function LensedAtom(source, lens) {
   MutableWithSource.call(this, source);
   this._lens = lens;
-}
-
-infestines.inherit(LensedAtom, MutableWithSource, {
+}, MutableWithSource, {
   set: function set$$1(v) {
     this._source.set(partial_lenses.set(this._lens, v, this._source.get()));
   },
@@ -133,12 +127,10 @@ infestines.inherit(LensedAtom, MutableWithSource, {
 
 //
 
-function Atom() {
+var Atom = /*#__PURE__*/infestines.inherit(function Atom() {
   AbstractMutable.call(this);
   if (arguments.length) this._emitValue(arguments[0]);
-}
-
-infestines.inherit(Atom, AbstractMutable, {
+}, AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     return current ? current.value : void 0;
@@ -167,7 +159,7 @@ infestines.inherit(Atom, AbstractMutable, {
 
 //
 
-function Join(sources) {
+var Join = /*#__PURE__*/infestines.inherit(function Join(sources) {
   {
     warn(Join, "Join is an experimental feature and might be removed");
     if (!(sources instanceof kefir.Observable)) errorGiven("Expected an Observable", sources);
@@ -175,9 +167,7 @@ function Join(sources) {
   AbstractMutable.call(this);
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;
-}
-
-infestines.inherit(Join, AbstractMutable, {
+}, AbstractMutable, {
   get: function get$$1() {
     if (!this._$onSource) warn(this.get, "Join without subscription may not work correctly");
     var source = this._source;
@@ -292,16 +282,14 @@ function setMutables(template, value) {
   }
 }
 
-var empty = kefir.constant(infestines.array0);
+var empty = /*#__PURE__*/kefir.constant(infestines.array0);
 
-function Molecule(template) {
+var Molecule = /*#__PURE__*/infestines.inherit(function Molecule(template) {
   var mutables = [];
   pushMutables(template, mutables);
   MutableWithSource.call(this, mutables.length ? kefir.combine(mutables) : empty);
   this._template = template;
-}
-
-infestines.inherit(Molecule, MutableWithSource, {
+}, MutableWithSource, {
   _getFromSource: function _getFromSource() {
     return molecule(this._template);
   },

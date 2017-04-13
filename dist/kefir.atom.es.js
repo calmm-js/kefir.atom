@@ -50,11 +50,9 @@ function holding(ef) {
 
 //
 
-function AbstractMutable() {
+var AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
   Property.call(this);
-}
-
-inherit(AbstractMutable, Property, {
+}, Property, {
   set: function set$$1(value) {
     this.modify(always(value));
   },
@@ -73,14 +71,12 @@ inherit(AbstractMutable, Property, {
 
 //
 
-function MutableWithSource(source) {
+var MutableWithSource = /*#__PURE__*/inherit(function MutableWithSource(source) {
   if (process.env.NODE_ENV !== "production") if (!(source instanceof Observable)) errorGiven("Expected an Observable", source);
   AbstractMutable.call(this);
   this._source = source;
   this._$onAny = void 0;
-}
-
-inherit(MutableWithSource, AbstractMutable, {
+}, AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
@@ -112,12 +108,10 @@ inherit(MutableWithSource, AbstractMutable, {
 
 //
 
-function LensedAtom(source, lens) {
+var LensedAtom = /*#__PURE__*/inherit(function LensedAtom(source, lens) {
   MutableWithSource.call(this, source);
   this._lens = lens;
-}
-
-inherit(LensedAtom, MutableWithSource, {
+}, MutableWithSource, {
   set: function set$$1(v) {
     this._source.set(set(this._lens, v, this._source.get()));
   },
@@ -131,12 +125,10 @@ inherit(LensedAtom, MutableWithSource, {
 
 //
 
-function Atom() {
+var Atom = /*#__PURE__*/inherit(function Atom() {
   AbstractMutable.call(this);
   if (arguments.length) this._emitValue(arguments[0]);
-}
-
-inherit(Atom, AbstractMutable, {
+}, AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     return current ? current.value : void 0;
@@ -165,7 +157,7 @@ inherit(Atom, AbstractMutable, {
 
 //
 
-function Join(sources) {
+var Join = /*#__PURE__*/inherit(function Join(sources) {
   if (process.env.NODE_ENV !== "production") {
     warn(Join, "Join is an experimental feature and might be removed");
     if (!(sources instanceof Observable)) errorGiven("Expected an Observable", sources);
@@ -173,9 +165,7 @@ function Join(sources) {
   AbstractMutable.call(this);
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;
-}
-
-inherit(Join, AbstractMutable, {
+}, AbstractMutable, {
   get: function get$$1() {
     if (process.env.NODE_ENV !== "production") if (!this._$onSource) warn(this.get, "Join without subscription may not work correctly");
     var source = this._source;
@@ -290,16 +280,14 @@ function setMutables(template, value) {
   }
 }
 
-var empty = constant(array0);
+var empty = /*#__PURE__*/constant(array0);
 
-function Molecule(template) {
+var Molecule = /*#__PURE__*/inherit(function Molecule(template) {
   var mutables = [];
   pushMutables(template, mutables);
   MutableWithSource.call(this, mutables.length ? combine(mutables) : empty);
   this._template = template;
-}
-
-inherit(Molecule, MutableWithSource, {
+}, MutableWithSource, {
   _getFromSource: function _getFromSource() {
     return molecule(this._template);
   },
