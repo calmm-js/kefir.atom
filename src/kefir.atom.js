@@ -65,11 +65,9 @@ export function holding(ef) {
 
 //
 
-export function AbstractMutable() {
+export const AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
   Property.call(this)
-}
-
-inherit(AbstractMutable, Property, {
+}, Property, {
   set(value) {
     this.modify(always(value))
   },
@@ -91,16 +89,14 @@ inherit(AbstractMutable, Property, {
 
 //
 
-export function MutableWithSource(source) {
+export const MutableWithSource = /*#__PURE__*/inherit(function MutableWithSource(source) {
   if (process.env.NODE_ENV !== "production")
     if (!(source instanceof Observable))
       errorGiven("Expected an Observable", source)
   AbstractMutable.call(this)
   this._source = source
   this._$onAny = void 0
-}
-
-inherit(MutableWithSource, AbstractMutable, {
+}, AbstractMutable, {
   get() {
     const current = this._currentEvent
     if (current && !lock)
@@ -132,12 +128,10 @@ inherit(MutableWithSource, AbstractMutable, {
 
 //
 
-export function LensedAtom(source, lens) {
+export const LensedAtom = /*#__PURE__*/inherit(function LensedAtom(source, lens) {
   MutableWithSource.call(this, source)
   this._lens = lens
-}
-
-inherit(LensedAtom, MutableWithSource, {
+}, MutableWithSource, {
   set(v) {
     this._source.set(set(this._lens, v, this._source.get()))
   },
@@ -151,13 +145,11 @@ inherit(LensedAtom, MutableWithSource, {
 
 //
 
-export function Atom() {
+export const Atom = /*#__PURE__*/inherit(function Atom() {
   AbstractMutable.call(this)
   if (arguments.length)
     this._emitValue(arguments[0])
-}
-
-inherit(Atom, AbstractMutable, {
+}, AbstractMutable, {
   get() {
     const current = this._currentEvent
     return current ? current.value : void 0
@@ -189,7 +181,7 @@ inherit(Atom, AbstractMutable, {
 
 //
 
-export function Join(sources) {
+export const Join = /*#__PURE__*/inherit(function Join(sources) {
   if (process.env.NODE_ENV !== "production") {
     warn(Join, "Join is an experimental feature and might be removed")
     if (!(sources instanceof Observable))
@@ -200,9 +192,7 @@ export function Join(sources) {
   this._source =
   this._$onSources =
   this._$onSource = void 0
-}
-
-inherit(Join, AbstractMutable, {
+}, AbstractMutable, {
   get() {
     if (process.env.NODE_ENV !== "production")
       if (!this._$onSource)
@@ -320,16 +310,14 @@ function setMutables(template, value) {
   }
 }
 
-const empty = constant(array0)
+const empty = /*#__PURE__*/constant(array0)
 
-export function Molecule(template) {
+export const Molecule = /*#__PURE__*/inherit(function Molecule(template) {
   const mutables = []
   pushMutables(template, mutables)
   MutableWithSource.call(this, mutables.length ? combine(mutables) : empty)
   this._template = template
-}
-
-inherit(Molecule, MutableWithSource, {
+}, MutableWithSource, {
   _getFromSource() {
     return molecule(this._template)
   },
