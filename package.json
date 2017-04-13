@@ -55,7 +55,7 @@
     "rollup-plugin-uglify": "^1.0.1"
   },
   "dependencies": {
-    "infestines": "^0.4.0",
+    "infestines": "^0.4.4",
     "kefir": "^3.3.0",
     "partial.lenses": ">=2.2.0"
   }
