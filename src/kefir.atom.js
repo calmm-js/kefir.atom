@@ -65,6 +65,12 @@ export function holding(ef) {
 
 //
 
+function maybeEmitValue(self, next) {
+  const prev = self._currentEvent
+  if (!prev || !identicalU(prev.value, next))
+    self._emitValue(next)
+}
+
 export const AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
   Property.call(this)
 }, Property, {
@@ -79,11 +85,6 @@ export const AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
       if (arguments.length !== 1)
         errorGiven("The `view` method takes exactly 1 argument", arguments.length)
     return new LensedAtom(this, lens)
-  },
-  _maybeEmitValue(next) {
-    const prev = this._currentEvent
-    if (!prev || !identicalU(prev.value, next))
-      this._emitValue(next)
   }
 })
 
@@ -104,19 +105,18 @@ export const MutableWithSource = /*#__PURE__*/inherit(function MutableWithSource
     else
       return this._getFromSource()
   },
-  _onAny(e) {
-    switch (e.type) {
-      case "value":
-        return this._maybeEmitValue(this._getFromSource())
-      case "error":
-        return this._emitError(e.value)
-      default:
-        this._$onAny = void 0
-        return this._emitEnd()
-    }
-  },
   _onActivation() {
-    this._source.onAny(this._$onAny = e => this._onAny(e))
+    this._source.onAny(this._$onAny = e => {
+      switch (e.type) {
+        case "value":
+          return maybeEmitValue(this, this._getFromSource())
+        case "error":
+          return this._emitError(e.value)
+        default:
+          this._$onAny = void 0
+          return this._emitEnd()
+      }
+    })
   },
   _onDeactivation() {
     const onAny = this._$onAny
@@ -145,6 +145,21 @@ export const LensedAtom = /*#__PURE__*/inherit(function LensedAtom(source, lens)
 
 //
 
+function setAtom(self, current, prev, next) {
+  if (lock) {
+    if (atoms.indexOf(self) < 0) {
+      prevs.push(current ? prev : error /* <- just needs to be unique */)
+      atoms.push(self)
+    }
+    if (current)
+      current.value = next
+    else
+      self._currentEvent = {type: "value", value: next}
+  } else {
+    maybeEmitValue(self, next)
+  }
+}
+
 export const Atom = /*#__PURE__*/inherit(function Atom() {
   AbstractMutable.call(this)
   if (arguments.length)
@@ -156,30 +171,24 @@ export const Atom = /*#__PURE__*/inherit(function Atom() {
   },
   set(v) {
     const current = this._currentEvent
-    this._set(current, current ? current.value : void 0, v)
+    setAtom(this, current, current ? current.value : void 0, v)
   },
   modify(fn) {
     const current = this._currentEvent
     const prev = current ? current.value : void 0
-    this._set(current, prev, fn(prev))
-  },
-  _set(current, prev, next) {
-    if (lock) {
-      if (atoms.indexOf(this) < 0) {
-        prevs.push(current ? prev : error /* <- just needs to be unique */)
-        atoms.push(this)
-      }
-      if (current)
-        current.value = next
-      else
-        this._currentEvent = {type: "value", value: next}
-    } else {
-      this._maybeEmitValue(next)
-    }
+    setAtom(this, current, prev, fn(prev))
   }
 })
 
 //
+
+function maybeUnsubSource(self) {
+  const onSource = self._$onSource
+  if (onSource)
+    self._source.offAny(onSource)
+  self._source =
+  self._$onSource = void 0
+}
 
 export const Join = /*#__PURE__*/inherit(function Join(sources) {
   if (process.env.NODE_ENV !== "production") {
@@ -207,42 +216,33 @@ export const Join = /*#__PURE__*/inherit(function Join(sources) {
     const source = this._source
     source && source.modify(fn)
   },
-  _onSources(e) {
-    switch (e.type) {
-      case "value":
-        this._maybeUnsubSource()
-        return (this._source = e.value).onAny(this._$onSource = e => this._onSource(e))
-      case "error":
-        return this._emitError(e.value)
-      default:
-        this._$onSources = void 0
-        break
-    }
-  },
-  _onSource(e) {
-    switch (e.type) {
-      case "value": return this._maybeEmitValue(this._source.get())
-      case "error": return this._emitError(e.value)
-      default:      return this._emitEnd()
-    }
-  },
   _onActivation() {
     const sources = this._sources
-    sources && sources.onAny(this._$onSources = e => this._onSources(e))
+    sources && sources.onAny(this._$onSources = e => {
+      switch (e.type) {
+        case "value":
+          maybeUnsubSource(this)
+          return (this._source = e.value).onAny(this._$onSource = e => {
+            switch (e.type) {
+              case "value": return maybeEmitValue(this, this._source.get())
+              case "error": return this._emitError(e.value)
+              default:      return this._emitEnd()
+            }
+          })
+        case "error":
+          return this._emitError(e.value)
+        default:
+          this._$onSources = void 0
+          break
+      }
+    })
   },
   _onDeactivation() {
-    this._maybeUnsubSource()
+    maybeUnsubSource(this)
     const onSources = this._$onSources
     if (onSources)
       this._sources.offAny(onSources)
     this._$onSources = void 0
-  },
-  _maybeUnsubSource() {
-    const onSource = this._$onSource
-    if (onSource)
-      this._source.offAny(onSource)
-    this._source =
-    this._$onSource = void 0
   }
 })
 
