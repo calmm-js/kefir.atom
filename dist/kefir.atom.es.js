@@ -50,6 +50,11 @@ function holding(ef) {
 
 //
 
+function maybeEmitValue(self, next) {
+  var prev = self._currentEvent;
+  if (!prev || !identicalU(prev.value, next)) self._emitValue(next);
+}
+
 var AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
   Property.call(this);
 }, Property, {
@@ -62,10 +67,6 @@ var AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
   view: function view(lens) {
     if (process.env.NODE_ENV !== "production") if (arguments.length !== 1) errorGiven("The `view` method takes exactly 1 argument", arguments.length);
     return new LensedAtom(this, lens);
-  },
-  _maybeEmitValue: function _maybeEmitValue(next) {
-    var prev = this._currentEvent;
-    if (!prev || !identicalU(prev.value, next)) this._emitValue(next);
   }
 });
 
@@ -81,22 +82,19 @@ var MutableWithSource = /*#__PURE__*/inherit(function MutableWithSource(source) 
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
   },
-  _onAny: function _onAny(e) {
-    switch (e.type) {
-      case "value":
-        return this._maybeEmitValue(this._getFromSource());
-      case "error":
-        return this._emitError(e.value);
-      default:
-        this._$onAny = void 0;
-        return this._emitEnd();
-    }
-  },
   _onActivation: function _onActivation() {
     var _this = this;
 
     this._source.onAny(this._$onAny = function (e) {
-      return _this._onAny(e);
+      switch (e.type) {
+        case "value":
+          return maybeEmitValue(_this, _this._getFromSource());
+        case "error":
+          return _this._emitError(e.value);
+        default:
+          _this._$onAny = void 0;
+          return _this._emitEnd();
+      }
     });
   },
   _onDeactivation: function _onDeactivation() {
@@ -125,6 +123,18 @@ var LensedAtom = /*#__PURE__*/inherit(function LensedAtom(source, lens) {
 
 //
 
+function setAtom(self, current, prev, next) {
+  if (lock) {
+    if (atoms.indexOf(self) < 0) {
+      prevs.push(current ? prev : error /* <- just needs to be unique */);
+      atoms.push(self);
+    }
+    if (current) current.value = next;else self._currentEvent = { type: "value", value: next };
+  } else {
+    maybeEmitValue(self, next);
+  }
+}
+
 var Atom = /*#__PURE__*/inherit(function Atom() {
   AbstractMutable.call(this);
   if (arguments.length) this._emitValue(arguments[0]);
@@ -135,27 +145,22 @@ var Atom = /*#__PURE__*/inherit(function Atom() {
   },
   set: function set$$1(v) {
     var current = this._currentEvent;
-    this._set(current, current ? current.value : void 0, v);
+    setAtom(this, current, current ? current.value : void 0, v);
   },
   modify: function modify$$1(fn) {
     var current = this._currentEvent;
     var prev = current ? current.value : void 0;
-    this._set(current, prev, fn(prev));
-  },
-  _set: function _set(current, prev, next) {
-    if (lock) {
-      if (atoms.indexOf(this) < 0) {
-        prevs.push(current ? prev : error /* <- just needs to be unique */);
-        atoms.push(this);
-      }
-      if (current) current.value = next;else this._currentEvent = { type: "value", value: next };
-    } else {
-      this._maybeEmitValue(next);
-    }
+    setAtom(this, current, prev, fn(prev));
   }
 });
 
 //
+
+function maybeUnsubSource(self) {
+  var onSource = self._$onSource;
+  if (onSource) self._source.offAny(onSource);
+  self._source = self._$onSource = void 0;
+}
 
 var Join = /*#__PURE__*/inherit(function Join(sources) {
   if (process.env.NODE_ENV !== "production") {
@@ -176,50 +181,37 @@ var Join = /*#__PURE__*/inherit(function Join(sources) {
     var source = this._source;
     source && source.modify(fn);
   },
-  _onSources: function _onSources(e) {
-    var _this2 = this;
-
-    switch (e.type) {
-      case "value":
-        this._maybeUnsubSource();
-        return (this._source = e.value).onAny(this._$onSource = function (e) {
-          return _this2._onSource(e);
-        });
-      case "error":
-        return this._emitError(e.value);
-      default:
-        this._$onSources = void 0;
-        break;
-    }
-  },
-  _onSource: function _onSource(e) {
-    switch (e.type) {
-      case "value":
-        return this._maybeEmitValue(this._source.get());
-      case "error":
-        return this._emitError(e.value);
-      default:
-        return this._emitEnd();
-    }
-  },
   _onActivation: function _onActivation() {
-    var _this3 = this;
+    var _this2 = this;
 
     var sources = this._sources;
     sources && sources.onAny(this._$onSources = function (e) {
-      return _this3._onSources(e);
+      switch (e.type) {
+        case "value":
+          maybeUnsubSource(_this2);
+          return (_this2._source = e.value).onAny(_this2._$onSource = function (e) {
+            switch (e.type) {
+              case "value":
+                return maybeEmitValue(_this2, _this2._source.get());
+              case "error":
+                return _this2._emitError(e.value);
+              default:
+                return _this2._emitEnd();
+            }
+          });
+        case "error":
+          return _this2._emitError(e.value);
+        default:
+          _this2._$onSources = void 0;
+          break;
+      }
     });
   },
   _onDeactivation: function _onDeactivation() {
-    this._maybeUnsubSource();
+    maybeUnsubSource(this);
     var onSources = this._$onSources;
     if (onSources) this._sources.offAny(onSources);
     this._$onSources = void 0;
-  },
-  _maybeUnsubSource: function _maybeUnsubSource() {
-    var onSource = this._$onSource;
-    if (onSource) this._source.offAny(onSource);
-    this._source = this._$onSource = void 0;
   }
 });
 
@@ -292,11 +284,11 @@ var Molecule = /*#__PURE__*/inherit(function Molecule(template) {
     return molecule(this._template);
   },
   modify: function modify$$1(fn) {
-    var _this4 = this;
+    var _this3 = this;
 
     var next = fn(this.get());
     holding(function () {
-      return setMutables(_this4._template, next);
+      return setMutables(_this3._template, next);
     });
   }
 });
