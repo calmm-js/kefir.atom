@@ -1,7 +1,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('infestines'), require('kefir'), require('partial.lenses')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'infestines', 'kefir', 'partial.lenses'], factory) :
-	(factory((global.kefir = global.kefir || {}, global.kefir.atom = global.kefir.atom || {}),global.I,global.kefir,global.L));
+	(factory((global.kefir = global.kefir || {}, global.kefir.atom = global.kefir.atom || {}),global.I,global.Kefir,global.L));
 }(this, (function (exports,infestines,kefir,partial_lenses) { 'use strict';
 
 //
