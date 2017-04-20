@@ -297,7 +297,7 @@ function molecule(template) {
 
 function setMutables(template, value) {
   if (template instanceof AbstractMutable) {
-    return template.set(value)
+    template.set(value)
   } else {
     if (isArray(template) && isArray(value))
       for (let i=0, n=template.length; i<n; ++i)
