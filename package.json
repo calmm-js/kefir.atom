@@ -1,6 +1,6 @@
 {
   "name": "kefir.atom",
-  "version": "5.3.3",
+  "version": "5.3.4",
   "description": "Composable and decomposable reactive state with lenses and Kefir",
   "main": "dist/kefir.atom.cjs.js",
   "module": "dist/kefir.atom.es.js",
