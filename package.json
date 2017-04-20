@@ -2,8 +2,8 @@
   "name": "kefir.atom",
   "version": "5.3.4",
   "description": "Composable and decomposable reactive state with lenses and Kefir",
-  "main": "dist/kefir.atom.cjs.js",
   "module": "dist/kefir.atom.es.js",
+  "main": "dist/kefir.atom.cjs.js",
   "scripts": {
     "dist": "npm run dist:umd & npm run dist:umd.min & npm run dist:es & npm run dist:cjs & wait",
     "dist:cjs": "    NODE_ENV=           rollup -c -n kefir.atom -i src/kefir.atom.js -f cjs -o dist/kefir.atom.cjs.js",
