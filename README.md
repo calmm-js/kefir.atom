@@ -53,8 +53,8 @@ Using this library:
     interested in __as parameters__ and share state by passing references to
     state as arguments __without copying__ state.*
 
-* You can declare **_decompose_**d *first-class* [view](#view)s of state
-  using [lenses](https://github.com/calmm-js/partial.lenses) and **_compose_**d
+* You can declare **_decomposed_** *first-class* [view](#view)s of state
+  using [lenses](https://github.com/calmm-js/partial.lenses) and **_composed_**
   *first-class* views of state as [Molecule](#class-Molecule)s.
   * *This means that program components can __declare precisely__ the state they
     are interested in as parameters __independently of the storage__ of state.*
@@ -74,7 +74,7 @@ Using this library:
     changes over time.*
 
 * You can mutate state through multiple views and multiple
-  atomic [modify](#modify) operations in a **_transaction_**al manner
+  atomic [modify](#modify) operations in a **_transactional_** manner
   by [holding](#holding) event propagation from state changes.
   * *This means that you can __avoid__
     some
