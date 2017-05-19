@@ -11,7 +11,7 @@
     "dist:umd": "    NODE_ENV=dev        rollup -c -n kefir.atom -i src/kefir.atom.js -f umd -o dist/kefir.atom.js",
     "dist:umd.min": "NODE_ENV=production rollup -c -n kefir.atom -i src/kefir.atom.js -f umd -o dist/kefir.atom.min.js",
     "lint": "eslint src test",
-    "prepublish": "npm run lint && npm run dist && npm run test",
+    "prepare": "npm run lint && npm run dist && npm run test",
     "report-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "test": "nyc mocha"
   },
