@@ -17,6 +17,12 @@ import {get, modify, set} from "partial.lenses"
 
 //
 
+const empty = /*#__PURE__*/constant(array0)
+
+const ERROR = "error"
+let VALUE
+empty.onAny(e => VALUE = VALUE || e.type)
+
 const header = "kefir.atom: "
 
 function warn(f, m) {
@@ -107,14 +113,14 @@ export const MutableWithSource = /*#__PURE__*/inherit(function MutableWithSource
   },
   _onActivation() {
     this._source.onAny(this._$onAny = e => {
-      switch (e.type) {
-        case "value":
-          return maybeEmitValue(this, this._getFromSource())
-        case "error":
-          return this._emitError(e.value)
-        default:
-          this._$onAny = void 0
-          return this._emitEnd()
+      const t = e.type
+      if (t === VALUE)
+        maybeEmitValue(this, this._getFromSource())
+      else if (t === ERROR)
+        this._emitError(e.value)
+      else {
+        this._$onAny = void 0
+        this._emitEnd()
       }
     })
   },
@@ -154,7 +160,7 @@ function setAtom(self, current, prev, next) {
     if (current)
       current.value = next
     else
-      self._currentEvent = {type: "value", value: next}
+      self._currentEvent = {type: VALUE, value: next}
   } else {
     maybeEmitValue(self, next)
   }
@@ -219,22 +225,22 @@ export const Join = /*#__PURE__*/inherit(function Join(sources) {
   _onActivation() {
     const sources = this._sources
     sources && sources.onAny(this._$onSources = e => {
-      switch (e.type) {
-        case "value":
-          maybeUnsubSource(this)
-          return (this._source = e.value).onAny(this._$onSource = e => {
-            switch (e.type) {
-              case "value": return maybeEmitValue(this, this._source.get())
-              case "error": return this._emitError(e.value)
-              default:      return this._emitEnd()
-            }
-          })
-        case "error":
-          return this._emitError(e.value)
-        default:
-          this._$onSources = void 0
-          break
-      }
+      const t = e.type
+      if (t === VALUE) {
+        maybeUnsubSource(this)
+        ;(this._source = e.value).onAny(this._$onSource = e => {
+          const t = e.type
+          if (t === VALUE)
+            maybeEmitValue(this, this._source.get())
+          else if (t === ERROR)
+            this._emitError(e.value)
+          else
+            this._emitEnd()
+        })
+      } else if (t === ERROR)
+        this._emitError(e.value)
+      else
+        this._$onSources = void 0
     })
   },
   _onDeactivation() {
@@ -309,8 +315,6 @@ function setMutables(template, value) {
       error("Molecule cannot change the template.")
   }
 }
-
-const empty = /*#__PURE__*/constant(array0)
 
 export const Molecule = /*#__PURE__*/inherit(function Molecule(template) {
   const mutables = []
