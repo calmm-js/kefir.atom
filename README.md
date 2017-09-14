@@ -105,9 +105,8 @@ the approach.
 
 This example is actually a stripped down version of
 the
-[Karet Shopping Cart example](https://github.com/calmm-js/karet-shopping-cart).
-
-See a live version [here](https://calmm-js.github.io/karet-shopping-cart/).
+[Karet Shopping Cart example](https://github.com/calmm-js/karet-shopping-cart)
+that you can see live [here](https://stackblitz.com/edit/calmm-shopping-cart).
 
 ### Counters are not toys!
 
