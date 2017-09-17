@@ -8,6 +8,14 @@ var partial_lenses = require('partial.lenses');
 
 //
 
+var empty = /*#__PURE__*/kefir.constant(infestines.array0);
+
+var ERROR = "error";
+var VALUE = void 0;
+empty.onAny(function (e) {
+  return VALUE = VALUE || e.type;
+});
+
 var header = "kefir.atom: ";
 
 function warn(f, m) {
@@ -90,14 +98,10 @@ var MutableWithSource = /*#__PURE__*/infestines.inherit(function MutableWithSour
     var _this = this;
 
     this._source.onAny(this._$onAny = function (e) {
-      switch (e.type) {
-        case "value":
-          return maybeEmitValue(_this, _this._getFromSource());
-        case "error":
-          return _this._emitError(e.value);
-        default:
-          _this._$onAny = void 0;
-          return _this._emitEnd();
+      var t = e.type;
+      if (t === VALUE) maybeEmitValue(_this, _this._getFromSource());else if (t === ERROR) _this._emitError(e.value);else {
+        _this._$onAny = void 0;
+        _this._emitEnd();
       }
     });
   },
@@ -133,7 +137,7 @@ function setAtom(self, current, prev, next) {
       prevs.push(current ? prev : error /* <- just needs to be unique */);
       atoms.push(self);
     }
-    if (current) current.value = next;else self._currentEvent = { type: "value", value: next };
+    if (current) current.value = next;else self._currentEvent = { type: VALUE, value: next };
   } else {
     maybeEmitValue(self, next);
   }
@@ -190,25 +194,13 @@ var Join = /*#__PURE__*/infestines.inherit(function Join(sources) {
 
     var sources = this._sources;
     sources && sources.onAny(this._$onSources = function (e) {
-      switch (e.type) {
-        case "value":
-          maybeUnsubSource(_this2);
-          return (_this2._source = e.value).onAny(_this2._$onSource = function (e) {
-            switch (e.type) {
-              case "value":
-                return maybeEmitValue(_this2, _this2._source.get());
-              case "error":
-                return _this2._emitError(e.value);
-              default:
-                return _this2._emitEnd();
-            }
-          });
-        case "error":
-          return _this2._emitError(e.value);
-        default:
-          _this2._$onSources = void 0;
-          break;
-      }
+      var t = e.type;
+      if (t === VALUE) {
+        maybeUnsubSource(_this2);(_this2._source = e.value).onAny(_this2._$onSource = function (e) {
+          var t = e.type;
+          if (t === VALUE) maybeEmitValue(_this2, _this2._source.get());else if (t === ERROR) _this2._emitError(e.value);else _this2._emitEnd();
+        });
+      } else if (t === ERROR) _this2._emitError(e.value);else _this2._$onSources = void 0;
     });
   },
   _onDeactivation: function _onDeactivation() {
@@ -266,7 +258,7 @@ function molecule(template) {
 
 function setMutables(template, value) {
   if (template instanceof AbstractMutable) {
-    return template.set(value);
+    template.set(value);
   } else {
     if (infestines.isArray(template) && infestines.isArray(value)) for (var i = 0, n = template.length; i < n; ++i) {
       setMutables(template[i], value[i]);
@@ -275,8 +267,6 @@ function setMutables(template, value) {
     } else if (!infestines.identicalU(template, value)) error("Molecule cannot change the template.");
   }
 }
-
-var empty = /*#__PURE__*/kefir.constant(infestines.array0);
 
 var Molecule = /*#__PURE__*/infestines.inherit(function Molecule(template) {
   var mutables = [];
