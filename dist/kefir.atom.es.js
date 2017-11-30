@@ -1,4 +1,4 @@
-import { always, array0, assocPartialU, identicalU, inherit, isArray, isObject } from 'infestines';
+import { always, array0, assocPartialU, id, identicalU, inherit, isArray, isObject } from 'infestines';
 import { Observable, Property, combine, constant } from 'kefir';
 import { get, modify, set } from 'partial.lenses';
 
@@ -6,13 +6,13 @@ import { get, modify, set } from 'partial.lenses';
 
 var empty = /*#__PURE__*/constant(array0);
 
-var ERROR = "error";
+var ERROR = 'error';
 var VALUE = void 0;
 empty.onAny(function (e) {
   return VALUE = VALUE || e.type;
 });
 
-var header = "kefir.atom: ";
+var header = 'kefir.atom: ';
 
 function warn(f, m) {
   if (!f.warned) {
@@ -26,7 +26,7 @@ function error(m) {
 }
 
 function errorGiven(m, o) {
-  console.error(header + m + " - given:", o);
+  console.error(header + m + ' - given:', o);
   error(m);
 }
 
@@ -63,7 +63,7 @@ function maybeEmitValue(self, next) {
   if (!prev || !identicalU(prev.value, next)) self._emitValue(next);
 }
 
-var AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
+var AbstractMutable = /*#__PURE__*/inherit(function () {
   Property.call(this);
 }, Property, {
   set: function set$$1(value) {
@@ -72,20 +72,29 @@ var AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
   remove: function remove() {
     this.set();
   },
-  view: function view(lens) {
-    if (process.env.NODE_ENV !== "production") if (arguments.length !== 1) errorGiven("The `view` method takes exactly 1 argument", arguments.length);
+
+  view: (process.env.NODE_ENV === 'production' ? id : function (method) {
+    return function (lens) {
+      if (arguments.length !== 1) errorGiven('The `view` method takes exactly 1 argument', arguments.length);
+      return method.call(this, lens);
+    };
+  })(function (lens) {
     return new LensedAtom(this, lens);
-  }
+  })
 });
 
 //
 
-var MutableWithSource = /*#__PURE__*/inherit(function MutableWithSource(source) {
-  if (process.env.NODE_ENV !== "production") if (!(source instanceof Observable)) errorGiven("Expected an Observable", source);
+var MutableWithSource = /*#__PURE__*/inherit((process.env.NODE_ENV === 'production' ? id : function (constructor) {
+  return function (source) {
+    if (!(source instanceof Observable)) errorGiven('Expected an Observable', source);
+    constructor.call(this, source);
+  };
+})(function (source) {
   AbstractMutable.call(this);
   this._source = source;
   this._$onAny = void 0;
-}, AbstractMutable, {
+}), AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
@@ -110,7 +119,7 @@ var MutableWithSource = /*#__PURE__*/inherit(function MutableWithSource(source) 
 
 //
 
-var LensedAtom = /*#__PURE__*/inherit(function LensedAtom(source, lens) {
+var LensedAtom = /*#__PURE__*/inherit(function (source, lens) {
   MutableWithSource.call(this, source);
   this._lens = lens;
 }, MutableWithSource, {
@@ -139,7 +148,7 @@ function setAtom(self, current, prev, next) {
   }
 }
 
-var Atom = /*#__PURE__*/inherit(function Atom() {
+var Atom = /*#__PURE__*/inherit(function () {
   AbstractMutable.call(this);
   if (arguments.length) this._emitValue(arguments[0]);
 }, AbstractMutable, {
@@ -166,25 +175,34 @@ function maybeUnsubSource(self) {
   self._source = self._$onSource = void 0;
 }
 
-var Join = /*#__PURE__*/inherit(function Join(sources) {
-  if (process.env.NODE_ENV !== "production") {
-    warn(Join, "Join is an experimental feature and might be removed");
-    if (!(sources instanceof Observable)) errorGiven("Expected an Observable", sources);
-  }
+var Join = /*#__PURE__*/inherit((process.env.NODE_ENV === 'production' ? id : function (constructor) {
+  return function (sources) {
+    if (!(sources instanceof Observable)) errorGiven('Expected an Observable', sources);
+    constructor.call(this, sources);
+  };
+})(function (sources) {
   AbstractMutable.call(this);
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;
-}, AbstractMutable, {
-  get: function get$$1() {
-    if (process.env.NODE_ENV !== "production") if (!this._$onSource) warn(this.get, "Join without subscription may not work correctly");
+}), AbstractMutable, {
+  get: (process.env.NODE_ENV === 'production' ? id : function (method) {
+    return function () {
+      if (!this._$onSource) warn(this.get, 'Join without subscription may not work correctly');
+      return method.call(this);
+    };
+  })(function () {
     var source = this._source;
     return source && source.get();
-  },
-  modify: function modify$$1(fn) {
-    if (process.env.NODE_ENV !== "production") if (!this._$onSource) warn(this.modify, "Join without subscription may not work correctly");
+  }),
+  modify: (process.env.NODE_ENV === 'production' ? id : function (method) {
+    return function (fn) {
+      if (!this._$onSource) warn(this.modify, 'Join without subscription may not work correctly');
+      return method.call(this, fn);
+    };
+  })(function (fn) {
     var source = this._source;
     source && source.modify(fn);
-  },
+  }),
   _onActivation: function _onActivation() {
     var _this2 = this;
 
@@ -260,11 +278,11 @@ function setMutables(template, value) {
       setMutables(template[i], value[i]);
     } else if (isObject(template) && isObject(value)) for (var k in template) {
       setMutables(template[k], value[k]);
-    } else if (!identicalU(template, value)) error("Molecule cannot change the template.");
+    } else if (!identicalU(template, value)) error('Molecule cannot change the template.');
   }
 }
 
-var Molecule = /*#__PURE__*/inherit(function Molecule(template) {
+var Molecule = /*#__PURE__*/inherit(function (template) {
   var mutables = [];
   pushMutables(template, mutables);
   MutableWithSource.call(this, mutables.length ? combine(mutables) : empty);

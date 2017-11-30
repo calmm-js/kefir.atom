@@ -8,13 +8,13 @@
 
 var empty = /*#__PURE__*/kefir.constant(infestines.array0);
 
-var ERROR = "error";
+var ERROR = 'error';
 var VALUE = void 0;
 empty.onAny(function (e) {
   return VALUE = VALUE || e.type;
 });
 
-var header = "kefir.atom: ";
+var header = 'kefir.atom: ';
 
 function warn(f, m) {
   if (!f.warned) {
@@ -28,7 +28,7 @@ function error(m) {
 }
 
 function errorGiven(m, o) {
-  console.error(header + m + " - given:", o);
+  console.error(header + m + ' - given:', o);
   error(m);
 }
 
@@ -65,7 +65,7 @@ function maybeEmitValue(self, next) {
   if (!prev || !infestines.identicalU(prev.value, next)) self._emitValue(next);
 }
 
-var AbstractMutable = /*#__PURE__*/infestines.inherit(function AbstractMutable() {
+var AbstractMutable = /*#__PURE__*/infestines.inherit(function () {
   kefir.Property.call(this);
 }, kefir.Property, {
   set: function set$$1(value) {
@@ -74,20 +74,29 @@ var AbstractMutable = /*#__PURE__*/infestines.inherit(function AbstractMutable()
   remove: function remove() {
     this.set();
   },
-  view: function view(lens) {
-    if (arguments.length !== 1) errorGiven("The `view` method takes exactly 1 argument", arguments.length);
+
+  view: (function (method) {
+    return function (lens) {
+      if (arguments.length !== 1) errorGiven('The `view` method takes exactly 1 argument', arguments.length);
+      return method.call(this, lens);
+    };
+  })(function (lens) {
     return new LensedAtom(this, lens);
-  }
+  })
 });
 
 //
 
-var MutableWithSource = /*#__PURE__*/infestines.inherit(function MutableWithSource(source) {
-  if (!(source instanceof kefir.Observable)) errorGiven("Expected an Observable", source);
+var MutableWithSource = /*#__PURE__*/infestines.inherit((function (constructor) {
+  return function (source) {
+    if (!(source instanceof kefir.Observable)) errorGiven('Expected an Observable', source);
+    constructor.call(this, source);
+  };
+})(function (source) {
   AbstractMutable.call(this);
   this._source = source;
   this._$onAny = void 0;
-}, AbstractMutable, {
+}), AbstractMutable, {
   get: function get$$1() {
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
@@ -112,7 +121,7 @@ var MutableWithSource = /*#__PURE__*/infestines.inherit(function MutableWithSour
 
 //
 
-var LensedAtom = /*#__PURE__*/infestines.inherit(function LensedAtom(source, lens) {
+var LensedAtom = /*#__PURE__*/infestines.inherit(function (source, lens) {
   MutableWithSource.call(this, source);
   this._lens = lens;
 }, MutableWithSource, {
@@ -141,7 +150,7 @@ function setAtom(self, current, prev, next) {
   }
 }
 
-var Atom = /*#__PURE__*/infestines.inherit(function Atom() {
+var Atom = /*#__PURE__*/infestines.inherit(function () {
   AbstractMutable.call(this);
   if (arguments.length) this._emitValue(arguments[0]);
 }, AbstractMutable, {
@@ -168,25 +177,34 @@ function maybeUnsubSource(self) {
   self._source = self._$onSource = void 0;
 }
 
-var Join = /*#__PURE__*/infestines.inherit(function Join(sources) {
-  {
-    warn(Join, "Join is an experimental feature and might be removed");
-    if (!(sources instanceof kefir.Observable)) errorGiven("Expected an Observable", sources);
-  }
+var Join = /*#__PURE__*/infestines.inherit((function (constructor) {
+  return function (sources) {
+    if (!(sources instanceof kefir.Observable)) errorGiven('Expected an Observable', sources);
+    constructor.call(this, sources);
+  };
+})(function (sources) {
   AbstractMutable.call(this);
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;
-}, AbstractMutable, {
-  get: function get$$1() {
-    if (!this._$onSource) warn(this.get, "Join without subscription may not work correctly");
+}), AbstractMutable, {
+  get: (function (method) {
+    return function () {
+      if (!this._$onSource) warn(this.get, 'Join without subscription may not work correctly');
+      return method.call(this);
+    };
+  })(function () {
     var source = this._source;
     return source && source.get();
-  },
-  modify: function modify$$1(fn) {
-    if (!this._$onSource) warn(this.modify, "Join without subscription may not work correctly");
+  }),
+  modify: (function (method) {
+    return function (fn) {
+      if (!this._$onSource) warn(this.modify, 'Join without subscription may not work correctly');
+      return method.call(this, fn);
+    };
+  })(function (fn) {
     var source = this._source;
     source && source.modify(fn);
-  },
+  }),
   _onActivation: function _onActivation() {
     var _this2 = this;
 
@@ -262,11 +280,11 @@ function setMutables(template, value) {
       setMutables(template[i], value[i]);
     } else if (infestines.isObject(template) && infestines.isObject(value)) for (var k in template) {
       setMutables(template[k], value[k]);
-    } else if (!infestines.identicalU(template, value)) error("Molecule cannot change the template.");
+    } else if (!infestines.identicalU(template, value)) error('Molecule cannot change the template.');
   }
 }
 
-var Molecule = /*#__PURE__*/infestines.inherit(function Molecule(template) {
+var Molecule = /*#__PURE__*/infestines.inherit(function (template) {
   var mutables = [];
   pushMutables(template, mutables);
   MutableWithSource.call(this, mutables.length ? kefir.combine(mutables) : empty);
