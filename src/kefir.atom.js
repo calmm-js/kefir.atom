@@ -8,12 +8,12 @@ import {
   isArray,
   isObject
 } from 'infestines'
-import { Observable, Property, combine, constant } from 'kefir'
-import { get, modify, set } from 'partial.lenses'
+import {Observable, Property, combine, constant} from 'kefir'
+import {get, modify, set} from 'partial.lenses'
 
 //
 
-const empty = /*#__PURE__*/ constant(array0)
+const empty = constant(array0)
 
 const ERROR = 'error'
 let VALUE
@@ -70,7 +70,7 @@ function maybeEmitValue(self, next) {
   if (!prev || !identicalU(prev.value, next)) self._emitValue(next)
 }
 
-export const AbstractMutable = /*#__PURE__*/ inherit(
+export const AbstractMutable = inherit(
   function() {
     Property.call(this)
   },
@@ -100,7 +100,7 @@ export const AbstractMutable = /*#__PURE__*/ inherit(
 
 //
 
-export const MutableWithSource = /*#__PURE__*/ inherit(
+export const MutableWithSource = inherit(
   (process.env.NODE_ENV === 'production'
     ? id
     : constructor =>
@@ -143,7 +143,7 @@ export const MutableWithSource = /*#__PURE__*/ inherit(
 
 //
 
-export const LensedAtom = /*#__PURE__*/ inherit(
+export const LensedAtom = inherit(
   function(source, lens) {
     MutableWithSource.call(this, source)
     this._lens = lens
@@ -171,13 +171,13 @@ function setAtom(self, current, prev, next) {
       atoms.push(self)
     }
     if (current) current.value = next
-    else self._currentEvent = { type: VALUE, value: next }
+    else self._currentEvent = {type: VALUE, value: next}
   } else {
     maybeEmitValue(self, next)
   }
 }
 
-export const Atom = /*#__PURE__*/ inherit(
+export const Atom = inherit(
   function() {
     AbstractMutable.call(this)
     if (arguments.length) this._emitValue(arguments[0])
@@ -208,7 +208,7 @@ function maybeUnsubSource(self) {
   self._source = self._$onSource = void 0
 }
 
-export const Join = /*#__PURE__*/ inherit(
+export const Join = inherit(
   (process.env.NODE_ENV === 'production'
     ? id
     : constructor =>
@@ -337,7 +337,7 @@ function setMutables(template, value) {
   }
 }
 
-export const Molecule = /*#__PURE__*/ inherit(
+export const Molecule = inherit(
   function(template) {
     const mutables = []
     pushMutables(template, mutables)
@@ -358,7 +358,9 @@ export const Molecule = /*#__PURE__*/ inherit(
 
 //
 
-export default function atom() {
+export function atom() {
   if (arguments.length) return new Atom(arguments[0])
   else return new Atom()
 }
+
+export default atom

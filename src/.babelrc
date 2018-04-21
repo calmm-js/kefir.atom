@@ -1,3 +1,6 @@
 {
-  "presets": [["es2015", {"modules": false}]]
+  "presets": [["es2015", {"modules": false}]],
+  "plugins": [
+    "annotate-pure-calls"
+  ]
 }

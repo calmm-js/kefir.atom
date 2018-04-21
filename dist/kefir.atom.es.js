@@ -73,7 +73,7 @@ var AbstractMutable = /*#__PURE__*/inherit(function () {
     this.set();
   },
 
-  view: (process.env.NODE_ENV === 'production' ? id : function (method) {
+  view: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (method) {
     return function (lens) {
       if (arguments.length !== 1) errorGiven('The `view` method takes exactly 1 argument', arguments.length);
       return method.call(this, lens);
@@ -85,7 +85,7 @@ var AbstractMutable = /*#__PURE__*/inherit(function () {
 
 //
 
-var MutableWithSource = /*#__PURE__*/inherit((process.env.NODE_ENV === 'production' ? id : function (constructor) {
+var MutableWithSource = /*#__PURE__*/inherit( /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (constructor) {
   return function (source) {
     if (!(source instanceof Observable)) errorGiven('Expected an Observable', source);
     constructor.call(this, source);
@@ -175,7 +175,7 @@ function maybeUnsubSource(self) {
   self._source = self._$onSource = void 0;
 }
 
-var Join = /*#__PURE__*/inherit((process.env.NODE_ENV === 'production' ? id : function (constructor) {
+var Join = /*#__PURE__*/inherit( /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (constructor) {
   return function (sources) {
     if (!(sources instanceof Observable)) errorGiven('Expected an Observable', sources);
     constructor.call(this, sources);
@@ -185,7 +185,7 @@ var Join = /*#__PURE__*/inherit((process.env.NODE_ENV === 'production' ? id : fu
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;
 }), AbstractMutable, {
-  get: (process.env.NODE_ENV === 'production' ? id : function (method) {
+  get: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (method) {
     return function () {
       if (!this._$onSource) warn(this.get, 'Join without subscription may not work correctly');
       return method.call(this);
@@ -194,7 +194,7 @@ var Join = /*#__PURE__*/inherit((process.env.NODE_ENV === 'production' ? id : fu
     var source = this._source;
     return source && source.get();
   }),
-  modify: (process.env.NODE_ENV === 'production' ? id : function (method) {
+  modify: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (method) {
     return function (fn) {
       if (!this._$onSource) warn(this.modify, 'Join without subscription may not work correctly');
       return method.call(this, fn);
@@ -307,5 +307,5 @@ function atom() {
   if (arguments.length) return new Atom(arguments[0]);else return new Atom();
 }
 
-export { holding, AbstractMutable, MutableWithSource, LensedAtom, Atom, Join, Molecule };
 export default atom;
+export { holding, AbstractMutable, MutableWithSource, LensedAtom, Atom, Join, Molecule };

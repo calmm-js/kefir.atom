@@ -70,14 +70,14 @@ function maybeEmitValue(self, next) {
 var AbstractMutable = /*#__PURE__*/infestines.inherit(function () {
   kefir.Property.call(this);
 }, kefir.Property, {
-  set: function set$$1(value) {
+  set: function set(value) {
     this.modify(infestines.always(value));
   },
   remove: function remove() {
     this.set();
   },
 
-  view: (process.env.NODE_ENV === 'production' ? infestines.id : function (method) {
+  view: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? infestines.id : function (method) {
     return function (lens) {
       if (arguments.length !== 1) errorGiven('The `view` method takes exactly 1 argument', arguments.length);
       return method.call(this, lens);
@@ -89,7 +89,7 @@ var AbstractMutable = /*#__PURE__*/infestines.inherit(function () {
 
 //
 
-var MutableWithSource = /*#__PURE__*/infestines.inherit((process.env.NODE_ENV === 'production' ? infestines.id : function (constructor) {
+var MutableWithSource = /*#__PURE__*/infestines.inherit( /*#__PURE__*/(process.env.NODE_ENV === 'production' ? infestines.id : function (constructor) {
   return function (source) {
     if (!(source instanceof kefir.Observable)) errorGiven('Expected an Observable', source);
     constructor.call(this, source);
@@ -99,7 +99,7 @@ var MutableWithSource = /*#__PURE__*/infestines.inherit((process.env.NODE_ENV ==
   this._source = source;
   this._$onAny = void 0;
 }), AbstractMutable, {
-  get: function get$$1() {
+  get: function get() {
     var current = this._currentEvent;
     if (current && !lock) return current.value;else return this._getFromSource();
   },
@@ -127,10 +127,10 @@ var LensedAtom = /*#__PURE__*/infestines.inherit(function (source, lens) {
   MutableWithSource.call(this, source);
   this._lens = lens;
 }, MutableWithSource, {
-  set: function set$$1(v) {
+  set: function set(v) {
     this._source.set(partial_lenses.set(this._lens, v, this._source.get()));
   },
-  modify: function modify$$1(fn) {
+  modify: function modify(fn) {
     this._source.modify(partial_lenses.modify(this._lens, fn));
   },
   _getFromSource: function _getFromSource() {
@@ -156,15 +156,15 @@ var Atom = /*#__PURE__*/infestines.inherit(function () {
   AbstractMutable.call(this);
   if (arguments.length) this._emitValue(arguments[0]);
 }, AbstractMutable, {
-  get: function get$$1() {
+  get: function get() {
     var current = this._currentEvent;
     return current ? current.value : void 0;
   },
-  set: function set$$1(v) {
+  set: function set(v) {
     var current = this._currentEvent;
     setAtom(this, current, current ? current.value : void 0, v);
   },
-  modify: function modify$$1(fn) {
+  modify: function modify(fn) {
     var current = this._currentEvent;
     var prev = current ? current.value : void 0;
     setAtom(this, current, prev, fn(prev));
@@ -179,7 +179,7 @@ function maybeUnsubSource(self) {
   self._source = self._$onSource = void 0;
 }
 
-var Join = /*#__PURE__*/infestines.inherit((process.env.NODE_ENV === 'production' ? infestines.id : function (constructor) {
+var Join = /*#__PURE__*/infestines.inherit( /*#__PURE__*/(process.env.NODE_ENV === 'production' ? infestines.id : function (constructor) {
   return function (sources) {
     if (!(sources instanceof kefir.Observable)) errorGiven('Expected an Observable', sources);
     constructor.call(this, sources);
@@ -189,7 +189,7 @@ var Join = /*#__PURE__*/infestines.inherit((process.env.NODE_ENV === 'production
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;
 }), AbstractMutable, {
-  get: (process.env.NODE_ENV === 'production' ? infestines.id : function (method) {
+  get: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? infestines.id : function (method) {
     return function () {
       if (!this._$onSource) warn(this.get, 'Join without subscription may not work correctly');
       return method.call(this);
@@ -198,7 +198,7 @@ var Join = /*#__PURE__*/infestines.inherit((process.env.NODE_ENV === 'production
     var source = this._source;
     return source && source.get();
   }),
-  modify: (process.env.NODE_ENV === 'production' ? infestines.id : function (method) {
+  modify: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? infestines.id : function (method) {
     return function (fn) {
       if (!this._$onSource) warn(this.modify, 'Join without subscription may not work correctly');
       return method.call(this, fn);
@@ -295,7 +295,7 @@ var Molecule = /*#__PURE__*/infestines.inherit(function (template) {
   _getFromSource: function _getFromSource() {
     return molecule(this._template);
   },
-  modify: function modify$$1(fn) {
+  modify: function modify(fn) {
     var _this3 = this;
 
     var next = fn(this.get());
@@ -318,4 +318,4 @@ exports.LensedAtom = LensedAtom;
 exports.Atom = Atom;
 exports.Join = Join;
 exports.Molecule = Molecule;
-exports['default'] = atom;
+exports.default = atom;

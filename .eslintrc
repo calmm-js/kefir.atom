@@ -6,6 +6,7 @@
     "no-console": 0,
     "no-const-assign": 2,
     "no-unneeded-ternary": 2,
+    "no-unused-vars": ["error", {"argsIgnorePattern": "^_"}],
     "no-var": 2,
     "prefer-arrow-callback": 2,
     "prefer-const": 2,
