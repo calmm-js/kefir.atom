@@ -4,6 +4,7 @@
   "description": "Composable and decomposable reactive state with lenses and Kefir",
   "module": "dist/kefir.atom.es.js",
   "main": "dist/kefir.atom.cjs.js",
+  "sideEffects": false,
   "scripts": {
     "dist": "rollup -c",
     "lint": "eslint src test",
