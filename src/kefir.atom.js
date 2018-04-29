@@ -1,19 +1,10 @@
-import {
-  always,
-  array0,
-  assocPartialU,
-  id,
-  identicalU,
-  inherit,
-  isArray,
-  isObject
-} from 'infestines'
-import {Observable, Property, combine, constant} from 'kefir'
-import {get, modify, set} from 'partial.lenses'
+import * as I from 'infestines'
+import * as K from 'kefir'
+import * as L from 'partial.lenses'
 
 //
 
-const empty = constant(array0)
+const empty = K.constant(I.array0)
 
 const ERROR = 'error'
 let VALUE
@@ -39,6 +30,11 @@ function errorGiven(m, o) {
 
 //
 
+const isMutable = x => x instanceof AbstractMutable
+const isObservable = x => x instanceof K.Observable
+
+//
+
 let lock = 0
 
 const prevs = []
@@ -50,7 +46,7 @@ function release() {
     const atom = atoms.shift()
     const next = atom._currentEvent.value
 
-    if (!identicalU(prev, next)) atom._emitValue(next)
+    if (!I.identicalU(prev, next)) atom._emitValue(next)
   }
 }
 
@@ -67,23 +63,23 @@ export function holding(ef) {
 
 function maybeEmitValue(self, next) {
   const prev = self._currentEvent
-  if (!prev || !identicalU(prev.value, next)) self._emitValue(next)
+  if (!prev || !I.identicalU(prev.value, next)) self._emitValue(next)
 }
 
-export const AbstractMutable = inherit(
+export const AbstractMutable = I.inherit(
   function() {
-    Property.call(this)
+    K.Property.call(this)
   },
-  Property,
+  K.Property,
   {
     set(value) {
-      this.modify(always(value))
+      this.modify(I.always(value))
     },
     remove() {
       this.set()
     },
     view: (process.env.NODE_ENV === 'production'
-      ? id
+      ? I.id
       : method =>
           function(lens) {
             if (arguments.length !== 1)
@@ -100,12 +96,12 @@ export const AbstractMutable = inherit(
 
 //
 
-export const MutableWithSource = inherit(
+export const MutableWithSource = I.inherit(
   (process.env.NODE_ENV === 'production'
-    ? id
+    ? I.id
     : constructor =>
         function(source) {
-          if (!(source instanceof Observable))
+          if (!isObservable(source))
             errorGiven('Expected an Observable', source)
           constructor.call(this, source)
         })(function(source) {
@@ -143,7 +139,7 @@ export const MutableWithSource = inherit(
 
 //
 
-export const LensedAtom = inherit(
+export const LensedAtom = I.inherit(
   function(source, lens) {
     MutableWithSource.call(this, source)
     this._lens = lens
@@ -151,13 +147,13 @@ export const LensedAtom = inherit(
   MutableWithSource,
   {
     set(v) {
-      this._source.set(set(this._lens, v, this._source.get()))
+      this._source.set(L.set(this._lens, v, this._source.get()))
     },
     modify(fn) {
-      this._source.modify(modify(this._lens, fn))
+      this._source.modify(L.modify(this._lens, fn))
     },
     _getFromSource() {
-      return get(this._lens, this._source.get())
+      return L.get(this._lens, this._source.get())
     }
   }
 )
@@ -177,7 +173,7 @@ function setAtom(self, current, prev, next) {
   }
 }
 
-export const Atom = inherit(
+export const Atom = I.inherit(
   function() {
     AbstractMutable.call(this)
     if (arguments.length) this._emitValue(arguments[0])
@@ -208,12 +204,12 @@ function maybeUnsubSource(self) {
   self._source = self._$onSource = void 0
 }
 
-export const Join = inherit(
+export const Join = I.inherit(
   (process.env.NODE_ENV === 'production'
-    ? id
+    ? I.id
     : constructor =>
         function(sources) {
-          if (!(sources instanceof Observable))
+          if (!isObservable(sources))
             errorGiven('Expected an Observable', sources)
           constructor.call(this, sources)
         })(function(sources) {
@@ -224,7 +220,7 @@ export const Join = inherit(
   AbstractMutable,
   {
     get: (process.env.NODE_ENV === 'production'
-      ? id
+      ? I.id
       : method =>
           function() {
             if (!this._$onSource)
@@ -235,7 +231,7 @@ export const Join = inherit(
       return source && source.get()
     }),
     modify: (process.env.NODE_ENV === 'production'
-      ? id
+      ? I.id
       : method =>
           function(fn) {
             if (!this._$onSource)
@@ -281,38 +277,39 @@ export const Join = inherit(
 //
 
 function pushMutables(template, mutables) {
-  if (template instanceof AbstractMutable && mutables.indexOf(template) < 0) {
+  if (isMutable(template) && mutables.indexOf(template) < 0) {
     mutables.push(template)
   } else {
-    if (isArray(template))
+    if (I.isArray(template))
       for (let i = 0, n = template.length; i < n; ++i)
         pushMutables(template[i], mutables)
-    else if (isObject(template))
+    else if (I.isObject(template))
       for (const k in template) pushMutables(template[k], mutables)
   }
 }
 
 function molecule(template) {
-  if (template instanceof AbstractMutable) {
+  if (isMutable(template)) {
     return template.get()
   } else {
-    if (isArray(template)) {
+    if (I.isArray(template)) {
       const n = template.length
       let next = template
       for (let i = 0; i < n; ++i) {
         const v = molecule(template[i])
-        if (!identicalU(next[i], v)) {
+        if (!I.identicalU(next[i], v)) {
           if (next === template) next = template.slice(0)
           next[i] = v
         }
       }
       return next
-    } else if (isObject(template)) {
+    } else if (I.isObject(template)) {
       let next = template
       for (const k in template) {
         const v = molecule(template[k])
-        if (!identicalU(next[k], v)) {
-          if (next === template) next = assocPartialU(void 0, void 0, template) // Avoid Object.assign
+        if (!I.identicalU(next[k], v)) {
+          if (next === template)
+            next = I.assocPartialU(void 0, void 0, template) // Avoid Object.assign
           next[k] = v
         }
       }
@@ -324,24 +321,24 @@ function molecule(template) {
 }
 
 function setMutables(template, value) {
-  if (template instanceof AbstractMutable) {
+  if (isMutable(template)) {
     template.set(value)
   } else {
-    if (isArray(template) && isArray(value))
+    if (I.isArray(template) && I.isArray(value))
       for (let i = 0, n = template.length; i < n; ++i)
         setMutables(template[i], value[i])
-    else if (isObject(template) && isObject(value))
+    else if (I.isObject(template) && I.isObject(value))
       for (const k in template) setMutables(template[k], value[k])
-    else if (!identicalU(template, value))
+    else if (!I.identicalU(template, value))
       error('Molecule cannot change the template.')
   }
 }
 
-export const Molecule = inherit(
+export const Molecule = I.inherit(
   function(template) {
     const mutables = []
     pushMutables(template, mutables)
-    MutableWithSource.call(this, mutables.length ? combine(mutables) : empty)
+    MutableWithSource.call(this, mutables.length ? K.combine(mutables) : empty)
     this._template = template
   },
   MutableWithSource,
