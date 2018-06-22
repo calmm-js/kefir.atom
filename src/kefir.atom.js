@@ -67,7 +67,7 @@ function maybeEmitValue(self, next) {
 }
 
 export const AbstractMutable = I.inherit(
-  function() {
+  function AbstractMutable() {
     K.Property.call(this)
   },
   K.Property,
@@ -81,14 +81,14 @@ export const AbstractMutable = I.inherit(
     view: (process.env.NODE_ENV === 'production'
       ? I.id
       : method =>
-          function(lens) {
+          function view(lens) {
             if (arguments.length !== 1)
               errorGiven(
                 'The `view` method takes exactly 1 argument',
                 arguments.length
               )
             return method.call(this, lens)
-          })(function(lens) {
+          })(function view(lens) {
       return new LensedAtom(this, lens)
     })
   }
@@ -100,11 +100,11 @@ export const MutableWithSource = I.inherit(
   (process.env.NODE_ENV === 'production'
     ? I.id
     : constructor =>
-        function(source) {
+        function MutableWithSource(source) {
           if (!isObservable(source))
             errorGiven('Expected an Observable', source)
           constructor.call(this, source)
-        })(function(source) {
+        })(function MutableWithSource(source) {
     AbstractMutable.call(this)
     this._source = source
     this._$onAny = void 0
@@ -140,7 +140,7 @@ export const MutableWithSource = I.inherit(
 //
 
 export const LensedAtom = I.inherit(
-  function(source, lens) {
+  function LensedAtom(source, lens) {
     MutableWithSource.call(this, source)
     this._lens = lens
   },
@@ -174,7 +174,7 @@ function setAtom(self, current, prev, next) {
 }
 
 export const Atom = I.inherit(
-  function() {
+  function Atom() {
     AbstractMutable.call(this)
     if (arguments.length) this._emitValue(arguments[0])
   },
@@ -208,11 +208,11 @@ export const Join = I.inherit(
   (process.env.NODE_ENV === 'production'
     ? I.id
     : constructor =>
-        function(sources) {
+        function Join(sources) {
           if (!isObservable(sources))
             errorGiven('Expected an Observable', sources)
           constructor.call(this, sources)
-        })(function(sources) {
+        })(function Join(sources) {
     AbstractMutable.call(this)
     this._sources = sources
     this._source = this._$onSources = this._$onSource = void 0
@@ -222,25 +222,25 @@ export const Join = I.inherit(
     get: (process.env.NODE_ENV === 'production'
       ? I.id
       : method =>
-          function() {
+          function get() {
             if (!this._$onSource)
               warn(this.get, 'Join without subscription may not work correctly')
             return method.call(this)
-          })(function() {
+          })(function get() {
       const source = this._source
       return source && source.get()
     }),
     modify: (process.env.NODE_ENV === 'production'
       ? I.id
       : method =>
-          function(fn) {
+          function modify(fn) {
             if (!this._$onSource)
               warn(
                 this.modify,
                 'Join without subscription may not work correctly'
               )
             return method.call(this, fn)
-          })(function(fn) {
+          })(function modify(fn) {
       const source = this._source
       source && source.modify(fn)
     }),
@@ -335,7 +335,7 @@ function setMutables(template, value) {
 }
 
 export const Molecule = I.inherit(
-  function(template) {
+  function Molecule(template) {
     const mutables = []
     pushMutables(template, mutables)
     MutableWithSource.call(this, mutables.length ? K.combine(mutables) : empty)
