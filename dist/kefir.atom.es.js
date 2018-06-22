@@ -1,6 +1,6 @@
-import { always, array0, assocPartialU, id, identicalU, inherit, isArray, isObject } from 'infestines';
-import { Observable, Property, combine, constant } from 'kefir';
-import { get, modify, set } from 'partial.lenses';
+import { array0, identicalU, inherit, always, id, isArray, isObject, assocPartialU } from 'infestines';
+import { constant, Observable, Property, combine } from 'kefir';
+import { set, modify, get } from 'partial.lenses';
 
 //
 
@@ -29,6 +29,15 @@ function errorGiven(m, o) {
   console.error(header + m + ' - given:', o);
   error(m);
 }
+
+//
+
+var isMutable = function isMutable(x) {
+  return x instanceof AbstractMutable;
+};
+var isObservable = function isObservable(x) {
+  return x instanceof Observable;
+};
 
 //
 
@@ -63,7 +72,7 @@ function maybeEmitValue(self, next) {
   if (!prev || !identicalU(prev.value, next)) self._emitValue(next);
 }
 
-var AbstractMutable = /*#__PURE__*/inherit(function () {
+var AbstractMutable = /*#__PURE__*/inherit(function AbstractMutable() {
   Property.call(this);
 }, Property, {
   set: function set$$1(value) {
@@ -74,11 +83,11 @@ var AbstractMutable = /*#__PURE__*/inherit(function () {
   },
 
   view: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (method) {
-    return function (lens) {
+    return function view(lens) {
       if (arguments.length !== 1) errorGiven('The `view` method takes exactly 1 argument', arguments.length);
       return method.call(this, lens);
     };
-  })(function (lens) {
+  })(function view(lens) {
     return new LensedAtom(this, lens);
   })
 });
@@ -86,11 +95,11 @@ var AbstractMutable = /*#__PURE__*/inherit(function () {
 //
 
 var MutableWithSource = /*#__PURE__*/inherit( /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (constructor) {
-  return function (source) {
-    if (!(source instanceof Observable)) errorGiven('Expected an Observable', source);
+  return function MutableWithSource(source) {
+    if (!isObservable(source)) errorGiven('Expected an Observable', source);
     constructor.call(this, source);
   };
-})(function (source) {
+})(function MutableWithSource(source) {
   AbstractMutable.call(this);
   this._source = source;
   this._$onAny = void 0;
@@ -119,7 +128,7 @@ var MutableWithSource = /*#__PURE__*/inherit( /*#__PURE__*/(process.env.NODE_ENV
 
 //
 
-var LensedAtom = /*#__PURE__*/inherit(function (source, lens) {
+var LensedAtom = /*#__PURE__*/inherit(function LensedAtom(source, lens) {
   MutableWithSource.call(this, source);
   this._lens = lens;
 }, MutableWithSource, {
@@ -148,7 +157,7 @@ function setAtom(self, current, prev, next) {
   }
 }
 
-var Atom = /*#__PURE__*/inherit(function () {
+var Atom = /*#__PURE__*/inherit(function Atom() {
   AbstractMutable.call(this);
   if (arguments.length) this._emitValue(arguments[0]);
 }, AbstractMutable, {
@@ -176,30 +185,30 @@ function maybeUnsubSource(self) {
 }
 
 var Join = /*#__PURE__*/inherit( /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (constructor) {
-  return function (sources) {
-    if (!(sources instanceof Observable)) errorGiven('Expected an Observable', sources);
+  return function Join(sources) {
+    if (!isObservable(sources)) errorGiven('Expected an Observable', sources);
     constructor.call(this, sources);
   };
-})(function (sources) {
+})(function Join(sources) {
   AbstractMutable.call(this);
   this._sources = sources;
   this._source = this._$onSources = this._$onSource = void 0;
 }), AbstractMutable, {
   get: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (method) {
-    return function () {
+    return function get$$1() {
       if (!this._$onSource) warn(this.get, 'Join without subscription may not work correctly');
       return method.call(this);
     };
-  })(function () {
+  })(function get$$1() {
     var source = this._source;
     return source && source.get();
   }),
   modify: /*#__PURE__*/(process.env.NODE_ENV === 'production' ? id : function (method) {
-    return function (fn) {
+    return function modify$$1(fn) {
       if (!this._$onSource) warn(this.modify, 'Join without subscription may not work correctly');
       return method.call(this, fn);
     };
-  })(function (fn) {
+  })(function modify$$1(fn) {
     var source = this._source;
     source && source.modify(fn);
   }),
@@ -228,7 +237,7 @@ var Join = /*#__PURE__*/inherit( /*#__PURE__*/(process.env.NODE_ENV === 'product
 //
 
 function pushMutables(template, mutables) {
-  if (template instanceof AbstractMutable && mutables.indexOf(template) < 0) {
+  if (isMutable(template) && mutables.indexOf(template) < 0) {
     mutables.push(template);
   } else {
     if (isArray(template)) for (var i = 0, n = template.length; i < n; ++i) {
@@ -240,7 +249,7 @@ function pushMutables(template, mutables) {
 }
 
 function molecule(template) {
-  if (template instanceof AbstractMutable) {
+  if (isMutable(template)) {
     return template.get();
   } else {
     if (isArray(template)) {
@@ -271,7 +280,7 @@ function molecule(template) {
 }
 
 function setMutables(template, value) {
-  if (template instanceof AbstractMutable) {
+  if (isMutable(template)) {
     template.set(value);
   } else {
     if (isArray(template) && isArray(value)) for (var i = 0, n = template.length; i < n; ++i) {
@@ -282,7 +291,7 @@ function setMutables(template, value) {
   }
 }
 
-var Molecule = /*#__PURE__*/inherit(function (template) {
+var Molecule = /*#__PURE__*/inherit(function Molecule(template) {
   var mutables = [];
   pushMutables(template, mutables);
   MutableWithSource.call(this, mutables.length ? combine(mutables) : empty);
@@ -308,4 +317,4 @@ function atom() {
 }
 
 export default atom;
-export { holding, AbstractMutable, MutableWithSource, LensedAtom, Atom, Join, Molecule };
+export { holding, AbstractMutable, MutableWithSource, LensedAtom, Atom, Join, Molecule, atom };
