@@ -7,8 +7,7 @@ import * as L from 'partial.lenses'
 const empty = K.constant(I.array0)
 
 const ERROR = 'error'
-let VALUE
-empty.onAny(e => (VALUE = VALUE || e.type))
+const VALUE = 'value'
 
 const header = 'kefir.atom: '
 
