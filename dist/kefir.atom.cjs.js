@@ -11,10 +11,7 @@ var L = require('partial.lenses');
 var empty = /*#__PURE__*/K.constant(I.array0);
 
 var ERROR = 'error';
-var VALUE = void 0;
-empty.onAny(function (e) {
-  return VALUE = VALUE || e.type;
-});
+var VALUE = 'value';
 
 var header = 'kefir.atom: ';
 

@@ -1,18 +1,15 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('infestines'), require('kefir'), require('partial.lenses')) :
   typeof define === 'function' && define.amd ? define(['exports', 'infestines', 'kefir', 'partial.lenses'], factory) :
-  (factory((global.Kefir = global.Kefir || {}, global.Kefir.atom = {}),global.I,global.Kefir,global.L));
-}(this, (function (exports,I,K,L) { 'use strict';
+  (global = global || self, factory((global.Kefir = global.Kefir || {}, global.Kefir.atom = {}), global.I, global.Kefir, global.L));
+}(this, function (exports, I, K, L) { 'use strict';
 
   //
 
   var empty = /*#__PURE__*/K.constant(I.array0);
 
   var ERROR = 'error';
-  var VALUE = void 0;
-  empty.onAny(function (e) {
-    return VALUE = VALUE || e.type;
-  });
+  var VALUE = 'value';
 
   var header = 'kefir.atom: ';
 
@@ -330,4 +327,4 @@
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));

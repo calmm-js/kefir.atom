@@ -1,5 +1,5 @@
-import { array0, identicalU, inherit, always, id, isArray, isObject, assocPartialU } from 'infestines';
-import { constant, Observable, Property, combine } from 'kefir';
+import { array0, inherit, always, id, identicalU, isArray, isObject, assocPartialU } from 'infestines';
+import { constant, Property, Observable, combine } from 'kefir';
 import { set, modify, get } from 'partial.lenses';
 
 //
@@ -7,10 +7,7 @@ import { set, modify, get } from 'partial.lenses';
 var empty = /*#__PURE__*/constant(array0);
 
 var ERROR = 'error';
-var VALUE = void 0;
-empty.onAny(function (e) {
-  return VALUE = VALUE || e.type;
-});
+var VALUE = 'value';
 
 var header = 'kefir.atom: ';
 
